@@ -1,3 +1,9 @@
+/**
+ * @author       Bonsaiheldin <dm@bonsaiheld.org>
+ * @copyright    2018 Bonsaiheldin
+ * @license      {@link https://github.com/photonstorm/phaser/blob/master/license.txt|MIT License}
+ */
+
 // Initialize the main object with all expected properties
 var Domy = Domy ||
 {
@@ -22,6 +28,7 @@ console.log("%cDomy v" + Domy.Version + " | HTML5 DOM game engine | https://gith
 
 /**
  * The core game container.
+ * @class Domy.Game
  * @constructor
  * @param {number} width - The width of the container.
  * @param {number} height - The height of the container.
@@ -67,6 +74,8 @@ Domy.Game = function(width, height, parent, transparent)
 
 /**
  * The update loop of the core. Happens automatically.
+ * @method Domy.Game#update
+ * @private
  */
 Domy.Game.prototype.update = function(delta)
 {
@@ -77,6 +86,8 @@ Domy.Game.prototype.update = function(delta)
 
 /**
  * The render loop of the core. Happens automatically.
+ * @method Domy.Game#render
+ * @private
  */
 Domy.Game.prototype.render = function()
 {
@@ -104,7 +115,7 @@ Domy.Game.prototype.constructor = Domy.Game;
 
 /**
  * The camera. It is added to the core loops and updates automatically.
-
+ * @class Domy.Camera
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  */
@@ -112,7 +123,9 @@ Domy.Camera = function(game)
 {
     this.game = game;
     this.world = this.game.world;
-    /** @property {number} - The left top coordinate of the camera. */
+    /**
+    * @property {number} x - The x coordinate of the camera.
+    */
     this.x = 0;
     this.y = 0;
     this.width = this.game.width;
@@ -148,6 +161,8 @@ Domy.Camera.prototype =
 
     /**
      * The update loop of the camera. Happens automatically.
+     * @method Domy.Camera#update
+     * @private
      */
     update()
     {
@@ -181,7 +196,7 @@ Domy.Camera.prototype.constructor = Domy.Camera;
 
 /**
  * The world container stores every sprite or group and updates them automatically.
-
+ * @class Domy.World
  * @constructor
  * @param {object} game - Your global game object.
  */
@@ -204,6 +219,7 @@ Domy.World.prototype =
 {
     /**
      * Adds a child to the world container. The child can be a sprite or a group.
+     * @method Domy.World#addChild
      * @param {object} entity - The child.
      */
     addChild(entity)
@@ -213,6 +229,7 @@ Domy.World.prototype =
 
     /**
      * Removes the given child from the world container.
+     * @method Domy.World#removeChild
      * @param {object} entity - The child.
      */
     removeChild(entity)
@@ -222,6 +239,8 @@ Domy.World.prototype =
 
     /**
      * The update loop of the world container. Happens automatically.
+     * @method Domy.World#update
+     * @private
      */
     update()
     {
@@ -235,6 +254,8 @@ Domy.World.prototype =
 
     /**
      * The render loop of the world container. Happens automatically.
+     * @method Domy.World#render
+     * @private
      */
     render()
     {
@@ -252,7 +273,7 @@ Domy.World.prototype.constructor = Domy.World;
 /**
  * Groups are containers storing your game objects (sprites).
  * They are added automatically to the world container.
-
+ * @class Domy.Group
  * @constructor
  * @param {object} game - Your global game object.
  */
@@ -273,6 +294,7 @@ Domy.Group.prototype =
 {
     /**
      * Adds an entity to a group. The entity has to be a sprite.
+     * @method Domy.Group#addChild
      * @param {object} entity - The entity.
      */
     addChild(entity)
@@ -286,6 +308,7 @@ Domy.Group.prototype =
 
     /**
      * Removes the given entity from a group.
+     * @method Domy.Group#removeChild
      * @param {object} entity - The entity.
      */
     removeChild(entity)
@@ -298,7 +321,28 @@ Domy.Group.prototype =
     },
 
     /**
+     * Iterates the group.
+     * @method Domy.Group#iterate
+     * @param {string} key - The property of the child to check for.
+     * @param {any} value - The value the property of the child must have.
+     */
+    iterate(key, value)
+    {
+        for (let i = 0; i < this.children.length; i++)
+        {
+            let child = this.children[i];
+        }
+        this.children.splice(this.children.indexOf(entity), 1);
+
+        // Since the entity left the group, it has to be added as a child of
+        // the world again, so it still gets updates.
+        this.world.addChild(entity);
+    },
+
+    /**
      * The update loop of the group. Happens automatically.
+     * @method Domy.Group#update
+     * @private
      */
     update()
     {
@@ -312,6 +356,8 @@ Domy.Group.prototype =
 
     /**
      * The render loop of the group. Happens automatically.
+     * @method Domy.Group#update
+     * @private
      */
     render()
     {
@@ -328,14 +374,14 @@ Domy.Group.prototype.constructor = Domy.Group;
 
 /**
  * Sprites are game objects which contain the actual HTML elements for rendering.
-
+*
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  * @param {number} x - The x coordinate in the world of the sprite.
  * @param {number} y - The y coordinate in the world of the sprite.
- * @param {string} key - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
- * @param {string} frame - The starting frame of the image (only for spritesheets). If left empty, it will be null.
- * @param {Domy.Group} group - The group this sprite shall be added to. If left empty, it will be added directly to the world container
+ * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+ * @param {string} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
+ * @param {Domy.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
  */
 Domy.Sprite = function(game, x, y, key, frame, group)
 {
@@ -418,6 +464,8 @@ Domy.Sprite.prototype =
 {
     /**
      * The update loop of the sprite. Happens automatically.
+     * @method Domy.Sprite#update
+     * @private
      */
     update()
     {
@@ -482,6 +530,8 @@ Domy.Sprite.prototype =
 
     /**
      * The render loop of the sprite. Happens automatically.
+     * @method Domy.Sprite#render
+     * @private
      */
     render()
     {
@@ -498,15 +548,18 @@ Domy.Sprite.prototype =
 
     /**
      * Kills the sprite. Just a placeholder for now. Will be used as a soft destroy for object pooling.
+     * @method Domy.Sprite#kill
      */
     kill()
     {
+        this.alive = false;
         this.destroy();
         return this;
     },
 
     /**
      * Destroys the sprite and removes it entirely from the game world.
+     * @method Domy.Sprite#destroy
      */
     destroy()
     {
@@ -570,6 +623,8 @@ Domy.Time.prototype =
 {
     /**
      * The update loop of the time object. Happens automatically.
+     * @method Domy.Time#update
+     * @private
      */
     update(delta)
     {
@@ -584,10 +639,21 @@ Domy.Time.prototype =
 Domy.Time.prototype.constructor = Domy.Time;
 
 /**
- * The Math container offers different standard math functions like measuring a distance.
- */
+* @constant
+* @type {number}
+*/
 Domy.Math.Pi = Math.PI;
+
+/**
+* @constant
+* @type {number}
+*/
 Domy.Math.Pi180 = Math.PI / 180;
+
+/**
+* @constant
+* @type {number}
+*/
 Domy.Math.Pi180r = 180 / Math.PI; // r = reversed
 
 /** Returns an integer between (including) min and (including) max */
