@@ -26,7 +26,7 @@ console.log("%cDomy v" + Domy.Version + " | HTML5 DOM game engine | https://gith
  * @param {number} width - The width of the container.
  * @param {number} height - The height of the container.
  * @param {string} parent - The parent div of the container.
- * @param {boolean} width - Defines if the container should be transparent.
+ * @param {boolean} transparent - Defines if the container should be transparent.
  */
 Domy.Game = function(width, height, parent, transparent)
 {
@@ -65,6 +65,9 @@ Domy.Game = function(width, height, parent, transparent)
     return this;
 }
 
+/**
+ * The update loop of the core. Happens automatically.
+ */
 Domy.Game.prototype.update = function(delta)
 {
     this.time.update(delta);
@@ -72,6 +75,9 @@ Domy.Game.prototype.update = function(delta)
     this.camera.update();
 };
 
+/**
+ * The render loop of the core. Happens automatically.
+ */
 Domy.Game.prototype.render = function()
 {
     //this.time.render();
@@ -79,6 +85,9 @@ Domy.Game.prototype.render = function()
     //this.camera.render();
 };
 
+/**
+ * Starts the update and render loops of the core.
+ */
 Domy.Game.prototype.start = function(game)
 {
     // Start the two core loops
@@ -94,7 +103,7 @@ Domy.Game.prototype.start = function(game)
 Domy.Game.prototype.constructor = Domy.Game;
 
 /**
- * The 2d camera.
+ * The camera. It is added to the core loops and updates automatically.
  * @constructor
  * @param {object} game - Your global game object.
  */
@@ -115,7 +124,10 @@ Domy.Camera = function(game)
 
 Domy.Camera.prototype =
 {
-    // Camera follow
+    /**
+     * Let the camera follow an entity.
+     * @param {object} game - The entity.
+     */
     follow(target)
     {
         if (target)
@@ -124,12 +136,17 @@ Domy.Camera.prototype =
         }
     },
 
-    // Camera unfollow
+    /**
+     * Let the camera stop following any entity.
+     */
     unfollow()
     {
         this.target = null;
     },
 
+    /**
+     * The update loop of the camera. Happens automatically.
+     */
     update()
     {
         if (this.target !== null)
@@ -161,7 +178,7 @@ Domy.Camera.prototype =
 Domy.Camera.prototype.constructor = Domy.Camera;
 
 /**
- * The world container.
+ * The world container stores every sprite or group and updates them automatically..
  * @constructor
  * @param {object} game - Your global game object.
  */
@@ -182,16 +199,27 @@ Domy.World = function(game)
 
 Domy.World.prototype =
 {
+    /**
+     * Adds a child to the world container. The child can be a sprite or a group.
+     * @param {object} entity - The child.
+     */
     addChild(entity)
     {
         this.children.push(entity);
     },
 
+    /**
+     * Removes the given child from the world container.
+     * @param {object} entity - The child.
+     */
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
     },
 
+    /**
+     * The update loop of the world container. Happens automatically.
+     */
     update()
     {
         for (let i = 0; i < this.children.length; i++)
@@ -202,6 +230,9 @@ Domy.World.prototype =
         }
     },
 
+    /**
+     * The render loop of the world container. Happens automatically.
+     */
     render()
     {
         for (let i = 0; i < this.children.length; i++)
@@ -237,8 +268,8 @@ Domy.Group = function(game)
 Domy.Group.prototype =
 {
     /**
-     * Adds an entity to a group.
-     * @param {object} game - The entity.
+     * Adds an entity to a group. The entity has to be a sprite.
+     * @param {object} entity - The entity.
      */
     addChild(entity)
     {
@@ -250,8 +281,8 @@ Domy.Group.prototype =
     },
 
     /**
-     * Removes an entity from a group.
-     * @param {object} game - The entity.
+     * Removes the given entity from a group.
+     * @param {object} entity - The entity.
      */
     removeChild(entity)
     {
@@ -262,6 +293,9 @@ Domy.Group.prototype =
         this.world.addChild(entity);
     },
 
+    /**
+     * The update loop of the group. Happens automatically.
+     */
     update()
     {
         for (let i = 0; i < this.children.length; i++)
@@ -272,6 +306,9 @@ Domy.Group.prototype =
         }
     },
 
+    /**
+     * The render loop of the group. Happens automatically.
+     */
     render()
     {
         for (let i = 0; i < this.children.length; i++)
@@ -285,7 +322,16 @@ Domy.Group.prototype =
 
 Domy.Group.prototype.constructor = Domy.Group;
 
-// Sprite
+/**
+ * Sprites are game objects which contain the actual HTML elements for rendering.
+ * @constructor
+ * @param {Domy.Game} game - Your global game object.
+ * @param {number} x - The x coordinate in the world of the sprite.
+ * @param {number} y - The y coordinate in the world of the sprite.
+ * @param {string} key - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+ * @param {string} frame - The starting frame of the image (only for spritesheets). If left empty, it will be null.
+ * @param {Domy.Group} group - The group this sprite shall be added to. If left empty, it will be added directly to the world container
+ */
 Domy.Sprite = function(game, x, y, key, frame, group)
 {
     this.x = x || 0;
@@ -365,6 +411,9 @@ Domy.Sprite = function(game, x, y, key, frame, group)
 
 Domy.Sprite.prototype =
 {
+    /**
+     * The update loop of the sprite. Happens automatically.
+     */
     update()
     {
         // Moving
@@ -426,6 +475,9 @@ Domy.Sprite.prototype =
         return this;
     },
 
+    /**
+     * The render loop of the sprite. Happens automatically.
+     */
     render()
     {
         let thisWidth = (this.width * 0.5) * this.anchor.x;
@@ -439,13 +491,18 @@ Domy.Sprite.prototype =
         return this;
     },
 
-    // This function acts as a placeholder for future object pools
+    /**
+     * Kills the sprite. Just a placeholder for now. Will be used as a soft destroy for object pooling.
+     */
     kill()
     {
         this.destroy();
         return this;
     },
 
+    /**
+     * Destroys the sprite and removes it entirely from the game world.
+     */
     destroy()
     {
         // Remove from world
@@ -487,7 +544,11 @@ Domy.Sprite.prototype =
 
 Domy.Sprite.prototype.constructor = Domy.Sprite;
 
-// Time
+/**
+ * The Time container stores the current time, the time the game has started at and the delta time for animating.
+ * @constructor
+ * @param {Domy.Game} game - Your global game object.
+ */
 Domy.Time = function(game)
 {
     this.game = game;
@@ -501,6 +562,9 @@ Domy.Time = function(game)
 
 Domy.Time.prototype =
 {
+    /**
+     * The update loop of the time object. Happens automatically.
+     */
     update(delta)
     {
         this.sinceStart = Date.now() - this.started;
@@ -513,30 +577,33 @@ Domy.Time.prototype =
 
 Domy.Time.prototype.constructor = Domy.Time;
 
-// Math
+/**
+ * The Math container offers different standard math functions like measuring a distance.
+ */
+Domy.Math = function(){};
 Domy.Math.Pi = Math.PI;
 Domy.Math.Pi180 = Math.PI / 180;
 Domy.Math.Pi180r = 180 / Math.PI; // r = reversed
 
-// Returns an integer between (including) min and (including) max
+/** Returns an integer between (including) min and (including) max */
 Domy.Math.integerInRange = function(min, max)
 {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-// Returns the direction between two poins in degrees
+/** Returns the direction between two poins in degrees */
 Domy.Math.angleBetweenPoints = function(x1, y1, x2, y2)
 {
     return Math.atan2(y2 - y1, x2 - x1) * Domy.Math.Pi180r;
 };
 
-// Returns the distance between two vectors
+/** Returns the distance between two vectors */
 Domy.Math.distanceBetweenPoints = function(x1, y1, x2, y2)
 {
     return Math.hypot(x2 - x1, y2 - y1);
 };
 
-// Plays an audio file
+/** Plays an audio file */
 Domy.Sound.play = function(file, loop)
 {
     var file = Domy.Sounds[file];
@@ -561,7 +628,7 @@ Domy.Sound.play = function(file, loop)
 
 // Physics
 
-// Rectangle collision
+/** Rectangle collision */
 Domy.Physics.intersectRectangle = function(a, b)
 {
     let ax = a.x;
@@ -579,7 +646,7 @@ Domy.Physics.intersectRectangle = function(a, b)
           || by + ah > ay);
 };
 
-// Circle collision
+/** Circle collision */
 Domy.Physics.intersectCircle = function(a, b)
 {
     let x = a.x - b.x;
@@ -590,7 +657,7 @@ Domy.Physics.intersectCircle = function(a, b)
 
 // Test area
 
-// Loads an image or spritesheet
+/** Loads an image or spritesheet */
 Domy.loadImage = function(key, path, frameWidth, frameHeight, framesMax)
 {
     frameWidth  = frameWidth  || 32;
@@ -629,13 +696,19 @@ Domy.loadImage = function(key, path, frameWidth, frameHeight, framesMax)
     Domy.Cache.Images[key].frameHeight = frameHeight;
 };
 
+/** The cache */
 Domy.Cache =
 {
     "Images": {},
     "Sounds": {}
 };
 
-// Helper functions
+/**
+ * Creates a point.
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ */
 Domy.Point = function(x, y)
 {
     this.setTo(x, y);
@@ -645,6 +718,11 @@ Domy.Point = function(x, y)
 
 Domy.Point.prototype =
 {
+    /**
+     * Setup the point.
+     * @param {number} x
+     * @param {number} y
+     */
     setTo(x, y)
     {
        this.x = x || 0;
@@ -654,6 +732,14 @@ Domy.Point.prototype =
     }
 };
 
+/**
+ * Creates a rectangle.
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ * @param {number} width
+ * @param {number} height
+ */
 Domy.Rectangle = function(x, y, width, height)
 {
     this.setTo(x, y, width, height);
@@ -663,6 +749,13 @@ Domy.Rectangle = function(x, y, width, height)
 
 Domy.Rectangle.prototype =
 {
+    /**
+     * Setup the rectangle.
+     * @param {number} x
+     * @param {number} y
+     * @param {number} width
+     * @param {number} height
+     */
     setTo(x, y, width, height)
     {
        this.x = x || 0;
@@ -674,6 +767,13 @@ Domy.Rectangle.prototype =
    }
 };
 
+/**
+ * Creates a circle.
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ * @param {number} diameter
+ */
 Domy.Circle = function(x, y, diameter)
 {
     this.setTo(x, y, diameter);
@@ -683,6 +783,12 @@ Domy.Circle = function(x, y, diameter)
 
 Domy.Circle.prototype =
 {
+    /**
+     * Setup the circle.
+     * @param {number} x
+     * @param {number} y
+     * @param {number} diameter
+     */
     setTo(x, y, diameter)
     {
        this.x = x || 0;
@@ -694,6 +800,11 @@ Domy.Circle.prototype =
    }
 };
 
+/**
+ * Keyboard controls. Just a placeholder for now.
+ * @constructor
+ * @param {Domy.Game} game - Your global game object.
+ */
 Domy.Keyboard = function()
 {
     this.whatIsThis = "A keyboard.";
@@ -716,6 +827,11 @@ Domy.Keyboard.prototype =
 
 Domy.Keyboard.prototype.constructor = Domy.Keyboard;
 
+/**
+ * Mouse controls. Just a placeholder for now.
+ * @constructor
+ * @param {Domy.Game} game - Your global game object.
+ */
 Domy.Mouse = function()
 {
     this.whatIsThis = "A mouse.";

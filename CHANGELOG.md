@@ -4,9 +4,7 @@
 
 ## Version 0.0.3 - 19th May 2018
 
-The initial development is very fast because lots of basic stuff is being made.
-
-Groups have been added. A group is meant as a container storing sprites and to make organizing a game easier. Games work without, too but for example, one could add all bullets to a bullet group. Later there will be useful group functions, for now they are not much more than mere arrays. Everything is updated automatically.
+Groups have been added. A group is meant as a container storing sprites and to make organizing a game easier. Games work without, too but one could, for example, add all bullets to a bullet group. Later there will be useful group functions, for now they are not much more than mere arrays. Everything is updated automatically.
 
 And a camera has been added with a simple follow function. That means that the game world can now be bigger than the game container and if the camera is set to follow a sprite, the game world will move when the sprite moves.
 

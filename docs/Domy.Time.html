@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Camera</title>
+    <title>JSDoc: Class: Time</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Camera</h1>
+    <h1 class="page-title">Class: Time</h1>
 
     
 
@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Camera<span class="signature">(game)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Time<span class="signature">(game)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,7 +41,7 @@
     
 
     
-    <h4 class="name" id="Camera"><span class="type-signature"></span>new Camera<span class="signature">(game)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Time"><span class="type-signature"></span>new Time<span class="signature">(game)</span><span class="type-signature"></span></h4>
     
 
     
@@ -49,7 +49,7 @@
 
 
 <div class="description">
-    The camera. It is added to the core loops and updates automatically.
+    The Time container stores the current time, the time the game has started at and the delta time for animating.
 </div>
 
 
@@ -91,7 +91,7 @@
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type"><a href="Domy.Game.html">Domy.Game</a></span>
 
 
             
@@ -142,7 +142,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line110">line 110</a>
+        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line552">line 552</a>
     </li></ul></dd>
     
 
@@ -196,227 +196,6 @@
     
 
     
-    <h4 class="name" id="follow"><span class="type-signature"></span>follow<span class="signature">(game)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Let the camera follow an entity.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>game</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The entity.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line131">line 131</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="unfollow"><span class="type-signature"></span>unfollow<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Let the camera stop following any entity.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line142">line 142</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
@@ -425,7 +204,7 @@
 
 
 <div class="description">
-    The update loop of the camera. Happens automatically.
+    The update loop of the time object. Happens automatically.
 </div>
 
 
@@ -469,7 +248,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line150">line 150</a>
+        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line568">line 568</a>
     </li></ul></dd>
     
 
