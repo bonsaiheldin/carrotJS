@@ -141,6 +141,7 @@ Domy.Camera.prototype =
 {
     /**
      * Let the camera follow an entity.
+     * @method Domy.Camera#follow
      * @param {object} game - The entity.
      */
     follow(target)
@@ -153,6 +154,7 @@ Domy.Camera.prototype =
 
     /**
      * Let the camera stop following any entity.
+     * @method Domy.Camera#unfollow
      */
     unfollow()
     {
@@ -321,25 +323,6 @@ Domy.Group.prototype =
     },
 
     /**
-     * Iterates the group.
-     * @method Domy.Group#iterate
-     * @param {string} key - The property of the child to check for.
-     * @param {any} value - The value the property of the child must have.
-     */
-    iterate(key, value)
-    {
-        for (let i = 0; i < this.children.length; i++)
-        {
-            let child = this.children[i];
-        }
-        this.children.splice(this.children.indexOf(entity), 1);
-
-        // Since the entity left the group, it has to be added as a child of
-        // the world again, so it still gets updates.
-        this.world.addChild(entity);
-    },
-
-    /**
      * The update loop of the group. Happens automatically.
      * @method Domy.Group#update
      * @private
@@ -356,7 +339,7 @@ Domy.Group.prototype =
 
     /**
      * The render loop of the group. Happens automatically.
-     * @method Domy.Group#update
+     * @method Domy.Group#render
      * @private
      */
     render()
@@ -374,7 +357,7 @@ Domy.Group.prototype.constructor = Domy.Group;
 
 /**
  * Sprites are game objects which contain the actual HTML elements for rendering.
-*
+ * @class Domy.Sprite
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  * @param {number} x - The x coordinate in the world of the sprite.
@@ -463,6 +446,59 @@ Domy.Sprite = function(game, x, y, key, frame, group)
 Domy.Sprite.prototype =
 {
     /**
+     * Kills the sprite. Just a placeholder for now. Will be used as a soft destroy for object pooling.
+     * @method Domy.Sprite#kill
+     */
+    kill()
+    {
+        this.alive = false;
+        this.destroy();
+        return this;
+    },
+
+    /**
+     * Destroys the sprite and removes it entirely from the game world.
+     * @method Domy.Sprite#destroy
+     */
+    destroy()
+    {
+        // Remove from world
+        this.world.removeChild(this);
+
+        // Remove the HTML element
+        this.game.parent.removeChild(this.image);
+
+        return this;
+    },
+
+    // Changes the width of the sprite
+    setWidth(width)
+    {
+        this.width = width;
+        this.image.style.width = value + "px";
+
+        return this;
+    },
+
+    // Changes the height of the sprite
+    setHeight(height)
+    {
+        this.width = height;
+        this.image.style.height = value + "px";
+
+        return this;
+    },
+
+    // Changes shown frame of spritesheet
+    setFrame(frame)
+    {
+        frame = Domy.Cache.Images[this.key].frames[frame];
+        this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
+
+        return this;
+    },
+
+    /**
      * The update loop of the sprite. Happens automatically.
      * @method Domy.Sprite#update
      * @private
@@ -544,59 +580,6 @@ Domy.Sprite.prototype =
         this.image.style.opacity = this.alpha;
 
         return this;
-    },
-
-    /**
-     * Kills the sprite. Just a placeholder for now. Will be used as a soft destroy for object pooling.
-     * @method Domy.Sprite#kill
-     */
-    kill()
-    {
-        this.alive = false;
-        this.destroy();
-        return this;
-    },
-
-    /**
-     * Destroys the sprite and removes it entirely from the game world.
-     * @method Domy.Sprite#destroy
-     */
-    destroy()
-    {
-        // Remove from world
-        this.world.removeChild(this);
-
-        // Remove the HTML element
-        this.game.parent.removeChild(this.image);
-
-        return this;
-    },
-
-    // Changes the width of the sprite
-    setWidth(width)
-    {
-        this.width = width;
-        this.image.style.width = value + "px";
-
-        return this;
-    },
-
-    // Changes the height of the sprite
-    setHeight(height)
-    {
-        this.width = height;
-        this.image.style.height = value + "px";
-
-        return this;
-    },
-
-    // Changes shown frame of spritesheet
-    setFrame(frame)
-    {
-        frame = Domy.Cache.Images[this.key].frames[frame];
-        this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
-
-        return this;
     }
 };
 
@@ -604,7 +587,7 @@ Domy.Sprite.prototype.constructor = Domy.Sprite;
 
 /**
  * The Time container stores the current time, the time the game has started at and the delta time for animating.
-
+ * @class Domy.Time
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  */
