@@ -1,13 +1,14 @@
 /**
  * @author       Bonsaiheldin <dm@bonsaiheld.org>
  * @copyright    2018 Bonsaiheldin
- * @license      {@link https://github.com/photonstorm/phaser/blob/master/license.txt|MIT License}
+ * @license      {@link https://github.com/photonstorm/Domy/blob/master/license.txt|MIT License}
  */
 
 // Initialize the main object with all expected properties
 var Domy = Domy ||
 {
     "Version": "0.0.3",
+    /*
     "Game": {},
     "Camera": {},
     "World": {},
@@ -22,6 +23,7 @@ var Domy = Domy ||
     "Circle": {},
     "Line": {},
     "Input": {}
+    */
 };
 
 console.log("%cDomy v" + Domy.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/domy", "font-weight: bold;");
@@ -622,40 +624,96 @@ Domy.Time.prototype =
 Domy.Time.prototype.constructor = Domy.Time;
 
 /**
-* @constant
-* @type {number}
-*/
-Domy.Math.Pi = Math.PI;
+ * The Math object offers various standard math functions like measuring a distance.
+ *
+ * @class Domy.Math
+ * @static
+ */
+Domy.Math = {
+
+    /**
+    * PI.
+    * @property {number} Domy.Math#PI
+    * @type {number}
+    */
+    PI: Math.PI,
+
+    /**
+    * Twice PI.
+    * @property {number} Domy.Math#PI2
+    * @type {number}
+    */
+    PI2: Math.PI * 2,
+
+    /**
+    * Degrees to Radians factor.
+    * @property {number} Domy.Math#DEG_TO_RAD
+    */
+    DEG_TO_RAD: Math.PI / 180,
+
+    /**
+    * Degrees to Radians factor.
+    * @property {number} Domy.Math#RAD_TO_DEG
+    */
+    RAD_TO_DEG: 180 / Math.PI,
+
+    /**
+    * Convert degrees to radians.
+    *
+    * @method Domy.Math#degToRad
+    * @param {number} degrees - Angle in degrees.
+    * @return {number} Angle in radians.
+    */
+    degToRad(degrees)
+    {
+        return degrees * Domy.Math.DEG_TO_RAD;
+    },
+
+    /**
+    * Convert radians to degrees.
+    *
+    * @method Domy.Math#radToDeg
+    * @param {number} radians - Angle in radians.
+    * @return {number} Angle in degrees.
+    */
+    radToDeg(radians)
+    {
+        return radians * Domy.Math.RAD_TO_DEG;
+    },
+
+    /**
+    * Returns an integer between (including) min and (including) max
+    *
+    * @method Domy.Math#integerInRange
+    * @param {number} min - Min.
+    * @param {number} max - Max.
+    * @return {number}
+    */
+    integerInRange(min, max)
+    {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    /** Returns the direction between two poins in degrees */
+    angleBetweenPoints(x1, y1, x2, y2)
+    {
+        return Math.atan2(y2 - y1, x2 - x1) * Domy.Math.RAD_TO_DEG;
+    },
+
+    /** Returns the distance between two vectors */
+    distanceBetweenPoints(x1, y1, x2, y2)
+    {
+        return Math.hypot(x2 - x1, y2 - y1);
+    }
+};
 
 /**
-* @constant
-* @type {number}
-*/
-Domy.Math.Pi180 = Math.PI / 180;
-
-/**
-* @constant
-* @type {number}
-*/
-Domy.Math.Pi180r = 180 / Math.PI; // r = reversed
-
-/** Returns an integer between (including) min and (including) max */
-Domy.Math.integerInRange = function(min, max)
-{
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-/** Returns the direction between two poins in degrees */
-Domy.Math.angleBetweenPoints = function(x1, y1, x2, y2)
-{
-    return Math.atan2(y2 - y1, x2 - x1) * Domy.Math.Pi180r;
-};
-
-/** Returns the distance between two vectors */
-Domy.Math.distanceBetweenPoints = function(x1, y1, x2, y2)
-{
-    return Math.hypot(x2 - x1, y2 - y1);
-};
+ * The Sound object offers audio functions.
+ * @class Domy.Sound
+ * @constructor
+ * @static
+ */
+Domy.Sound = {};
 
 /** Plays an audio file */
 Domy.Sound.play = function(file, loop)
@@ -682,32 +740,41 @@ Domy.Sound.play = function(file, loop)
 
 // Physics
 
-/** Rectangle collision */
-Domy.Physics.intersectRectangle = function(a, b)
+/**
+ * The Physics object offers physics related functions like collision.
+ * @class Domy.Physics
+ * @constructor
+ * @static
+ */
+Domy.Physics =
 {
-    let ax = a.x;
-    let ay = a.y;
-    let aw = a.width;
-    let ah = a.height;
-    let bx = b.x;
-    let by = b.y;
-    let bw = b.width;
-    let bh = b.height;
+    /** Rectangle collision */
+    intersectRectangle(a, b)
+    {
+        let ax = a.x;
+        let ay = a.y;
+        let aw = a.width;
+        let ah = a.height;
+        let bx = b.x;
+        let by = b.y;
+        let bw = b.width;
+        let bh = b.height;
 
-    return !(ax + aw > bx
-          || ay + ah > by
-          || bx + aw > ax
-          || by + ah > ay);
-};
+        return !(ax + aw > bx
+              || ay + ah > by
+              || bx + aw > ax
+              || by + ah > ay);
+    },
 
-/** Circle collision */
-Domy.Physics.intersectCircle = function(a, b)
-{
-    let x = a.x - b.x;
-    let y = a.y - b.y;
-    let r = (a.width * 0.5) + (b.width * 0.5);
-    return (x * x) + (y * y) < (r * r);
-};
+    /** Circle collision */
+    intersectCircle(a, b)
+    {
+        let x = a.x - b.x;
+        let y = a.y - b.y;
+        let r = (a.width * 0.5) + (b.width * 0.5);
+        return (x * x) + (y * y) < (r * r);
+    }
+}
 
 // Test area
 
