@@ -104,13 +104,15 @@ Domy.Game.prototype.constructor = Domy.Game;
 
 /**
  * The camera. It is added to the core loops and updates automatically.
+
  * @constructor
- * @param {object} game - Your global game object.
+ * @param {Domy.Game} game - Your global game object.
  */
 Domy.Camera = function(game)
 {
     this.game = game;
     this.world = this.game.world;
+    /** @property {number} - The left top coordinate of the camera. */
     this.x = 0;
     this.y = 0;
     this.width = this.game.width;
@@ -178,7 +180,8 @@ Domy.Camera.prototype =
 Domy.Camera.prototype.constructor = Domy.Camera;
 
 /**
- * The world container stores every sprite or group and updates them automatically..
+ * The world container stores every sprite or group and updates them automatically.
+
  * @constructor
  * @param {object} game - Your global game object.
  */
@@ -249,6 +252,7 @@ Domy.World.prototype.constructor = Domy.World;
 /**
  * Groups are containers storing your game objects (sprites).
  * They are added automatically to the world container.
+
  * @constructor
  * @param {object} game - Your global game object.
  */
@@ -324,6 +328,7 @@ Domy.Group.prototype.constructor = Domy.Group;
 
 /**
  * Sprites are game objects which contain the actual HTML elements for rendering.
+
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  * @param {number} x - The x coordinate in the world of the sprite.
@@ -546,6 +551,7 @@ Domy.Sprite.prototype.constructor = Domy.Sprite;
 
 /**
  * The Time container stores the current time, the time the game has started at and the delta time for animating.
+
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  */
@@ -580,7 +586,6 @@ Domy.Time.prototype.constructor = Domy.Time;
 /**
  * The Math container offers different standard math functions like measuring a distance.
  */
-Domy.Math = function(){};
 Domy.Math.Pi = Math.PI;
 Domy.Math.Pi180 = Math.PI / 180;
 Domy.Math.Pi180r = 180 / Math.PI; // r = reversed
@@ -657,7 +662,12 @@ Domy.Physics.intersectCircle = function(a, b)
 
 // Test area
 
-/** Loads an image or spritesheet */
+
+/**
+ * Loads an image or spritesheet.
+
+ * @param {string} key - The name for the image.
+ */
 Domy.loadImage = function(key, path, frameWidth, frameHeight, framesMax)
 {
     frameWidth  = frameWidth  || 32;
@@ -705,6 +715,7 @@ Domy.Cache =
 
 /**
  * Creates a point.
+
  * @constructor
  * @param {number} x
  * @param {number} y
@@ -802,6 +813,7 @@ Domy.Circle.prototype =
 
 /**
  * Keyboard controls. Just a placeholder for now.
+
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  */
@@ -829,6 +841,7 @@ Domy.Keyboard.prototype.constructor = Domy.Keyboard;
 
 /**
  * Mouse controls. Just a placeholder for now.
+
  * @constructor
  * @param {Domy.Game} game - Your global game object.
  */
