@@ -3,7 +3,7 @@ Domy is a 2D game framework for making HTML5 games which follows a different app
 
 For now it thankfully includes https://github.com/IceCreamYou/MainLoop.js for the two core loops.
 
-### Example:
+### Introduction
 
 A game can be created and started by a single line of code:
 
@@ -20,7 +20,9 @@ You can also give that function a few parameters as well, in the following order
 
 Note: Creating the game returns its core object and you should reference it to a variable to be able to use most of the engine's functions. For example like this: `let game = new.Domy.Game()`.
 
-For everything else, check the documentation. Keep in mind that it is a work on progress, just like the engine itself is still very basic.
+For everything else, check out the examples (only one yet): https://github.com/bonsaiheldin/domy/tree/master/examples
+
+and the documentation. Keep in mind that it is a work on progress, just like the engine itself is still very basic.
 
 ## Documentation
 https://bonsaiheldin.github.io/domy/
