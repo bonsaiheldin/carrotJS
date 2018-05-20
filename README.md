@@ -9,18 +9,18 @@ A game can be created and started by a single line of code:
 
 `new Domy.Game();`
 
-You can also give that function a few parameters as well, in the following order:
+which creates an empty black game container for you. One can also give that function a few parameters as well, in the following order:
 
 * `width` Defines the width of the game container. Optional. The default is `800`.
 * `height` Defines the height of the game container. Optional. The default is `600`.
-* `parent` If you already have a div on your page ready to be taken by Domy, give its id. If the div cannot be found or if none is given, Domy will create one itself. The default is `null`.
-* `states` An object which contains the custom code for your game as the properties `create`, `update` and `render`. For example: `{ create: function(){}, update: function(){}, render: function(){} }`. You can also leave that parameter empty or only give one or two functions. Info: `create` is being called once the game starts, `update` is being called each logic frame (60 most of the time) **after** the internal update loop and `render` is being called as fast as possble (using `requestAnimationFrame`) **after** the internal render loop. The default is `null`.
+* `parent` If onealready have a div on ones page ready to be taken by Domy, give its id. If the div cannot be found or if none is given, Domy will create one itself. The default is `null`.
+* `states` An object which contains the custom code for ones game as the properties `create`, `update` and `render`. For example: `{ create: function(){}, update: function(){}, render: function(){} }`. One can also leave that parameter empty or only give one or two functions. Info: `create` is being called once the game starts, `update` is being called each logic frame (60 most of the time) **after** the internal update loop and `render` is being called as fast as possble (using `requestAnimationFrame`) **after** the internal render loop. The default is `null`.
 
 * `transparent` Defines if the container div shall be have a transparent background. If `false` or parameter not given, the container will have a black background. The default is `null`.
 
-Note: Creating the game returns its core object and you should reference it to a variable to be able to use most of the engine's functions. For example like this: `let game = new.Domy.Game()`.
+Note: Creating the game returns its core object and one should reference it to a variable to be able to use most of the engine's functions. For example like this: `let game = new.Domy.Game()`.
 
-If you want to see more, check out the examples (only one yet): https://github.com/bonsaiheldin/domy/tree/master/examples
+Want to see more? Check out the first example: https://github.com/bonsaiheldin/domy/tree/master/examples/basics
 
 There is a documentation, too. Keep in mind that it is a work on progress, just like the engine itself it is still very basic.
 
