@@ -9,7 +9,7 @@ A game can be created and started by a single line of code:
 
 `new Domy.Game();`
 
-which creates an empty black game container for you. One can also give that function a few parameters as well, in the following order:
+This creates an empty game container. One can also give that function a few parameters as well, in the following order:
 
 * `width` Defines the width of the game container. Optional. The default is `800`.
 * `height` Defines the height of the game container. Optional. The default is `600`.
