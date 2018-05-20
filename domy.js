@@ -7,7 +7,7 @@
 // Initialize the main object with all expected properties
 var Domy = Domy ||
 {
-    "Version": "0.0.4",
+    "Version": "0.0.5",
     /*
     "Game": {},
     "Camera": {},
@@ -64,7 +64,6 @@ Domy.Game = function(width, height, parent, states, transparent)
             that.parent.style.backgroundColor = '#000000';
         }
 
-        that.parent.style.position = "relative";
         that.parent.style.width = that.width + 'px';
         that.parent.style.height = that.height + 'px';
         that.parent.style.overflow = "hidden";
@@ -437,12 +436,16 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     this.height = 32;
     this.anchor = new Domy.Point(0.5, 0.5);
     this.position = new Domy.Point(this.x, this.y);
-    this.scale = new Domy.Point(1, 1);
+    this.left   = this.x - (this.width  * this.anchor.x);
+    this.right  = this.x + (this.width  * this.anchor.x);
+    this.top    = this.y - (this.height * this.anchor.y);
+    this.bottom = this.y + (this.height * this.anchor.y);
     this.bounds = new Domy.Rectangle(this.x, this.y, this.width, this.height);
-    this.collideWorldBounds = false;
-    this.outOfBoundsKill = true;
-    this.velocity = new Domy.Point(0, 0);
+    this.outOfBoundsKill = false;
     this.inCamera = false;
+
+    // Physics body
+    this.body = new Domy.Physics.Body();
 
     // HTML magic
     this.image = document.createElement('div');
@@ -550,26 +553,96 @@ Domy.Sprite.prototype =
      */
     update()
     {
-        // Moving
-        this.x += this.time.delta * this.velocity.x;
-        this.y += this.time.delta * this.velocity.y;
-
         // Store some variables for faster accessing
         let thisWidth    = this.width  * this.anchor.x;
         let thisHeight   = this.height * this.anchor.y;
         let worldWidth   = this.world.width;
         let worldHeight  = this.world.height;
+        let cameraX      = this.camera.x;
+        let cameraY      = this.camera.y;
         let cameraWidth  = this.camera.width;
         let cameraHeight = this.camera.height;
 
-        // Let the sprite collide with the world bounds
-        if (this.collideWorldBounds)
+        // Physics
+        if (this.body !== null)
         {
-            // Left, right, top, bottom
-            if (this.x < thisWidth) { this.x = thisWidth; }
-            if (this.x + thisWidth > worldWidth) { this.x = worldWidth - thisWidth; }
-            if (this.y < thisHeight) { this.y = thisHeight; }
-            if (this.y + thisHeight > worldHeight) { this.y = worldHeight - thisHeight; }
+            // Reset body.touching
+            this.body.touching.none   = true;
+            this.body.touching.left   = false;
+            this.body.touching.right  = false;
+            this.body.touching.top    = false;
+            this.body.touching.bottom = false;
+
+            // Drag: Deceleration
+            this.body.velocity.x *= (1 - this.body.drag.x);
+            this.body.velocity.y *= (1 - this.body.drag.y);
+
+            // Gravity
+            this.body.velocity.x += this.body.gravity.x;
+            this.body.velocity.y += this.body.gravity.y;
+
+            // Moving
+            this.x += this.time.delta * this.body.velocity.x;
+            this.y += this.time.delta * this.body.velocity.y;
+
+            // Let the sprite collide with the world bounds
+            if (this.body.collideWorldBounds)
+            {
+                // Left, right, top, bottom
+                if (this.x <= thisWidth)
+                {
+                    this.x = thisWidth;
+
+                    this.body.touching.none = false;
+                    this.body.touching.left = true;
+
+                    // Bouncing
+                    this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                }
+
+                if (this.x + thisWidth >= worldWidth)
+                {
+                    this.x = worldWidth - thisWidth;
+
+                    this.body.touching.none = false;
+                    this.body.touching.right = true;
+
+                    // Bouncing
+                    this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                }
+
+                if (this.y <= thisHeight)
+                {
+                    this.y = thisHeight;
+
+                    this.body.touching.none = false;
+                    this.body.touching.top = true;
+
+                    // Bouncing
+                    this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                }
+
+                if (this.y + thisHeight >= worldHeight)
+                {
+                    this.y = worldHeight - thisHeight;
+
+                    this.body.touching.none = false;
+                    this.body.touching.bottom = true;
+
+                    // Bouncing
+                    this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                }
+            }
+        }
+
+        // Check if inside camera bounds
+        this.inCamera = false;
+        if (this.x >= cameraX
+         && this.y >= cameraY
+         && this.x <= cameraWidth
+         && this.y <= cameraHeight)
+        {
+            this.inCamera = true;
         }
 
         // Kill the sprite if it leaves the world bounds
@@ -587,28 +660,21 @@ Domy.Sprite.prototype =
         }
 
         // Update some internal stuff
-        this.position.x = this.x;
-        this.position.y = this.y;
-        this.bounds.x = this.x;
-        this.bounds.y = this.y;
-        this.bounds.width = this.width;
+        this.position.x    = this.x;
+        this.position.y    = this.y;
+        this.bounds.x      = this.x;
+        this.bounds.y      = this.y;
+        this.bounds.width  = this.width;
         this.bounds.height = this.height;
-
-        // Check if inside camera bounds
-        this.inCamera = false;
-        if (this.x >= this.camera.x
-         && this.y >= this.camera.y
-         && this.x <= this.camera.width
-         && this.y <= this.camera.height)
-        {
-            this.inCamera = true;
-        }
+        this.left          = this.x - (this.width  * this.anchor.x);
+        this.right         = this.x + (this.width  * this.anchor.x);
+        this.top           = this.y - (this.height * this.anchor.y);
+        this.bottom        = this.y + (this.height * this.anchor.y);
 
         // Collect all transforms and apply them in the render function
         this.transform = "";
         let x = Math.round(this.x - thisWidth);
         let y = Math.round(this.y - thisHeight);
-        //this.transform += "scale(" + this.scale.x + "," + this.scale.y + ")";
         this.transform += "translate(" + x + "px," + y + "px)";
 
         return this;
@@ -785,7 +851,7 @@ Domy.Sound.play = function(file, loop)
 // Physics
 
 /**
- * The Physics object offers physics related functions like collision.
+ * The Physics object offers physics related functions like collision detection.
  * @class Domy.Physics
  * @constructor
  * @static
@@ -819,6 +885,44 @@ Domy.Physics =
         return (x * x) + (y * y) < (r * r);
     }
 }
+
+/**
+ * Creates a physics body.
+ *
+ * @constructor
+ * @param {number} x - X position relative to the sprite.
+ * @param {number} y - Y position relative the sprite.
+ */
+Domy.Physics.Body = function(x, y)
+{
+    this.x = x || 0;
+    this.y = y || 0;
+
+    this.collideWorldBounds = false;
+
+    this.velocity = new Domy.Point(0, 0);
+    this.bounce   = new Domy.Point(0, 0);
+    this.drag     = new Domy.Point(0, 0);
+    this.gravity  = new Domy.Point(0, 0);
+
+    this.touching =
+    {
+        none:   true,
+        left:   false,
+        right:  false,
+        top:    false,
+        bottom: false
+    };
+
+    return this;
+};
+
+Domy.Physics.Body.prototype =
+{
+
+};
+
+Domy.Physics.Body.prototype.constructor = Domy.Physics.Body;
 
 /**
  * The global cache object where all loaded assets are stored.

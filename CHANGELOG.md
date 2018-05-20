@@ -2,6 +2,26 @@
 
 ---
 
+## Version 0.0.5 - 20th May 2018
+
+Basic physics like bouncing, dragging and gravity been added. As the properties of sprites become more and more, i decided to pack all physics related stuff into a new `body` object which is a property of the sprite. So, for example, `Sprite.velocity.x` is now `Sprite.body.velocity.x` and the same goes for every other physics related function. Note: `collideWorldBounds` is not a physics function as it just checks for the sprite boundaries and therefore remains a property of the sprite itself.
+
+### New Features
+
+* `new Domy.Physics.Body(x,y)` Creates a physics body with `collideWorldBounds`, `velocity`, `bounce`, `drag`, `gravity` and `touching` as properties. `x` and `y` are by default set to `0` as the relative center of the sprite. All sprites have physics bodies added by default. This will be changed later.
+
+* `Body.bounce(x,y)` Use this for making sprites bounce back when a collision happens. `0,0` (0%) disables it. `1,1` makes sprites bounce back with the same speed they moved before (100%). Any more than that makes them faster after bouncing.
+
+* `Body.drag(x,y)` Setting it to `0,0` disables it and `1,1` makes a sprite immediately stop (and actually not move ever). Measured in percent. `0.01,0.01` could be used for very slow deceleration of a spaceship.
+
+* `Body.gravity(x,y)` Makes the sprite decelerate over time. Setting it to `0,0` disables it. Measured in pixels per second.
+
+* `Body.touching` Holds information about collision of the bounds of a sprite. For example, if the sprite touches the floor of the game world `Body.touches.bottom` will be `true`. Available properties are `left`, `right`, `top`, `bottom` and `none` which is `true` if all the others are `false` (use that, for example, to determine if the player is in the air).
+
+* Sprites now have `left`, `right`, `top` and `bottom` properties. They store the bounds of the sprite (most of the time its image).
+
+---
+
 ## Version 0.0.4 - 20th May 2018
 
 Good news: I got jsDocs working which means that Domy now has a documentation! It's still very basic and i don't like the default theme at all, but here it is: https://bonsaiheldin.github.io/domy/
@@ -10,9 +30,9 @@ Keyboard and mouse controls have been added. They're not perfect yet, but it is 
 
 ### New Features
 
-* A central object factory has been made. Instead of using `new Domy.Sprite` one should now use the global game object like this: `game.add.sprite`. The benefit of this change is that the first parameter, the global game object, doesn't has to be given anymore. So `new Domy.Sprite(game, x, y)` became `game.add.sprite(x, y)`. Same goes for groups any other game object expect point, circle and rectangle shapes. Note: Creating the game itself stays the same `new Domy.Game`.
+* A central object factory has been made. Instead of using `new Domy.Sprite` one should now use the global game object like this: `game.add.sprite`. The benefit of this change is that the first parameter, the global game object, doesn't has to be given anymore. So `new Domy.Sprite(game, x, y, key)` became `game.add.sprite(x, y, key)`. Same goes for groups any other game object expect things like points, circles and rectangles. Note: Creating the game itself stays the same `new Domy.Game`.
 
-* The `Domy.Keyboard` class offers keyboard shortcuts like `Domy.Keyboard.W` for the `W` button. That way one doesn't need to know the internal codes browsers use for buttons. So checking if the `W` button is down goes by using `if (app.game.keyboard.isDown(Domy.Keyboard.W))` in your update loop.
+* The `Domy.Keyboard` class offers keyboard shortcuts like `Domy.Keyboard.W` for the `W` button. That way one doesn't need to know the internal codes browsers use for buttons. So checking if the `W` button is down goes by using `if (app.game.keyboard.isDown(Domy.Keyboard.W))` in ones update loop.
 
 * `Domy.Mouse` does the same and offers mouse button shortcuts like `Domy.Mouse.LEFT_BUTTON`. Checking for a button being down works the same as with the keyboard: `if (game.mouse.isDown(Domy.Mouse.LEFT_BUTTON))`.
 
