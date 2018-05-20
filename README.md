@@ -1,5 +1,5 @@
 # Domy - HTML5 Game Framework
-Domy is a 2D game framework for making HTML5 games which follows a different approach of rendering: Instead of using Canvas2D or WebGL for rendering it is entirely based upon DOM elements (divs, to be exactly) and CSS. It's an experiment to see what is possible since it is commonly known that DOM manipulations are rather slow in comparison to Canvas2D or WebGL.
+Domy is a 2D game framework for making HTML5 games which follows a different approach of rendering: Instead of using Canvas2D or WebGL for rendering it is entirely based upon DOM elements (divs, to be exactly) and CSS. It's an experiment to see what is possible since it is commonly known that DOM manipulations are rather slow in comparison to Canvas2D or WebGL. I'm also developing it just because it's fun and a possibility to learn more about Javascript, CSS and the DOM itself. ✨
 
 For now it thankfully includes https://github.com/IceCreamYou/MainLoop.js for the two core loops.
 
@@ -20,9 +20,9 @@ You can also give that function a few parameters as well, in the following order
 
 Note: Creating the game returns its core object and you should reference it to a variable to be able to use most of the engine's functions. For example like this: `let game = new.Domy.Game()`.
 
-For everything else, check out the examples (only one yet): https://github.com/bonsaiheldin/domy/tree/master/examples
+If you want to see more, check out the examples (only one yet): https://github.com/bonsaiheldin/domy/tree/master/examples
 
-and the documentation. Keep in mind that it is a work on progress, just like the engine itself is still very basic.
+There is a documentation, too. Keep in mind that it is a work on progress, just like the engine itself it is still very basic.
 
 ## Documentation
 https://bonsaiheldin.github.io/domy/
