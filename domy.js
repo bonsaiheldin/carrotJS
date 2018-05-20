@@ -7,7 +7,7 @@
 // Initialize the main object with all expected properties
 var Domy = Domy ||
 {
-    "Version": "0.0.3",
+    "Version": "0.0.4",
     /*
     "Game": {},
     "Camera": {},
@@ -30,48 +30,64 @@ console.log("%cDomy v" + Domy.Version + " | HTML5 DOM game engine | https://gith
 
 /**
  * The core game container.
+ *
  * @class Domy.Game
  * @constructor
- * @param {number} width - The width of the container.
- * @param {number} height - The height of the container.
- * @param {string} parent - The parent div of the container.
- * @param {boolean} transparent - Defines if the container should be transparent.
+ * @param {number} [width=960] - The width of the container.
+ * @param {number} [height=540] - The height of the container.
+ * @param {string} [parent=null] - The parent div of the container.
+ * @param {object} [states=null] - Your own states the game shall use.
+ * @param {boolean} [transparent=false] - Defines if the container shall be transparent.
  */
-Domy.Game = function(width, height, parent, transparent)
+Domy.Game = function(width, height, parent, states, transparent)
 {
-    this.width = width || 960;
-    this.height = height || 540;
-    this.parent = document.getElementById(parent) || null;
-    this.transparent = transparent || false;
-
-    // If container was not specified or not found, create one
-    if (this.parent === null)
+    let that = this;
+    var start = function()
     {
-        let div = document.createElement('div');
-        document.body.appendChild(div);
-        this.parent = div;
-    }
+        that.width = width || 960;
+        that.height = height || 540;
+        that.parent = document.getElementById(parent) || null;
+        that.states = states || null;
+        that.transparent = transparent || false;
 
-    // If the container shall not be transparent, color it black
-    if (this.transparent === false)
-    {
-        this.parent.style.backgroundColor = '#000000';
-    }
+        // If container was not specified or not found, create one
+        if (that.parent === null)
+        {
+            let div = document.createElement('div');
+            document.body.appendChild(div);
+            that.parent = div;
+        }
 
-    this.parent.style.position = "relative";
-    this.parent.style.width = this.width + 'px';
-    this.parent.style.height = this.height + 'px';
-    this.parent.style.overflow = "hidden";
-    this.parent.className = 'domy';
+        // If the container shall not be transparent, color it black
+        if (that.transparent === false)
+        {
+            that.parent.style.backgroundColor = '#000000';
+        }
 
-    // Init
-    this.world = new Domy.World(this);
-    this.camera = new Domy.Camera(this);
-    this.time = new Domy.Time(this);
+        that.parent.style.position = "relative";
+        that.parent.style.width = that.width + 'px';
+        that.parent.style.height = that.height + 'px';
+        that.parent.style.overflow = "hidden";
+        that.parent.className = 'domy';
 
-    this.start(this);
+        // Init
+        that.world = new Domy.World(that);
+        that.camera = new Domy.Camera(that);
+        that.time = new Domy.Time(that);
+        that.keyboard = new Domy.Keyboard(that);
+        that.mouse = new Domy.Mouse(that);
+        that.cache = new Domy.Cache(that);
+        that.load = new Domy.Loader(that);
+        that.add = new Domy.ObjectFactory(that);
 
-    return this;
+        if (that.states.create) { that.states.create(); }
+
+        that.start(that);
+
+        return that;
+    };
+
+    document.addEventListener('DOMContentLoaded', start, false);
 }
 
 /**
@@ -84,6 +100,8 @@ Domy.Game.prototype.update = function(delta)
     this.time.update(delta);
     this.world.update();
     this.camera.update();
+
+    if (this.states.update) { this.states.update(); }
 };
 
 /**
@@ -96,6 +114,8 @@ Domy.Game.prototype.render = function()
     //this.time.render();
     this.world.render();
     //this.camera.render();
+
+    if (this.states.render) { this.states.render(); }
 };
 
 /**
@@ -119,7 +139,7 @@ Domy.Game.prototype.constructor = Domy.Game;
  * The camera. It is added to the core loops and updates automatically.
  * @class Domy.Camera
  * @constructor
- * @param {Domy.Game} game - Your global game object.
+ * @param {Domy.Game} game - The core game object.
  */
 Domy.Camera = function(game)
 {
@@ -202,7 +222,7 @@ Domy.Camera.prototype.constructor = Domy.Camera;
  * The world container stores every sprite or group and updates them automatically.
  * @class Domy.World
  * @constructor
- * @param {object} game - Your global game object.
+ * @param {object} game - The core game object.
  */
 Domy.World = function(game)
 {
@@ -279,7 +299,7 @@ Domy.World.prototype.constructor = Domy.World;
  * They are added automatically to the world container.
  * @class Domy.Group
  * @constructor
- * @param {object} game - Your global game object.
+ * @param {object} game - The core game object.
  */
 Domy.Group = function(game)
 {
@@ -289,7 +309,7 @@ Domy.Group = function(game)
     this.children = [];
 
     // Add it to the world
-    this.world.children.push(this);
+    this.world.addChild(this);
 
     return this;
 };
@@ -303,11 +323,12 @@ Domy.Group.prototype =
      */
     addChild(entity)
     {
-        this.children.push(entity);
-
         // Since the entity is now in the group, there is no need for it to be
         // a child of the world, because it gets updated through the group now.
         this.world.removeChild(entity);
+
+        this.children.push(entity);
+        entity.group = this;
     },
 
     /**
@@ -317,11 +338,40 @@ Domy.Group.prototype =
      */
     removeChild(entity)
     {
-        this.children.splice(this.children.indexOf(entity), 1);
-
         // Since the entity left the group, it has to be added as a child of
         // the world again, so it still gets updates.
         this.world.addChild(entity);
+
+        this.children.splice(this.children.indexOf(entity), 1);
+        entity.group = null;
+    },
+
+    /**
+     * Iterates all children of a group and sets their `property` to the given `value`.
+     * @method Domy.Group#setAll
+     * @param {object} entity - The entity.
+     */
+    setAll(property, value)
+    {
+        for (let i = 0; i < this.children.length; i++)
+        {
+            let child = this.children[i];
+
+            child[property] = value;
+        }
+    },
+
+    /**
+     * Destroys the sprite and removes it entirely from the game world.
+     *
+     * @method Domy.Group#destroy
+     */
+    destroy()
+    {
+        // Remove from world container
+        this.world.removeChild(this);
+
+        return this;
     },
 
     /**
@@ -361,7 +411,7 @@ Domy.Group.prototype.constructor = Domy.Group;
  * Sprites are game objects which contain the actual HTML elements for rendering.
  * @class Domy.Sprite
  * @constructor
- * @param {Domy.Game} game - Your global game object.
+ * @param {Domy.Game} game - The core game object.
  * @param {number} x - The x coordinate in the world of the sprite.
  * @param {number} y - The y coordinate in the world of the sprite.
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
@@ -387,6 +437,7 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     this.height = 32;
     this.anchor = new Domy.Point(0.5, 0.5);
     this.position = new Domy.Point(this.x, this.y);
+    this.scale = new Domy.Point(1, 1);
     this.bounds = new Domy.Rectangle(this.x, this.y, this.width, this.height);
     this.collideWorldBounds = false;
     this.outOfBoundsKill = true;
@@ -409,32 +460,15 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     // If an image was given, apply it as a background image
     else
     {
+        this.image.style.backgroundImage = "url(" + this.game.cache.images[this.key].src + ")";
+
         // Apply frame on spritesheet
         if (this.frame !== 0)
         {
-            let frame = Domy.Cache.Images[this.key].frames[this.frame];
+            let frame = this.game.cache.images[this.key].frames[this.frame];
             this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
         }
-
-        // The stuff below has to be turned into a proper loader function
-        // which loads the assets at the beginning of the game.
-        //Domy.loadImage(this);
-
-        this.image.style.backgroundImage = "url(" + Domy.Cache.Images[this.key].src + ")";
     }
-
-    // Spritesheet animation test :D It works!
-    let that = this;
-    setInterval(function()
-    {
-        if (that.key !== null)
-        {
-            let frames = Domy.Cache.Images[that.key].frames.length;
-            that.frame += 1;
-            if (that.frame >= frames) that.frame = 0;
-            that.setFrame(that.frame);
-        }
-    }, 250);
 
     // Add it to the world
     // If a group was given, add the sprite to that
@@ -449,23 +483,32 @@ Domy.Sprite.prototype =
 {
     /**
      * Kills the sprite. Just a placeholder for now. Will be used as a soft destroy for object pooling.
+     *
      * @method Domy.Sprite#kill
      */
     kill()
     {
         this.alive = false;
         this.destroy();
-        return this;
     },
 
     /**
      * Destroys the sprite and removes it entirely from the game world.
+     *
      * @method Domy.Sprite#destroy
      */
     destroy()
     {
-        // Remove from world
-        this.world.removeChild(this);
+        // If in group, remove it there
+        if (this.group !== null)
+        {
+            this.group.removeChild(this);
+        }
+        // If not in group, remove it from world container
+        else
+        {
+            this.world.removeChild(this);
+        }
 
         // Remove the HTML element
         this.game.parent.removeChild(this.image);
@@ -494,7 +537,7 @@ Domy.Sprite.prototype =
     // Changes shown frame of spritesheet
     setFrame(frame)
     {
-        frame = Domy.Cache.Images[this.key].frames[frame];
+        frame = this.game.cache.images[this.key].frames[frame];
         this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
 
         return this;
@@ -512,8 +555,8 @@ Domy.Sprite.prototype =
         this.y += this.time.delta * this.velocity.y;
 
         // Store some variables for faster accessing
-        let thisWidth    = (this.width * 0.5) * this.anchor.x;
-        let thisHeight   = (this.height * 0.5) * this.anchor.y;
+        let thisWidth    = this.width  * this.anchor.x;
+        let thisHeight   = this.height * this.anchor.y;
         let worldWidth   = this.world.width;
         let worldHeight  = this.world.height;
         let cameraWidth  = this.camera.width;
@@ -530,6 +573,7 @@ Domy.Sprite.prototype =
         }
 
         // Kill the sprite if it leaves the world bounds
+        // >>>>>>>>>>>>>>>>>>>>> Bug! <<<<<<<<<<<<<<<<<<
         if (this.outOfBoundsKill)
         {
             // Left, right, top, bottom
@@ -538,7 +582,7 @@ Domy.Sprite.prototype =
              || this.y < thisHeight
              || this.y > worldHeight + thisHeight)
             {
-                this.kill();
+                //this.kill();
             }
         }
 
@@ -551,6 +595,7 @@ Domy.Sprite.prototype =
         this.bounds.height = this.height;
 
         // Check if inside camera bounds
+        this.inCamera = false;
         if (this.x >= this.camera.x
          && this.y >= this.camera.y
          && this.x <= this.camera.width
@@ -558,10 +603,13 @@ Domy.Sprite.prototype =
         {
             this.inCamera = true;
         }
-        else
-        {
-            this.inCamera = false;
-        }
+
+        // Collect all transforms and apply them in the render function
+        this.transform = "";
+        let x = Math.round(this.x - thisWidth);
+        let y = Math.round(this.y - thisHeight);
+        //this.transform += "scale(" + this.scale.x + "," + this.scale.y + ")";
+        this.transform += "translate(" + x + "px," + y + "px)";
 
         return this;
     },
@@ -573,15 +621,11 @@ Domy.Sprite.prototype =
      */
     render()
     {
-        let thisWidth = (this.width * 0.5) * this.anchor.x;
-        let thisHeight = (this.height * 0.5) * this.anchor.y;
-
-        // Update HTML element)
-        this.image.style.left = Math.round(this.x - thisWidth) + "px";
-        this.image.style.top = Math.round(this.y - thisHeight) + "px";
-        this.image.style.opacity = this.alpha;
-
-        return this;
+        if (this.inCamera)
+        {
+            this.image.style.transform = this.transform;
+            this.image.style.opacity = this.alpha;
+        }
     }
 };
 
@@ -591,7 +635,7 @@ Domy.Sprite.prototype.constructor = Domy.Sprite;
  * The Time container stores the current time, the time the game has started at and the delta time for animating.
  * @class Domy.Time
  * @constructor
- * @param {Domy.Game} game - Your global game object.
+ * @param {Domy.Game} game - The core game object.
  */
 Domy.Time = function(game)
 {
@@ -776,62 +820,27 @@ Domy.Physics =
     }
 }
 
-// Test area
-
-
 /**
- * Loads an image or spritesheet.
+ * The global cache object where all loaded assets are stored.
 
- * @param {string} key - The name for the image.
+ * @constructor
+ * @param {object} - The core game object.
  */
-Domy.loadImage = function(key, path, frameWidth, frameHeight, framesMax)
+Domy.Cache = function(game)
 {
-    frameWidth  = frameWidth  || 32;
-    frameHeight = frameHeight || 32
-    framesMax   = framesMax   || Infinity;
-
-    let img = new Image();
-    img.onload = function()
-    {
-        // Save frames for spritesheet animation
-        let frames = [];
-        let frameFound = 0;
-
-        for (let x = 0; x < this.width; x += frameWidth)
-        {
-            for (let y = 0; y < this.height; y += frameHeight)
-            {
-                frameFound += 1;
-                if (frameFound >= framesMax) break;
-                {
-                    frames.push(
-                    {
-                        x: -x,
-                        y: -y
-                    });
-                }
-            }
-        }
-
-        Domy.Cache.Images[key].frames = frames;
-    }
-    img.src = path;
-    Domy.Cache.Images[key] = img;
-    Domy.Cache.Images[key].frames = [];
-    Domy.Cache.Images[key].frameWidth = frameWidth;
-    Domy.Cache.Images[key].frameHeight = frameHeight;
+    this.game = game;
 };
 
-/** The cache */
-Domy.Cache =
+Domy.Cache.prototype =
 {
-    "Images": {},
-    "Sounds": {}
+    images: {}
 };
+
+Domy.Cache.prototype.constructor = Domy.Cache;
 
 /**
  * Creates a point.
-
+ *
  * @constructor
  * @param {number} x
  * @param {number} y
@@ -846,7 +855,7 @@ Domy.Point = function(x, y)
 Domy.Point.prototype =
 {
     /**
-     * Setup the point.
+     * Sets the point up.
      * @param {number} x
      * @param {number} y
      */
@@ -861,6 +870,7 @@ Domy.Point.prototype =
 
 /**
  * Creates a rectangle.
+ *
  * @constructor
  * @param {number} x
  * @param {number} y
@@ -877,7 +887,7 @@ Domy.Rectangle = function(x, y, width, height)
 Domy.Rectangle.prototype =
 {
     /**
-     * Setup the rectangle.
+     * Sets the rectangle up.
      * @param {number} x
      * @param {number} y
      * @param {number} width
@@ -896,6 +906,7 @@ Domy.Rectangle.prototype =
 
 /**
  * Creates a circle.
+ *
  * @constructor
  * @param {number} x
  * @param {number} y
@@ -911,7 +922,7 @@ Domy.Circle = function(x, y, diameter)
 Domy.Circle.prototype =
 {
     /**
-     * Setup the circle.
+     * Sets the circle up.
      * @param {number} x
      * @param {number} y
      * @param {number} diameter
@@ -928,14 +939,165 @@ Domy.Circle.prototype =
 };
 
 /**
+ * The object factory lets one create sprites and other game objects
+ *
+ * @constructor
+ * @param {Domy.Game} game - The core game object.
+ */
+Domy.ObjectFactory = function(game)
+{
+    this.game = game;
+
+    return this;
+};
+
+Domy.ObjectFactory.prototype =
+{
+    /**
+     * Creates a sprite.
+     * @method Domy.ObjectFactory#sprite
+     */
+    sprite(x, y, key, frame)
+    {
+        return new Domy.Sprite(this.game, x, y, key, frame);
+    },
+
+    /**
+     * Creates a group.
+     * @method Domy.ObjectFactory#group
+     */
+    group()
+    {
+        return new Domy.Group(this.game);
+    }
+};
+
+Domy.ObjectFactory.prototype.constructor = Domy.ObjectFactory;
+
+/**
+ * A very basic Asset loader without progess functions. Yet.
+ *
+ * @constructor
+ * @param {Domy.Game} game - The core game object.
+ */
+Domy.Loader = function(game)
+{
+    this.game = game;
+
+    return this;
+};
+
+Domy.Loader.prototype =
+{
+    /**
+     * Loads an simple image.
+     * @method Domy.Loader#image
+     */
+    image(key, path)
+    {
+        let that = this;
+        let img = new Image();
+        img.src = path;
+        img.onerror = function(event)
+        {
+            delete that.game.cache.images[key];
+        }
+        this.game.cache.images[key] = img;
+    },
+
+    /**
+     * Loads a spritesheet.
+     * @method Domy.Loader#spritesheet
+     */
+    spritesheet(key, path, frameWidth, frameHeight, frameIndexes)
+    {
+        let that = this;
+        frameWidth   = frameWidth   || 32;
+        frameHeight  = frameHeight  || 32
+        frameIndexes = frameIndexes || Infinity;
+
+        let img = new Image();
+        img.src = path;
+        img.onload = function()
+        {
+            // Save frames for spritesheet animation
+            let frames = [];
+            let frameFound = 0;
+
+            for (let x = 0; x < that.width; x += frameWidth)
+            {
+                for (let y = 0; y < that.height; y += frameHeight)
+                {
+                    frameFound += 1;
+                    if (frameFound === frameIndexes) break;
+                    {
+                        frames.push(
+                        {
+                            x: -x,
+                            y: -y
+                        });
+                    }
+                }
+            }
+
+            that.game.cache.images[key].frames = frames;
+        }
+
+        this.game.cache.images[key] = img;
+        this.game.cache.images[key].frames = [];
+        this.game.cache.images[key].frameWidth = frameWidth;
+        this.game.cache.images[key].frameHeight = frameHeight;
+    }
+};
+
+Domy.ObjectFactory.prototype.constructor = Domy.ObjectFactory;
+
+/**
  * Keyboard controls. Just a placeholder for now.
 
  * @constructor
- * @param {Domy.Game} game - Your global game object.
+ * @param {Domy.Game} game - The core game object.
  */
-Domy.Keyboard = function()
+Domy.Keyboard = function(game)
 {
-    this.whatIsThis = "A keyboard.";
+    this.isDown = {};
+    this.isPressed = {};
+    this.isUp = {};
+
+    // Internal values
+    this.game = game;
+
+    // Set all buttons to false
+    for (let i = 0; i < 200; i++)
+    {
+        this.isDown[i]    = false;
+        this.isPressed[i] = false;
+        this.isUp[i]      = false;
+    }
+
+    // Add the event listeners for the mouse to the game container
+    let gameDiv = this.game.parent;
+    let that = this;
+    window.addEventListener('keydown', function(event)
+    {
+        that.isDown[event.keyCode]    = true;
+        that.isPressed[event.keyCode] = false;
+        that.isUp[event.keyCode]      = false;
+    }, false);
+
+    window.addEventListener('keypress', function(event)
+    {
+        that.isDown[event.keyCode]    = true;
+        that.isPressed[event.keyCode] = true;
+        that.isUp[event.keyCode]      = false;
+    }, false);
+
+    window.addEventListener('keyup', function(event)
+    {
+        that.isDown[event.keyCode]    = false;
+        that.isPressed[event.keyCode] = false;
+        that.isUp[event.keyCode]      = true;
+    }, false);
 
     return this;
 };
@@ -956,17 +1118,291 @@ Domy.Keyboard.prototype =
 Domy.Keyboard.prototype.constructor = Domy.Keyboard;
 
 /**
- * Mouse controls. Just a placeholder for now.
-
- * @constructor
- * @param {Domy.Game} game - Your global game object.
+ * @class Domy.KeyCode
  */
-Domy.Mouse = function()
+Domy.KeyCode =
 {
-    this.whatIsThis = "A mouse.";
+    /** @static */
+    A: "A".toUpperCase().charCodeAt(0),
+    /** @static */
+    B: "B".toUpperCase().charCodeAt(0),
+    /** @static */
+    C: "C".toUpperCase().charCodeAt(0),
+    /** @static */
+    D: "D".toUpperCase().charCodeAt(0),
+    /** @static */
+    E: "E".toUpperCase().charCodeAt(0),
+    /** @static */
+    F: "F".toUpperCase().charCodeAt(0),
+    /** @static */
+    G: "G".toUpperCase().charCodeAt(0),
+    /** @static */
+    H: "H".toUpperCase().charCodeAt(0),
+    /** @static */
+    I: "I".toUpperCase().charCodeAt(0),
+    /** @static */
+    J: "J".toUpperCase().charCodeAt(0),
+    /** @static */
+    K: "K".toUpperCase().charCodeAt(0),
+    /** @static */
+    L: "L".toUpperCase().charCodeAt(0),
+    /** @static */
+    M: "M".toUpperCase().charCodeAt(0),
+    /** @static */
+    N: "N".toUpperCase().charCodeAt(0),
+    /** @static */
+    O: "O".toUpperCase().charCodeAt(0),
+    /** @static */
+    P: "P".toUpperCase().charCodeAt(0),
+    /** @static */
+    Q: "Q".toUpperCase().charCodeAt(0),
+    /** @static */
+    R: "R".toUpperCase().charCodeAt(0),
+    /** @static */
+    S: "S".toUpperCase().charCodeAt(0),
+    /** @static */
+    T: "T".toUpperCase().charCodeAt(0),
+    /** @static */
+    U: "U".toUpperCase().charCodeAt(0),
+    /** @static */
+    V: "V".toUpperCase().charCodeAt(0),
+    /** @static */
+    W: "W".toUpperCase().charCodeAt(0),
+    /** @static */
+    X: "X".toUpperCase().charCodeAt(0),
+    /** @static */
+    Y: "Y".toUpperCase().charCodeAt(0),
+    /** @static */
+    Z: "Z".toUpperCase().charCodeAt(0),
+    /** @static */
+    ZERO: "0".charCodeAt(0),
+    /** @static */
+    ONE: "1".charCodeAt(0),
+    /** @static */
+    TWO: "2".charCodeAt(0),
+    /** @static */
+    THREE: "3".charCodeAt(0),
+    /** @static */
+    FOUR: "4".charCodeAt(0),
+    /** @static */
+    FIVE: "5".charCodeAt(0),
+    /** @static */
+    SIX: "6".charCodeAt(0),
+    /** @static */
+    SEVEN: "7".charCodeAt(0),
+    /** @static */
+    EIGHT: "8".charCodeAt(0),
+    /** @static */
+    NINE: "9".charCodeAt(0),
+    /** @static */
+    NUMPAD_0: 96,
+    /** @static */
+    NUMPAD_1: 97,
+    /** @static */
+    NUMPAD_2: 98,
+    /** @static */
+    NUMPAD_3: 99,
+    /** @static */
+    NUMPAD_4: 100,
+    /** @static */
+    NUMPAD_5: 101,
+    /** @static */
+    NUMPAD_6: 102,
+    /** @static */
+    NUMPAD_7: 103,
+    /** @static */
+    NUMPAD_8: 104,
+    /** @static */
+    NUMPAD_9: 105,
+    /** @static */
+    NUMPAD_MULTIPLY: 106,
+    /** @static */
+    NUMPAD_ADD: 107,
+    /** @static */
+    NUMPAD_ENTER: 108,
+    /** @static */
+    NUMPAD_SUBTRACT: 109,
+    /** @static */
+    NUMPAD_DECIMAL: 110,
+    /** @static */
+    NUMPAD_DIVIDE: 111,
+    /** @static */
+    F1: 112,
+    /** @static */
+    F2: 113,
+    /** @static */
+    F3: 114,
+    /** @static */
+    F4: 115,
+    /** @static */
+    F5: 116,
+    /** @static */
+    F6: 117,
+    /** @static */
+    F7: 118,
+    /** @static */
+    F8: 119,
+    /** @static */
+    F9: 120,
+    /** @static */
+    F10: 121,
+    /** @static */
+    F11: 122,
+    /** @static */
+    F12: 123,
+    /** @static */
+    F13: 124,
+    /** @static */
+    F14: 125,
+    /** @static */
+    F15: 126,
+    /** @static */
+    COLON: 186,
+    /** @static */
+    EQUALS: 187,
+    /** @static */
+    COMMA: 188,
+    /** @static */
+    UNDERSCORE: 189,
+    /** @static */
+    PERIOD: 190,
+    /** @static */
+    QUESTION_MARK: 191,
+    /** @static */
+    TILDE: 192,
+    /** @static */
+    OPEN_BRACKET: 219,
+    /** @static */
+    BACKWARD_SLASH: 220,
+    /** @static */
+    CLOSED_BRACKET: 221,
+    /** @static */
+    QUOTES: 222,
+    /** @static */
+    BACKSPACE: 8,
+    /** @static */
+    TAB: 9,
+    /** @static */
+    CLEAR: 12,
+    /** @static */
+    ENTER: 13,
+    /** @static */
+    SHIFT: 16,
+    /** @static */
+    CONTROL: 17,
+    /** @static */
+    ALT: 18,
+    /** @static */
+    CAPS_LOCK: 20,
+    /** @static */
+    ESC: 27,
+    /** @static */
+    SPACEBAR: 32,
+    /** @static */
+    PAGE_UP: 33,
+    /** @static */
+    PAGE_DOWN: 34,
+    /** @static */
+    END: 35,
+    /** @static */
+    HOME: 36,
+    /** @static */
+    LEFT: 37,
+    /** @static */
+    UP: 38,
+    /** @static */
+    RIGHT: 39,
+    /** @static */
+    DOWN: 40,
+    /** @static */
+    PLUS: 43,
+    /** @static */
+    MINUS: 44,
+    /** @static */
+    INSERT: 45,
+    /** @static */
+    DELETE: 46,
+    /** @static */
+    HELP: 47,
+    /** @static */
+    NUM_LOCK: 144
+};
+
+// Duplicate Domy.KeyCode values in Domy.Keyboard for compatibility
+for (var key in Domy.KeyCode)
+{
+    if (Domy.KeyCode.hasOwnProperty(key) && !key.match(/[a-z]/))
+    {
+        Domy.Keyboard[key] = Domy.KeyCode[key];
+    }
+}
+
+/**
+ * This class handles all mouse interactions (but the mouse wheel, yet).
+ *
+ * @constructor
+ * @param {Domy.Game} game - The core game object.
+ */
+Domy.Mouse = function(game)
+{
+    this.x = 0;
+    this.y = 0;
+    this.isDown = [];
+    this.isUp = [];
+
+    // Internal values
+    this.game = game;
+
+    // Add the event listeners for the mouse to the game container
+    let gameDiv = this.game.parent;
+    let that = this;
+
+    gameDiv.addEventListener("mousemove", function(event)
+    {
+        that.x = event.offsetX;
+        that.y = event.offsetY;
+    }, true);
+
+    gameDiv.addEventListener("mousedown", function(event)
+    {
+        that.isDown[event.button] = true;
+        that.isUp[event.button]   = false;
+    }, true);
+
+    gameDiv.addEventListener("mouseup",   function(event)
+    {
+        that.isDown[event.button] = false;
+        that.isUp[event.button]   = true;
+    }, true);
 
     return this;
 }
+
+Domy.Mouse.LEFT_BUTTON = 0;
+Domy.Mouse.MIDDLE_BUTTON = 1;
+Domy.Mouse.RIGHT_BUTTON = 2;
+
+// The stuff below is not working yet
+Domy.Mouse.prototype =
+{
+    onMouseMove(event)
+    {
+        this.x = event.offsetX;
+        this.y = event.offsetY;
+    },
+
+    onMouseDown(event)
+    {
+        this.isDown[event.button] = true;
+        this.isUp[event.button]   = false;
+    },
+
+    onMouseUp(event)
+    {
+        this.isDown[event.button] = false;
+        this.isUp[event.button]   = true;
+    }
+};
 
 Domy.Mouse.prototype.constructor = Domy.Mouse;
 
