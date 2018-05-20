@@ -13,19 +13,20 @@ game = new Domy.Game
 
 function create()
 {
-    // Loads an image
+    // Loads an image.
     app.game.load.image("test", "test.png");
 
-    // Create a sprite from the loaded image
+    // Create a sprite from the loaded image.
+    // A sprite is a complete game object.
     app.game.add.sprite(200, 200, "test");
 };
 
 function update()
 {
-
+    // Stuff which should happen 60 times per second.
 };
 
 function render()
 {
-
+    // Display extra stuff like, for example, a debug display.
 };
