@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Game<span class="signature">(width, height, parent, transparent)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Game<span class="signature">(width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>, parent<span class="signature-attributes">opt</span>, states<span class="signature-attributes">opt</span>, transparent<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Domy.Game</div>
         
@@ -45,7 +45,7 @@
     
 
     
-    <h4 class="name" id="Game"><span class="type-signature"></span>new Game<span class="signature">(width, height, parent, transparent)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Game"><span class="type-signature"></span>new Game<span class="signature">(width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>, parent<span class="signature-attributes">opt</span>, states<span class="signature-attributes">opt</span>, transparent<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -77,7 +77,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -102,7 +106,23 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    960
+                
+                </td>
             
 
             <td class="description last">The width of the container.</td>
@@ -125,7 +145,23 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    540
+                
+                </td>
             
 
             <td class="description last">The height of the container.</td>
@@ -148,10 +184,65 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
             
 
             <td class="description last">The parent div of the container.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>states</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Your own states the game shall use.</td>
         </tr>
 
     
@@ -171,10 +262,26 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">Defines if the container should be transparent.</td>
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Defines if the container shall be transparent.</td>
         </tr>
 
     
@@ -215,7 +322,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line38">line 38</a>
+        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -321,7 +428,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line102">line 102</a>
+        <a href="domy.js.html">domy.js</a>, <a href="domy.js.html#line124">line 124</a>
     </li></ul></dd>
     
 
@@ -365,13 +472,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Domy.Camera.html">Camera</a></li><li><a href="Domy.Circle.html">Circle</a></li><li><a href="Domy.Game.html">Game</a></li><li><a href="Domy.Group.html">Group</a></li><li><a href="Domy.Keyboard.html">Keyboard</a></li><li><a href="Domy.Mouse.html">Mouse</a></li><li><a href="Domy.Point.html">Point</a></li><li><a href="Domy.Rectangle.html">Rectangle</a></li><li><a href="Domy.Sprite.html">Sprite</a></li><li><a href="Domy.Time.html">Time</a></li><li><a href="Domy.World.html">World</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Domy.Cache.html">Cache</a></li><li><a href="Domy.Camera.html">Camera</a></li><li><a href="Domy.Circle.html">Circle</a></li><li><a href="Domy.Game.html">Game</a></li><li><a href="Domy.Group.html">Group</a></li><li><a href="Domy.Keyboard.html">Keyboard</a></li><li><a href="Domy.KeyCode.html">KeyCode</a></li><li><a href="Domy.Loader.html">Loader</a></li><li><a href="Domy.Math.html">Math</a></li><li><a href="Domy.Mouse.html">Mouse</a></li><li><a href="Domy.ObjectFactory.html">ObjectFactory</a></li><li><a href="Domy.Physics.html">Physics</a></li><li><a href="Domy.Point.html">Point</a></li><li><a href="Domy.Rectangle.html">Rectangle</a></li><li><a href="Domy.Sound.html">Sound</a></li><li><a href="Domy.Sprite.html">Sprite</a></li><li><a href="Domy.Time.html">Time</a></li><li><a href="Domy.World.html">World</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat May 19 2018 17:36:49 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun May 20 2018 12:38:23 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
