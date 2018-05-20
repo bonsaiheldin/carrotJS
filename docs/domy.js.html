@@ -27,15 +27,15 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @author       Bonsaiheldin &lt;dm@bonsaiheld.org>
+ * @author       Bonsaiheldin &lt;dm@bonsaiheld.org> (http://bonsaiheld.org/)
  * @copyright    2018 Bonsaiheldin
- * @license      {@link https://github.com/photonstorm/Domy/blob/master/license.txt|MIT License}
+ * @license      {@link https://github.com/bonsaiheldin/domy/blob/master/LICENSE.md|MIT License}
  */
 
 // Initialize the main object with all expected properties
 var Domy = Domy ||
 {
-    "Version": "0.0.5",
+    "Version": "0.0.6",
     /*
     "Game": {},
     "Camera": {},
@@ -57,12 +57,12 @@ var Domy = Domy ||
 console.log("%cDomy v" + Domy.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/domy", "font-weight: bold;");
 
 /**
- * The core game container.
+ * The core game object. Starts the game.
  *
  * @class Domy.Game
  * @constructor
- * @param {number} [width=960] - The width of the container.
- * @param {number} [height=540] - The height of the container.
+ * @param {number} [width=800] - The width of the container.
+ * @param {number} [height=600] - The height of the container.
  * @param {string} [parent=null] - The parent div of the container.
  * @param {object} [states=null] - Your own states the game shall use.
  * @param {boolean} [transparent=false] - Defines if the container shall be transparent.
@@ -98,6 +98,7 @@ Domy.Game = function(width, height, parent, states, transparent)
         that.parent.className = 'domy';
 
         // Init
+        that.physics = new Domy.Physics(that);
         that.world = new Domy.World(that);
         that.camera = new Domy.Camera(that);
         that.time = new Domy.Time(that);
@@ -107,7 +108,14 @@ Domy.Game = function(width, height, parent, states, transparent)
         that.load = new Domy.Loader(that);
         that.add = new Domy.ObjectFactory(that);
 
-        if (that.states.create) { that.states.create(); }
+        // Run the given create state, if available.
+        if (that.states !== null)
+        {
+            if (that.states.create)
+            {
+                that.states.create();
+            }
+        }
 
         that.start(that);
 
@@ -128,7 +136,14 @@ Domy.Game.prototype.update = function(delta)
     this.world.update();
     this.camera.update();
 
-    if (this.states.update) { this.states.update(); }
+    // Run the given update state, if available.
+    if (this.states !== null)
+    {
+        if (this.states.update)
+        {
+            this.states.update();
+        }
+    }
 };
 
 /**
@@ -138,11 +153,17 @@ Domy.Game.prototype.update = function(delta)
  */
 Domy.Game.prototype.render = function()
 {
-    //this.time.render();
     this.world.render();
-    //this.camera.render();
+    this.camera.render();
 
-    if (this.states.render) { this.states.render(); }
+    // Run the given render state, if available.
+    if (this.states !== null)
+    {
+        if (this.states.render)
+        {
+            this.states.render();
+        }
+    }
 };
 
 /**
@@ -235,11 +256,19 @@ Domy.Camera.prototype =
             {
                 this.y = targetY - (this.height * 0.5);
             }
-
-            // Transform the game div according to the camera
-            this.game.parent.style.left = -this.x;
-            this.game.parent.style.top  = -this.y;
         }
+    },
+
+    /**
+     * The render loop of the camera. Happens automatically.
+     * @method Domy.Camera#render
+     * @private
+     */
+    render()
+    {
+        // Transform the game div according to the camera
+        this.game.parent.style.left = -this.x;
+        this.game.parent.style.top  = -this.y;
     }
 };
 
@@ -334,6 +363,9 @@ Domy.Group = function(game)
     this.world = this.game.world;
 
     this.children = [];
+    this.length = this.children.length;
+
+    this.type = Domy.GROUP;
 
     // Add it to the world
     this.world.addChild(this);
@@ -355,6 +387,8 @@ Domy.Group.prototype =
         this.world.removeChild(entity);
 
         this.children.push(entity);
+        this.length = this.children.length;
+
         entity.group = this;
     },
 
@@ -370,6 +404,8 @@ Domy.Group.prototype =
         this.world.addChild(entity);
 
         this.children.splice(this.children.indexOf(entity), 1);
+        this.length = this.children.length;
+
         entity.group = null;
     },
 
@@ -439,8 +475,8 @@ Domy.Group.prototype.constructor = Domy.Group;
  * @class Domy.Sprite
  * @constructor
  * @param {Domy.Game} game - The core game object.
- * @param {number} x - The x coordinate in the world of the sprite.
- * @param {number} y - The y coordinate in the world of the sprite.
+ * @param {number} [x=0] - The x coordinate in the world of the sprite.
+ * @param {number} [y=0] - The y coordinate in the world of the sprite.
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
  * @param {string} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
  * @param {Domy.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
@@ -453,6 +489,8 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     this.frame = frame || 0;
     this.group = group || null;
 
+    this.name = "Bot";
+
     // Internal values
     this.game = game;
     this.world = this.game.world;
@@ -462,18 +500,18 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     this.alpha = 1;
     this.width = 32;
     this.height = 32;
-    this.anchor = new Domy.Point(0.5, 0.5);
-    this.position = new Domy.Point(this.x, this.y);
-    this.left   = this.x - (this.width  * this.anchor.x);
-    this.right  = this.x + (this.width  * this.anchor.x);
+    this.anchor = new Domy.Point(0, 0);
+    this.left   = this.x - (this.width * this.anchor.x);
+    this.right  = this.left + this.width;
     this.top    = this.y - (this.height * this.anchor.y);
-    this.bottom = this.y + (this.height * this.anchor.y);
-    this.bounds = new Domy.Rectangle(this.x, this.y, this.width, this.height);
+    this.bottom = this.top + this.height;
     this.outOfBoundsKill = false;
     this.inCamera = false;
+    this.transform = ''; // String to collect CSS transforms for this sprite.
+    this.type = Domy.SPRITE;
 
     // Physics body
-    this.body = new Domy.Physics.Body();
+    this.body = new Domy.Physics.Body(this);
 
     // HTML magic
     this.image = document.createElement('div');
@@ -485,7 +523,8 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     // If no image was given, just color it green
     if (this.key === null)
     {
-        this.image.style.backgroundColor = "#00ff00";
+        //this.image.style.backgroundColor = "#00ff00";
+        this.image.style.boxShadow = "inset 0px 0px 0px 1px #00ff00";
     }
 
     // If an image was given, apply it as a background image
@@ -547,32 +586,80 @@ Domy.Sprite.prototype =
         return this;
     },
 
-    // Changes the width of the sprite
+    /**
+     * Changes the width of the sprite.
+     *
+     * @method Domy.Sprite#setWidth
+     * @param {number} [width=0]
+     */
     setWidth(width)
     {
-        this.width = width;
+        this.width = width || 0;
         this.image.style.width = value + "px";
 
         return this;
     },
 
-    // Changes the height of the sprite
+    /**
+     * Changes the height of the sprite.
+     *
+     * @method Domy.Sprite#setHeight
+     * @param {number} [height=0]
+     */
     setHeight(height)
     {
-        this.width = height;
+        this.height = height || 0;
         this.image.style.height = value + "px";
 
         return this;
     },
 
-    // Changes shown frame of spritesheet
+    /**
+     * Changes the frame shown. Only for spritesheets.
+     *
+     * @method Domy.Sprite#setFrame
+     * @param {number} [frame=0]
+     */
     setFrame(frame)
     {
+        frame = frame || 0;
         frame = this.game.cache.images[this.key].frames[frame];
         this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
 
         return this;
     },
+
+    /**
+     * Applies a glow effect on the sprite. Its shape is determined by the sprite's body and can be a rectangle or a circle.
+     *
+     * @method Domy.Sprite#setGlow
+     * @param {number} [blur=0] - The core game object.
+     * @param {number} [spread=0] - The core game object.
+     * @param {string} [color="#00ff00"] - The color of the glow. Must be given in one of the following formats: Hexadecimal, RGB, RGBA, HSL, HSLA or one of the 140 predefined browser colors.
+     * @param {boolean} [inset=null] - Defines if the glow should be go out or inside the sprite.
+     */
+     setGlow(blur, spread, color, inset)
+     {
+         if (blur !== false)
+         {
+             blur   = blur || 0;
+             blur   = blur + "0px ";
+             spread = sprad || 0;
+             spread = spread + "0px ";
+             color = color || "#00ff00 ";
+             if (inset) { inset = " inset"; }
+                   else { inset = ""; }
+
+             this.image.style.boxShadow = "0px 0px " + blur + spread + color + inset;
+         }
+
+         // If the first parameter is false, disable the glow completely.
+         else
+         {
+             this.image.style.boxShadow = "";
+         }
+     },
+
 
     /**
      * The update loop of the sprite. Happens automatically.
@@ -594,71 +681,75 @@ Domy.Sprite.prototype =
         // Physics
         if (this.body !== null)
         {
-            // Reset body.touching
-            this.body.touching.none   = true;
-            this.body.touching.left   = false;
-            this.body.touching.right  = false;
-            this.body.touching.top    = false;
-            this.body.touching.bottom = false;
-
-            // Drag: Deceleration
-            this.body.velocity.x *= (1 - this.body.drag.x);
-            this.body.velocity.y *= (1 - this.body.drag.y);
-
-            // Gravity
-            this.body.velocity.x += this.body.gravity.x;
-            this.body.velocity.y += this.body.gravity.y;
-
-            // Moving
-            this.x += this.time.delta * this.body.velocity.x;
-            this.y += this.time.delta * this.body.velocity.y;
-
-            // Let the sprite collide with the world bounds
-            if (this.body.collideWorldBounds)
+            // If physics shall be applied on this body
+            if (this.body.enabled)
             {
-                // Left, right, top, bottom
-                if (this.x &lt;= thisWidth)
+                // Reset body.touching
+                this.body.touching.none   = true;
+                this.body.touching.left   = false;
+                this.body.touching.right  = false;
+                this.body.touching.top    = false;
+                this.body.touching.bottom = false;
+
+                // Drag: Deceleration
+                this.body.velocity.x *= (1 - this.body.drag.x);
+                this.body.velocity.y *= (1 - this.body.drag.y);
+
+                // Gravity
+                this.body.velocity.x += this.body.gravity.x;
+                this.body.velocity.y += this.body.gravity.y;
+
+                // Moving
+                this.x += this.time.delta * this.body.velocity.x;
+                this.y += this.time.delta * this.body.velocity.y;
+
+                // Let the sprite collide with the world bounds
+                if (this.body.collideWorldBounds)
                 {
-                    this.x = thisWidth;
+                    // Left, right, top, bottom
+                    if (this.x &lt;= thisWidth)
+                    {
+                        this.x = thisWidth;
 
-                    this.body.touching.none = false;
-                    this.body.touching.left = true;
+                        this.body.touching.none = false;
+                        this.body.touching.left = true;
 
-                    // Bouncing
-                    this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
-                }
+                        // Bouncing
+                        this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                    }
 
-                if (this.x + thisWidth >= worldWidth)
-                {
-                    this.x = worldWidth - thisWidth;
+                    if (this.x + thisWidth >= worldWidth)
+                    {
+                        this.x = worldWidth - thisWidth;
 
-                    this.body.touching.none = false;
-                    this.body.touching.right = true;
+                        this.body.touching.none = false;
+                        this.body.touching.right = true;
 
-                    // Bouncing
-                    this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
-                }
+                        // Bouncing
+                        this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                    }
 
-                if (this.y &lt;= thisHeight)
-                {
-                    this.y = thisHeight;
+                    if (this.y &lt;= thisHeight)
+                    {
+                        this.y = thisHeight;
 
-                    this.body.touching.none = false;
-                    this.body.touching.top = true;
+                        this.body.touching.none = false;
+                        this.body.touching.top = true;
 
-                    // Bouncing
-                    this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
-                }
+                        // Bouncing
+                        this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                    }
 
-                if (this.y + thisHeight >= worldHeight)
-                {
-                    this.y = worldHeight - thisHeight;
+                    if (this.y + thisHeight >= worldHeight)
+                    {
+                        this.y = worldHeight - thisHeight;
 
-                    this.body.touching.none = false;
-                    this.body.touching.bottom = true;
+                        this.body.touching.none = false;
+                        this.body.touching.bottom = true;
 
-                    // Bouncing
-                    this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                        // Bouncing
+                        this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                    }
                 }
             }
         }
@@ -688,16 +779,10 @@ Domy.Sprite.prototype =
         }
 
         // Update some internal stuff
-        this.position.x    = this.x;
-        this.position.y    = this.y;
-        this.bounds.x      = this.x;
-        this.bounds.y      = this.y;
-        this.bounds.width  = this.width;
-        this.bounds.height = this.height;
         this.left          = this.x - (this.width  * this.anchor.x);
-        this.right         = this.x + (this.width  * this.anchor.x);
+        this.right         = this.left + this.width;
         this.top           = this.y - (this.height * this.anchor.y);
-        this.bottom        = this.y + (this.height * this.anchor.y);
+        this.bottom        = this.top + this.height;
 
         // Collect all transforms and apply them in the render function
         this.transform = "";
@@ -727,6 +812,7 @@ Domy.Sprite.prototype.constructor = Domy.Sprite;
 
 /**
  * The Time container stores the current time, the time the game has started at and the delta time for animating.
+ *
  * @class Domy.Time
  * @constructor
  * @param {Domy.Game} game - The core game object.
@@ -880,53 +966,225 @@ Domy.Sound.play = function(file, loop)
 
 /**
  * The Physics object offers physics related functions like collision detection.
+ *
  * @class Domy.Physics
  * @constructor
- * @static
+ * @param {Domy.Game} game - The core game object.
  */
-Domy.Physics =
+Domy.Physics = function(game)
 {
-    /** Rectangle collision */
-    intersectRectangle(a, b)
-    {
-        let ax = a.x;
-        let ay = a.y;
-        let aw = a.width;
-        let ah = a.height;
-        let bx = b.x;
-        let by = b.y;
-        let bw = b.width;
-        let bh = b.height;
+    this.game = game;
+}
 
-        return !(ax + aw > bx
-              || ay + ah > by
-              || bx + aw > ax
-              || by + ah > ay);
+Domy.Physics.prototype =
+{
+    /**
+    * Checks for collision between entities which can be sprites or groups.
+    *
+    * @method Domy.Physics#collide
+    * @param {Domy.Group | Domy.Sprite} entity1
+    * @param {Domy.Group | Domy.Sprite} entity2
+    * @param {function} [callback=null] - The function that shall be executed when the collision happens.
+    */
+    collide(entity1, entity2, callback)
+    {
+        if (entity1.type === Domy.SPRITE)
+        {
+            if (entity2.type === Domy.SPRITE)
+            {
+                //this.collideSpriteVsSprite(entity1, entity2, callback);
+            }
+
+            else if (entity2.type === Domy.GROUP)
+            {
+                //this.collideSpriteVsGroup(entity1, entity2, callback);
+            }
+        }
+
+        else if (entity1.type === Domy.GROUP)
+        {
+            if (entity2.type === Domy.SPRITE)
+            {
+                this.collideSpriteVsGroup(entity2, entity1, callback);
+            }
+        }
     },
 
-    /** Circle collision */
-    intersectCircle(a, b)
+    /**
+    * Checks for overlapping between entities which can be sprites or groups.
+    *
+    * @method Domy.Physics#collide
+    * @param {Domy.Group | Domy.Sprite} entity1
+    * @param {Domy.Group | Domy.Sprite} entity2
+    * @param {function} [callback=null] - The function that shall be executed when the overlapping happens.
+    */
+    overlap(entity1, entity2, callback)
+    {
+        if (entity1.type === Domy.SPRITE)
+        {
+            if (entity2.type === Domy.SPRITE)
+            {
+                //this.collideSpriteVsSprite(entity1, entity2, callback, true);
+            }
+
+            else if (entity2.type === Domy.GROUP)
+            {
+                //this.collideSpriteVsGroup(entity1, entity2, callback, true);
+            }
+        }
+
+        else if (entity1.type === Domy.GROUP)
+        {
+            if (entity2.type === Domy.SPRITE)
+            {
+                this.collideSpriteVsGroup(entity2, entity1, callback, true);
+            }
+        }
+    },
+
+    /**
+    * Checks for collision between groups. Use collide or overlap instead.
+    *
+    * @method Domy.Physics#collide
+    * @param {Domy.Group} group1
+    * @param {Domy.Group} group2
+    * @param {function} [callback=null] - The function that shall be executed when the collision or overlapping happens.
+    * @param {boolean} [overlapOnly=false] - Defines if the function shall only check for overlapping and disable physics.
+    * @private
+    */
+    collideGroupVsGroup(group1, group2, callback, overlapOnly)
+    {
+        for (let i = 0; i &lt; group1.children.length; i++)
+        {
+            let a = group1.children[i];
+            for (let j = 0; j &lt; group2.children.length; j++)
+            {
+                let b = group2.children[j];
+                if (b !== a)
+                {
+                    if (this.intersectRectangles(a, b))
+                    {
+                        if (! overlapOnly)
+                        {
+                            // Coming from the left.
+                            if (a.body.velocity.x > 2)
+                            {
+                                a.x = b.left - a.width - 1;
+                            }
+
+                            // Coming from the right.
+                            else if (a.body.velocity.x &lt; 0)
+                            {
+                                a.x = b.right + 2;
+                            }
+
+                            // Coming from the top.
+                            else if (a.body.velocity.y > 0)
+                            {
+                                a.y = b.top - a.height - 2;
+                            }
+
+                            // Coming from the bottom.
+                            else if (a.body.velocity.y &lt; 0)
+                            {
+                                a.y = b.bottom + 2;
+                            }
+                        }
+
+                        // If a callback was given, fire it.
+                        if (callback !== null &amp;&amp; callback !== undefined)
+                        {
+                            callback(a, b);
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+/*
+    var rect1 = {x: 5, y: 5, width: 50, height: 50}
+    var rect2 = {x: 20, y: 10, width: 10, height: 10}
+
+    if (rect1.x &lt; rect2.x + rect2.width &amp;&amp;
+       rect1.x + rect1.width > rect2.x &amp;&amp;
+       rect1.y &lt; rect2.y + rect2.height &amp;&amp;
+       rect1.height + rect1.y > rect2.y) {
+        // collision detected!
+    }
+    */
+
+    /**
+    * Checks for intersection between two rectangles.
+    *
+    * @method Domy.Physics#intersectRectangles
+    * @param {Domy.Rectangle} a
+    * @param {Domy.Rectangle} b
+    * @private
+    */
+    intersectRectangles(a, b)
+    {
+        if (a.right &lt;= b.x)
+        {
+            return false;
+        }
+
+        if (a.bottom &lt;= b.y)
+        {
+            return false;
+        }
+
+        if (a.x >= b.right)
+        {
+            return false;
+        }
+
+        if (a.y >= b.bottom)
+        {
+            return false;
+        }
+
+        return true;
+        /*
+        return (a.left   &lt; b.right
+             &amp;&amp; a.right  > b.left
+             &amp;&amp; a.top    &lt; b.bottom
+             &amp;&amp; a.bottom > b.top);
+             */
+    },
+
+    /**
+    * Checks for intersection between two circles.
+    *
+    * @method Domy.Physics#intersectRectangles
+    * @param {Domy.Circle} a
+    * @param {Domy.Circle} b
+    * @private
+    */
+    intersectCircles(a, b)
     {
         let x = a.x - b.x;
         let y = a.y - b.y;
         let r = (a.width * 0.5) + (b.width * 0.5);
         return (x * x) + (y * y) &lt; (r * r);
     }
-}
+};
+
+Domy.Physics.prototype.constructor = Domy.Physics;
 
 /**
  * Creates a physics body.
  *
  * @constructor
+ * @param {Domy.Game} game - The core game object.
  * @param {number} x - X position relative to the sprite.
  * @param {number} y - Y position relative the sprite.
  */
-Domy.Physics.Body = function(x, y)
+Domy.Physics.Body = function(parent, x, y)
 {
+    this.parent = parent;
     this.x = x || 0;
     this.y = y || 0;
-
-    this.collideWorldBounds = false;
 
     this.velocity = new Domy.Point(0, 0);
     this.bounce   = new Domy.Point(0, 0);
@@ -942,12 +1200,42 @@ Domy.Physics.Body = function(x, y)
         bottom: false
     };
 
+    this.collideWorldBounds = false;
+
+    this.isRectangle = true;
+    this.isCircle = false;
+    this.enabled = true;
+
     return this;
 };
 
 Domy.Physics.Body.prototype =
 {
+    /**
+    * Changes the shape of the body and its parent sprite into a circle.
+    *
+    * @method Domy.Physics#setCircle
+    */
+    setCircle()
+    {
+        this.isRectangle = false;
+        this.isCircle = true;
 
+        this.sprite.image.style.borderRadius = (this.sprite.width * 0.5) + "px";
+    },
+
+    /**
+    * Changes the shape of the body and its parent sprite into a rectangle.
+    *
+    * @method Domy.Physics#setRectangle.
+    */
+    setRectangle()
+    {
+        this.isRectangle = true;
+        this.isCircle = false;
+
+        this.sprite.image.style.borderRadius = "";
+    }
 };
 
 Domy.Physics.Body.prototype.constructor = Domy.Physics.Body;
@@ -965,7 +1253,8 @@ Domy.Cache = function(game)
 
 Domy.Cache.prototype =
 {
-    images: {}
+    images: {},
+    sounds: {}
 };
 
 Domy.Cache.prototype.constructor = Domy.Cache;
@@ -1071,7 +1360,7 @@ Domy.Circle.prototype =
 };
 
 /**
- * The object factory lets one create sprites and other game objects
+ * The object factory offers the possibility of creating sprites and other game objects.
  *
  * @constructor
  * @param {Domy.Game} game - The core game object.
@@ -1088,6 +1377,10 @@ Domy.ObjectFactory.prototype =
     /**
      * Creates a sprite.
      * @method Domy.ObjectFactory#sprite
+     * @param {number} [x=0] - X position
+     * @param {number} [y=0] - Y position
+     * @param {string} [key=null] - The key (name) of the image. If null, the sprite will be a green rectangle.
+     * @param {number} [frame=0] - The initial frame to show. Only for spritesheets.
      */
     sprite(x, y, key, frame)
     {
@@ -1122,8 +1415,10 @@ Domy.Loader = function(game)
 Domy.Loader.prototype =
 {
     /**
-     * Loads an simple image.
+     * Loads a simple image.
      * @method Domy.Loader#image
+     * @param {string} key - The path (url) to the image.
+     * @param {string} path - The key (name) for the image.
      */
     image(key, path)
     {
@@ -1140,6 +1435,11 @@ Domy.Loader.prototype =
     /**
      * Loads a spritesheet.
      * @method Domy.Loader#spritesheet
+     * @param {string} key - The path (url) to the image.
+     * @param {string} path - The key (name) for the image.
+     * @param {number} [frameWidth=32] - The width of the spritesheet's frames.
+     * @param {number} [frameHeight=32] - The height of the spritesheet's frames.
+     * @param {number} [frameIndexes=Infinity] - The frames indexes.
      */
     spritesheet(key, path, frameWidth, frameHeight, frameIndexes)
     {
@@ -1250,6 +1550,8 @@ Domy.Keyboard.prototype =
 Domy.Keyboard.prototype.constructor = Domy.Keyboard;
 
 /**
+ * This object holds common keyCodes of keyboards, so there is no need to memorize them.
+ *
  * @class Domy.KeyCode
  */
 Domy.KeyCode =
@@ -1470,6 +1772,20 @@ for (var key in Domy.KeyCode)
 }
 
 /**
+ * This object holds shortcuts for often used colors, so there is no need to memorize them.
+ *
+ * @class Domy.Color
+ */
+
+ Domy.Color =
+ {
+     /** @static */
+     Black: "#000000",
+     /** @static */
+     White: "#FFFFFF"
+ };
+
+/**
  * This class handles all mouse interactions (but the mouse wheel, yet).
  *
  * @constructor
@@ -1510,8 +1826,11 @@ Domy.Mouse = function(game)
     return this;
 }
 
+/** @static */
 Domy.Mouse.LEFT_BUTTON = 0;
+/** @static */
 Domy.Mouse.MIDDLE_BUTTON = 1;
+/** @static */
 Domy.Mouse.RIGHT_BUTTON = 2;
 
 // The stuff below is not working yet
@@ -1538,6 +1857,17 @@ Domy.Mouse.prototype =
 
 Domy.Mouse.prototype.constructor = Domy.Mouse;
 
+// Type IDs
+
+/** @static */
+Domy.SPRITE = 0;
+/** @static */
+Domy.GROUP = 1;
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
 /**
  * mainloop.js 1.0.3-20170529
  *
@@ -1556,13 +1886,13 @@ Domy.Mouse.prototype.constructor = Domy.Mouse;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Domy.Cache.html">Cache</a></li><li><a href="Domy.Camera.html">Camera</a></li><li><a href="Domy.Circle.html">Circle</a></li><li><a href="Domy.Game.html">Game</a></li><li><a href="Domy.Group.html">Group</a></li><li><a href="Domy.Keyboard.html">Keyboard</a></li><li><a href="Domy.KeyCode.html">KeyCode</a></li><li><a href="Domy.Loader.html">Loader</a></li><li><a href="Domy.Math.html">Math</a></li><li><a href="Domy.Mouse.html">Mouse</a></li><li><a href="Domy.ObjectFactory.html">ObjectFactory</a></li><li><a href="Domy.Physics.html">Physics</a></li><li><a href="Domy.Physics.Body.html">Body</a></li><li><a href="Domy.Point.html">Point</a></li><li><a href="Domy.Rectangle.html">Rectangle</a></li><li><a href="Domy.Sound.html">Sound</a></li><li><a href="Domy.Sprite.html">Sprite</a></li><li><a href="Domy.Time.html">Time</a></li><li><a href="Domy.World.html">World</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Domy.Cache.html">Cache</a></li><li><a href="Domy.Camera.html">Camera</a></li><li><a href="Domy.Circle.html">Circle</a></li><li><a href="Domy.Color.html">Color</a></li><li><a href="Domy.Game.html">Game</a></li><li><a href="Domy.Group.html">Group</a></li><li><a href="Domy.Keyboard.html">Keyboard</a></li><li><a href="Domy.KeyCode.html">KeyCode</a></li><li><a href="Domy.Loader.html">Loader</a></li><li><a href="Domy.Math.html">Math</a></li><li><a href="Domy.Mouse.html">Mouse</a></li><li><a href="Domy.ObjectFactory.html">ObjectFactory</a></li><li><a href="Domy.Physics.html">Physics</a></li><li><a href="Domy.Physics.Body.html">Body</a></li><li><a href="Domy.Point.html">Point</a></li><li><a href="Domy.Rectangle.html">Rectangle</a></li><li><a href="Domy.Sound.html">Sound</a></li><li><a href="Domy.Sprite.html">Sprite</a></li><li><a href="Domy.Time.html">Time</a></li><li><a href="Domy.World.html">World</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun May 20 2018 16:07:52 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun May 20 2018 22:59:04 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
