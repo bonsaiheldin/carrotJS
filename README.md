@@ -18,7 +18,7 @@ You can also give that function a few parameters as well, in the following order
 
 * `transparent` Defines if the container div shall be have a transparent background. If `false` or parameter not given, the container will have a black background.
 
-Note: `new Domy.Game()` returns the game core object and you should reference it to a variable to be able to use most of the engine's functions.
+Note: Creating the game returns its core object and you should reference it to a variable to be able to use most of the engine's functions. For example like this: `let game = new.Domy.Game()`.
 
 For everything else, check the documentation. Keep in mind that it is a work on progress, just like the engine itself is still very basic.
 
