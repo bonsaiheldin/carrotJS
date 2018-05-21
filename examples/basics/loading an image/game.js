@@ -1,4 +1,4 @@
-game = new Domy.Game
+let game = new Domy.Game
 (
     800, // Width
     600, // Height
