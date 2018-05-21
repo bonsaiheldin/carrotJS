@@ -2,9 +2,49 @@
 
 ---
 
+## Version 0.0.6 - 21th May 2018
+
+Domy now has a very basic asset loader. Load images and sounds by using `game.load.image(key, path)` and `game.load.sound(key, path)`. They get automatically added to the list of files to download and if all are loaded, the game starts. This introduces a fourth custom state: `preload`. This one can be used to load assets and be added to `Domy.Game` as an additional state beside `create`, `upload` and `render`. Assets have to be loaded and therefore ready to use before the update and render loops should run. Also, the example i uploaded yesterday got updated accordingly.
+
+The physics system got a great addition: Collision detection. All sprites are rectangles for now, so it only happens between rectangles. Bodies also have a new property called `acceleration`, see below. Also, physics can now be disabled on a body by setting its `enabled` property to `false` which disables physics completely or partly by setting `allowBounce`, `allowDrag`, `allowGravity` or `allowAcceleration` to `false`. Note: `Body.velocity` is an exception and cannot be disabled that way because other physics functions depend on it. Use `Body.enabled` for that instead.
+
+The camera has been disabled because of a bug.
+
+### New features
+
+* `preload()` A new custom state one can give when creating the game. Use it for loading images and sounds. It will be called upon game creation and the game only starts the internal `_update` and `render` loops if all assets have been loaded.
+
+* `game.load.image(key, path)` Loads an image. Needs to be put in a `preload` function.
+
+* `game.load.sound(key, path)` Load an sound. Needs to be put in a `preload` function.
+
+* `game.physics.collide(entity1, entity2, callback)` Checks a group or a sprite against a group or sprite for collision. In addition, one can give a callback as the third parameter which will be fired when the collision is detected and which returns the two given entities in the same order they were given. Put that function in a custom `update` loop.
+
+* `game.physics.overlap(entity1, entity2, callback)` The same as `collide` except that no physics are applied. That means, overlapping sprites are detected but not repelled or anything else.
+
+* `sprite.body.acceleration(x,y)` This the rate of change of the velocity. Measured in pixels per second squared. Use this to for "soft" movement rather than moving immediately.
+
+* `sprite.body.enabled` Disables physics on the sprite if set to `false`. Default: `true`.
+
+* `sprite.body.allowBounce` Allows for disabling bouncing on the body without disabling other types of physics. Default: `true`.
+
+* `sprite.body.allowDrag` Allows for disabling drag on the body without disabling other types of physics. Default: `true`.
+
+* `sprite.body.allowGravity` Allows for disabling gravity on the body without disabling other types of physics. Default: `true`.
+
+* `sprite.body.allowAcceleration` Allows for disabling acceleration on the body without disabling types of other physics. Default: `true`.
+
+### Bug fixes
+
+* When the camera was set to follow a sprite it moved the game's background, too. The solution: Domy now creates a second container as a background and puts the main one inside it. The background one can stay where it is.
+
+* Sprites wouldn't update their position outside of the camera because that only happened when their `inCamera` property was set to `true`. Yes, very funny. Of course, sprites should always update their positions!
+
+---
+
 ## Version 0.0.5 - 20th May 2018
 
-Basic physics like bouncing, dragging and gravity been added. As the properties of sprites become more and more, i decided to pack all physics related stuff into a new `body` object which is a property of the sprite. So, for example, `Sprite.velocity.x` is now `Sprite.body.velocity.x` and the same goes for every other physics related function. Note: `collideWorldBounds` is not a physics function as it just checks for the sprite boundaries and therefore remains a property of the sprite itself.
+Basic physics like bouncing, dragging and gravity have been added. As the properties of sprites become more and more, i decided to pack all physics related stuff into a new `body` object which is a property of the sprite. So, for example, `Sprite.velocity.x` is now `Sprite.body.velocity.x` and the same goes for every other physics related function. Note: `collideWorldBounds` is not a physics function as it just checks for the sprite boundaries and therefore remains a property of the sprite itself.
 
 ### New Features
 
@@ -14,9 +54,9 @@ Basic physics like bouncing, dragging and gravity been added. As the properties 
 
 * `Body.drag(x,y)` Setting it to `0,0` disables it and `1,1` makes a sprite immediately stop (and actually not move ever). Measured in percent. `0.01,0.01` could be used for very slow deceleration of a spaceship.
 
-* `Body.gravity(x,y)` Makes the sprite decelerate over time. Setting it to `0,0` disables it. Measured in pixels per second.
+* `Body.gravity(x,y)` Makes the sprite decelerate over time. Setting it to `0,0` disables it. Measured in pixels per second squared.
 
-* `Body.touching` Holds information about collision of the bounds of a sprite. For example, if the sprite touches the floor of the game world `Body.touches.bottom` will be `true`. Available properties are `left`, `right`, `top`, `bottom` and `none` which is `true` if all the others are `false` (use that, for example, to determine if the player is in the air).
+* `Body.touching` Stores information about collision of the bounds of a sprite. For example, if the sprite touches the floor of the game world `Body.touches.bottom` will be `true`. Available properties are `left`, `right`, `top`, `bottom` and `none` which is `true` if all the others are `false` (use that, for example, to determine if the player is in the air).
 
 * Sprites now have `left`, `right`, `top` and `bottom` properties. They store the bounds of the sprite (most of the time its image).
 

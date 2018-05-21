@@ -2,8 +2,9 @@ game = new Domy.Game
 (
     800, // Width
     600, // Height
-    null // Parent div
+    null // Background div
     { // Custom states and loops
+        preload: preload,
         create: create,
         update: update,
         render: render
@@ -11,13 +12,15 @@ game = new Domy.Game
     false // Parent div transparency
 );
 
+function preload()
+{
+    // Load an image.
+    app.game.load.image("test", "test.png");
+};
+
 function create()
 {
-    // Loads an image.
-    app.game.load.image("test", "test.png");
-
     // Create a sprite from the loaded image.
-    // A sprite is a complete game object.
     app.game.add.sprite(200, 200, "test");
 };
 
