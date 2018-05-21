@@ -15,7 +15,7 @@ let game = new Carrot.Game
 function preload()
 {
     // Load an image.
-    game.load.image("carrot", "carrot.png");
+    game.load.image("carrot", "../../carrot.png");
 };
 
 function create()

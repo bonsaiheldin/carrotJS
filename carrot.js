@@ -30,7 +30,7 @@ var Carrot = Carrot ||
     */
 };
 
-console.log("%CarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotjs", "font-weight: bold;");
+console.log("%cCarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotjs", "font-weight: bold;");
 
 /**
  * The core game object. Starts the game.
