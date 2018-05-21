@@ -18,15 +18,15 @@ The camera has been disabled because of a bug.
 
 * `game.load.sound(key, path)` Load a sound. Needs to be put in the `preload` function.
 
-* `sprite.body.enabled` Disables physics on the sprite if set to `false`. Default: `true`.
+* `Sprite.body.enabled` Disables physics on the sprite if set to `false`. Default: `true`.
 
-* `sprite.body.allowBounce` Allows for disabling bouncing on the body without disabling other types of physics. Default: `true`.
+* `Sprite.body.allowBounce` Allows for disabling bouncing on the body without disabling other types of physics. Default: `true`.
 
-* `sprite.body.allowDrag` Allows for disabling drag on the body without disabling other types of physics. Default: `true`.
+* `Sprite.body.allowDrag` Allows for disabling drag on the body without disabling other types of physics. Default: `true`.
 
-* `sprite.body.allowGravity` Allows for disabling gravity on the body without disabling other types of physics. Default: `true`.
+* `Sprite.body.allowGravity` Allows for disabling gravity on the body without disabling other types of physics. Default: `true`.
 
-* `sprite.body.allowAcceleration` Allows for disabling acceleration on the body without disabling types of other physics. Default: `true`.
+* `Sprite.body.allowAcceleration` Allows for disabling acceleration on the body without disabling types of other physics. Default: `true`.
 
 ### Bug fixes
 
@@ -38,11 +38,11 @@ The camera has been disabled because of a bug.
 
 ## Version 0.0.5 - 20th May 2018
 
-Basic physics like bouncing, dragging and gravity have been added. As the properties of sprites become more and more, i decided to pack all physics related stuff into a new `body` object which is a property of the sprite. So, for example, `Sprite.velocity.x` is now `Sprite.body.velocity.x` and the same goes for every other physics related function. Note: `collideWorldBounds` is not a physics function as it just checks for the sprite boundaries and therefore remains a property of the sprite itself.
+Basic physics like bouncing, dragging and gravity have been added. As the properties of sprites become more and more, i decided to pack all physics related stuff into a new `body` object which is a property of the Sprite. So, for example, `Sprite.velocity.x` is now `Sprite.body.velocity.x` and the same goes for every other physics related function. Note: `collideWorldBounds` is not a physics function as it just checks for the sprite boundaries and therefore remains a property of the sprite itself.
 
 ### New Features
 
-* `new Carrot.Physics.Body(x,y)` Creates a physics body with `collideWorldBounds`, `velocity`, `bounce`, `drag`, `gravity` and `touching` as properties. `x` and `y` are by default set to `0` as the relative center of the sprite. All sprites have physics bodies added by default. This will be changed later.
+* `new Carrot.Physics.Body(x,y)` Creates a physics body with `collideWorldBounds`, `velocity`, `bounce`, `drag`, `gravity` and `touching` as properties. `x` and `y` are by default set to `0` as the relative center of the Sprite. All sprites have physics bodies added by default. This will be changed later.
 
 * `Body.bounce(x,y)` Use this for making sprites bounce back when a collision happens. `0,0` (0%) disables it. `1,1` makes sprites bounce back with the same speed they moved before (100%). Any more than that makes them faster after bouncing.
 
@@ -50,7 +50,7 @@ Basic physics like bouncing, dragging and gravity have been added. As the proper
 
 * `Body.gravity(x,y)` Makes the sprite decelerate over time. Setting it to `0,0` disables it. Measured in pixels per second squared.
 
-* `Body.touching` Stores information about collision of the bounds of a sprite. For example, if the sprite touches the floor of the game world `Body.touches.bottom` will be `true`. Available properties are `left`, `right`, `top`, `bottom` and `none` which is `true` if all the others are `false` (use that, for example, to determine if the player is in the air).
+* `Body.touching` Stores information about collision of the bounds of a Sprite. For example, if the sprite touches the floor of the game world `Body.touches.bottom` will be `true`. Available properties are `left`, `right`, `top`, `bottom` and `none` which is `true` if all the others are `false` (use that, for example, to determine if the player is in the air).
 
 * Sprites now have `left`, `right`, `top` and `bottom` properties. They store the bounds of the sprite (most of the time its image).
 
@@ -86,7 +86,7 @@ CarrotJS now also has some helper functions for defining simple shapes like poin
 
 * `Carrot.Sprite` now has a fifth parameter: `group`. If a group is passed, the sprite will be added to that group instead of directly to the world.
 
-* `Sprite.anchor.x / y` Ranges from 0 to 1 and defines the center of the sprite. Its image is being drawn according to the sprite's anchor. For example, if one sets it to `0.5`, the image is being drawn exactly in the middle of the sprite. If set to `0` the image is drawn at the x/y coordinates of the sprite, to the right bottom.
+* `Sprite.anchor.x / y` Ranges from 0 to 1 and defines the center of the Sprite. Its image is being drawn according to the sprite's anchor. For example, if one sets it to `0.5`, the image is being drawn exactly in the middle of the Sprite. If set to `0` the image is drawn at the x/y coordinates of the sprite, to the right bottom.
 
 * `Sprite.inCamera` Stores if the sprite is inside the camera bounds, so visible to the player, `true` / `false`.
 
@@ -98,7 +98,7 @@ CarrotJS now also has some helper functions for defining simple shapes like poin
 
 * `Carrot.Camera` A 2d camera storing x, y, width and height of the viewport. It is created automatically when the game starts.
 
-* `Carrot.Camera.follow(sprite)` Makes the camera follow the passed sprite.
+* `Carrot.Camera.follow(sprite)` Makes the camera follow the passed Sprite.
 
 * `Carrot.Camera.unfollow()` Makes the camera don't follow any sprite and lets it stay at its last position.
 
@@ -114,13 +114,13 @@ CarrotJS now also has some helper functions for defining simple shapes like poin
 
 CarrotJS now has two internal running core loops: One for updating the game logic and one for rendering. The rendering loop just updates the styles of the HTML elements since they're being drawn automatically by default anyway.
 
-A simple image loader has been made and sprites can now be added, too. Sprites already have some internal update functions running, for e.g. movement. Movement can be activated using `sprite.velocity.x / y`. If the sprite has `collideWorldBounds` set to `true` it never leaves the game container! If set to `false` but `outOfBoundsKill` set to `true` the sprite will be removed from the game if it leaves the game container.
+A simple image loader has been made and sprites can now be added, too. Sprites already have some internal update functions running, for e.g. movement. Movement can be activated using `Sprite.velocity.x / y`. If the sprite has `collideWorldBounds` set to `true` it never leaves the game container! If set to `false` but `outOfBoundsKill` set to `true` the sprite will be removed from the game if it leaves the game container.
 
 ### New Features
 
 * `new Carrot.Sprite(game, x, y, key)` Creates a new sprite with the pass x / y coordinates and an image. If `key` doesn't get passed or is left empty, the sprite will be a green rectangle. The first parameter must be the game one created with `new Carrot.Game()`.
 
-* `Sprite.alpha` Ranges from 0 to 1 and defines the transparency of a sprite. Is being applied as CSS opacity.
+* `Sprite.alpha` Ranges from 0 to 1 and defines the transparency of a Sprite. Is being applied as CSS opacity.
 
 * `Sprite.velocity.x / y` If not set to `0` the sprite will move x / y pixels per second.
 
