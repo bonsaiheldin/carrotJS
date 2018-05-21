@@ -4,30 +4,14 @@
  * @license      {@link https://github.com/bonsaiheldin/carrotjs/blob/master/LICENSE.md|MIT License}
  */
 
-/** Initialize the main object with all expected properties
+/** Initialize the main object. It will be populated afterwards.
  *
  * @class Carrot
  * @static
  */
 var Carrot = Carrot ||
 {
-    "Version": "0.0.7",
-    /*
-    "Game": {},
-    "Camera": {},
-    "World": {},
-    "Group": {},
-    "Sprite": {},
-    "Time": {},
-    "Math": {},
-    "Sound": {},
-    "Physics": {},
-    "Point": {},
-    "Rectangle": {},
-    "Circle": {},
-    "Line": {},
-    "Input": {}
-    */
+    "Version": "0.0.7"
 };
 
 console.log("%cCarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotjs", "font-weight: bold;");
@@ -90,6 +74,7 @@ Carrot.Game = function(width, height, parent, states, transparent)
 
         // Init modules
         that.physics  = new Carrot.Physics(that);
+        that.math     = new Carrot.Math(that);
         that.world    = new Carrot.World(that);
         that.camera   = new Carrot.Camera(that);
         that.time     = new Carrot.Time(that);
@@ -118,8 +103,9 @@ Carrot.Game = function(width, height, parent, states, transparent)
 Carrot.Game.prototype =
 {
     /**
-     * The update loop of the core. Happens automatically.
+     * The internal update loop of the core. Happens automatically.
      * @method Carrot.Game#_update
+     * @param {number} delta - The time the last frame took in miliseconds. It is managed by the `_update` loop of {Carrot.Time}.
      * @private
      */
     _update(delta)
@@ -139,7 +125,7 @@ Carrot.Game.prototype =
     },
 
     /**
-     * The render loop of the core. Happens automatically.
+     * The internal render loop of the core. Happens automatically.
      * @method Carrot.Game#_render
      * @private
      */
@@ -161,6 +147,7 @@ Carrot.Game.prototype =
     /**
      * Starts the update and the render loops of the core.
      * @method Carrot.Game#_render
+     * @param {Carrot.Game} game - The core game object.
      * @private
      */
     start(game)
@@ -188,7 +175,7 @@ Carrot.Game.prototype =
 Carrot.Game.prototype.constructor = Carrot.Game;
 
 /**
- * The world container stores every sprite or group and updates them automatically.
+ * The world container stores every sprite or group and updates them automatically. It is managed automatically by {Carrot.Game}.
  *
  * @class Carrot.World
  * @constructor
@@ -213,8 +200,9 @@ Carrot.World.prototype =
 {
     /**
      * Adds a child to the world container. The child can be a sprite or a group.
+     *
      * @method Carrot.World#addChild
-     * @param {object} entity - The child.
+     * @param {object} entity - The entity to add.
      */
     addChild(entity)
     {
@@ -223,8 +211,9 @@ Carrot.World.prototype =
 
     /**
      * Removes the given child from the world container.
+     *
      * @method Carrot.World#removeChild
-     * @param {object} entity - The child.
+     * @param {object} entity - The child to remove.
      */
     removeChild(entity)
     {
@@ -232,7 +221,8 @@ Carrot.World.prototype =
     },
 
     /**
-     * The update loop of the world container. Happens automatically.
+     * The internal update loop of the world container. Happens automatically.
+     *
      * @method Carrot.World#_update
      * @private
      */
@@ -247,7 +237,7 @@ Carrot.World.prototype =
     },
 
     /**
-     * The render loop of the world container. Happens automatically.
+     * The internal render loop of the world container. Happens automatically.
      * @method Carrot.World#_render
      * @private
      */
@@ -265,7 +255,7 @@ Carrot.World.prototype =
 Carrot.World.prototype.constructor = Carrot.World;
 
 /**
- * The camera. It is added to the core loops and updates automatically.
+ * The camera. It is managed automatically by {Carrot.Game}.
  *
  * @class Carrot.Camera
  * @constructor
@@ -275,9 +265,6 @@ Carrot.Camera = function(game)
 {
     this.game = game;
     this.world = this.game.world;
-    /**
-    * @property {number} x - The x coordinate of the camera.
-    */
     this.x = 0;
     this.y = 0;
     this.width = this.game.width;
@@ -300,9 +287,10 @@ Carrot.Camera = function(game)
 Carrot.Camera.prototype =
 {
     /**
-     * Let the camera follow an entity.
+     * Let the camera follow a sprite.
+     *
      * @method Carrot.Camera#follow
-     * @param {object} game - The entity.
+     * @param {Carrot.Sprite} target - The sprite the camera shall follow.
      */
     follow(target)
     {
@@ -314,6 +302,7 @@ Carrot.Camera.prototype =
 
     /**
      * Let the camera stop following any entity.
+     *
      * @method Carrot.Camera#unfollow
      */
     unfollow()
@@ -322,7 +311,8 @@ Carrot.Camera.prototype =
     },
 
     /**
-     * The update loop of the camera. Happens automatically.
+     * The internal update loop of the camera. It is managed automatically by {Carrot.World}.
+     *
      * @method Carrot.Camera#_update
      * @private
      */
@@ -356,7 +346,8 @@ Carrot.Camera.prototype =
     },
 
     /**
-     * The render loop of the camera. Happens automatically.
+     * The internal render loop of the camera. It is managed automatically by {Carrot.World}.
+     *
      * @method Carrot.Camera#_render
      * @private
      */
@@ -402,10 +393,10 @@ Carrot.Group = function(game)
 Carrot.Group.prototype =
 {
     /**
-     * Adds an entity to a group. The entity has to be a sprite.
+     * Adds an entity to a group. The entity can be a sprite or another group.
      *
      * @method Carrot.Group#addChild
-     * @param {object} entity - The entity.
+     * @param {object} entity - The entity to add.
      */
     addChild(entity)
     {
@@ -424,7 +415,7 @@ Carrot.Group.prototype =
      * Removes the given entity from a group.
      *
      * @method Carrot.Group#removeChild
-     * @param {object} entity - The entity.
+     * @param {object} entity - The entity to remove.
      */
     removeChild(entity)
     {
@@ -480,18 +471,25 @@ Carrot.Group.prototype =
     },
 
     /**
-     * Destroys the sprite and removes it entirely from the game world.
+     * Destroys the group and removes it entirely from the game world.
      *
      * @method Carrot.Group#destroy
      */
     destroy()
     {
-        // Remove from world container
+        // Release all children from the group and add them to the game world, so they're still updated.
+        for (let i = 0; i < this.children.length; i++)
+        {
+            this.removeChild(this.children[i]);
+        }
+
+        // Remove the group from the world container
         this.world.removeChild(this);
     },
 
     /**
-     * The update loop of the group. Happens automatically.
+     * The internal update loop of the group. It is managed automatically by {Carrot.World}.
+     *
      * @method Carrot.Group#_update
      * @private
      */
@@ -506,7 +504,8 @@ Carrot.Group.prototype =
     },
 
     /**
-     * The render loop of the group. Happens automatically.
+     * The internal render loop of the group. It is managed automatically by {Carrot.World}.
+     *
      * @method Carrot.Group#_render
      * @private
      */
@@ -532,7 +531,7 @@ Carrot.Group.prototype.constructor = Carrot.Group;
  * @param {number} [x=0] - The x coordinate in the world of the sprite.
  * @param {number} [y=0] - The y coordinate in the world of the sprite.
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
- * @param {string} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
+ * @param {number} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
  * @param {Carrot.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
  */
 Carrot.Sprite = function(game, x, y, key, frame, group)
@@ -610,7 +609,7 @@ Carrot.Sprite = function(game, x, y, key, frame, group)
 Carrot.Sprite.prototype =
 {
     /**
-     * Kills the sprite. Just a placeholder for now. Later it will be used as a soft destroy for object pooling.
+     * Kills the sprite. Just a placeholder for now. Later this will be used as a soft destroy to enable object pools.
      *
      * @method Carrot.Sprite#kill
      */
@@ -620,7 +619,7 @@ Carrot.Sprite.prototype =
     },
 
     /**
-     * Destroys the sprite and removes it entirely from the game world.
+     * Destroys the sprite and removes it from its group and the game world.
      *
      * @method Carrot.Sprite#destroy
      */
@@ -679,7 +678,7 @@ Carrot.Sprite.prototype =
     },
 
     /**
-     * Applies a glow effect on the sprite. Its shape is determined by the sprite's body and can be a rectangle or a circle.
+     * Applies a glow effect on the sprite. Its shape is determined by the sprite's body which can be a rectangle or a circle.
      *
      * @method Carrot.Sprite#setGlow
      * @param {number} [blur=0] - Blur in pixels.
@@ -711,7 +710,8 @@ Carrot.Sprite.prototype =
 
 
     /**
-     * The update loop of the sprite. Happens automatically.
+     * The internal update loop of the sprite. It is managed automatically by {Carrot.World} or {Carrot.Group}, depending on whhich it is added to.
+     *
      * @method Carrot.Sprite#_update
      * @private
      */
@@ -886,7 +886,8 @@ Carrot.Sprite.prototype =
     },
 
     /**
-     * The render loop of the sprite. Happens automatically.
+     * The internal render loop of the sprite. It is managed automatically by {Carrot.World} or {Carrot.Group}, depending on whhich it is added to.
+     *
      * @method Carrot.Sprite#_render
      * @private
      */
@@ -919,7 +920,7 @@ Carrot.Time = function(game)
 Carrot.Time.prototype =
 {
     /**
-     * The update loop of the time object. Happens automatically.
+     * The internal update loop of the time object. It is managed automatically by {Carrot.Game}.
      * @method Carrot.Time#_update
      * @private
      */
@@ -934,95 +935,123 @@ Carrot.Time.prototype =
 Carrot.Time.prototype.constructor = Carrot.Time;
 
 /**
- * The Math object offers various standard math functions like measuring a distance.
+ * The Math object offers various standard math functions like measuring a distance or angles.
  *
  * @class Carrot.Math
+ * @param {Carrot.Game} game - The core game object.
  * @static
  */
-Carrot.Math = {
+Carrot.Math = function(game)
+{
+    this.game = game;
 
+    return this;
+};
+
+Carrot.Math.prototype =
+{
     /**
-    * PI.
-    * @property {number} Carrot.Math#PI
-    * @type {number}
-    */
+     * PI.
+     * @property {number} Carrot.Math#PI
+     * @type {number}
+     */
     PI: Math.PI,
 
     /**
-    * Twice PI.
-    * @property {number} Carrot.Math#PI2
-    * @type {number}
-    */
+     * Twice PI.
+     * @property {number} Carrot.Math#PI2
+     * @type {number}
+     */
     PI2: Math.PI * 2,
 
     /**
-    * Degrees to Radians factor.
-    * @property {number} Carrot.Math#DEG_TO_RAD
-    */
+     * Degrees to Radians factor.
+     * @property {number} Carrot.Math#DEG_TO_RAD
+     */
     DEG_TO_RAD: Math.PI / 180,
 
     /**
-    * Degrees to Radians factor.
-    * @property {number} Carrot.Math#RAD_TO_DEG
-    */
+     * Degrees to Radians factor.
+     * @property {number} Carrot.Math#RAD_TO_DEG
+     */
     RAD_TO_DEG: 180 / Math.PI,
 
     /**
-    * Convert degrees to radians.
-    *
-    * @method Carrot.Math#degToRad
-    * @param {number} degrees - Angle in degrees.
-    * @return {number} Angle in radians.
-    */
+     * Convert degrees to radians.
+     *
+     * @method Carrot.Math#degToRad
+     * @param {number} degrees - Angle in degrees.
+     * @return {number} Angle in radians.
+     */
     degToRad(degrees)
     {
         return degrees * Carrot.Math.DEG_TO_RAD;
     },
 
     /**
-    * Convert radians to degrees.
-    *
-    * @method Carrot.Math#radToDeg
-    * @param {number} radians - Angle in radians.
-    * @return {number} Angle in degrees.
-    */
+     * Convert radians to degrees.
+     *
+     * @method Carrot.Math#radToDeg
+     * @param {number} radians - Angle in radians.
+     * @return {number} Angle in degrees.
+     */
     radToDeg(radians)
     {
         return radians * Carrot.Math.RAD_TO_DEG;
     },
 
     /**
-    * Returns an integer between (including) min and (including) max
-    *
-    * @method Carrot.Math#integerInRange
-    * @param {number} min - Min.
-    * @param {number} max - Max.
-    * @return {number}
-    */
+     * Returns an integer between (including) min and (including) max
+     *
+     * @method Carrot.Math#integerInRange
+     * @param {number} min - Min.
+     * @param {number} max - Max.
+     * @return {number}
+     */
     integerInRange(min, max)
     {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     },
 
-    /** Returns the direction between two poins in degrees */
+    /**
+     * Returns the direction between two poins in degrees
+     *
+     * @method Carrot.Math#integerInRange
+     * @param {number} x1 - x1
+     * @param {number} y1 - x1
+     * @param {number} x2 - x2
+     * @param {number} y2 - y2
+     * @return {number}
+     */
     angleBetweenPoints(x1, y1, x2, y2)
     {
         return Math.atan2(y2 - y1, x2 - x1) * Carrot.Math.RAD_TO_DEG;
     },
 
-    /** Returns the distance between two vectors */
+    /**
+     * Returns the distance between two vectors in pixels.
+     *
+     * @method Carrot.Math#integerInRange
+     * @param {number} x1 - x1
+     * @param {number} y1 - x1
+     * @param {number} x2 - x2
+     * @param {number} y2 - y2
+     * @return {number}
+     */
     distanceBetweenPoints(x1, y1, x2, y2)
     {
         return Math.hypot(x2 - x1, y2 - y1);
     }
 };
 
+Carrot.Math.prototype.constructor = Carrot.Math;
+
 /**
  * The Sound Manager offers audio functions.
  *
  * @class Carrot.SoundManager
  * @constructor
- * @param {Carrot.Game} game - The global game object.
+ * @param {Carrot.Game} game - The core game object.
  */
 Carrot.SoundManager = function(game)
 {
@@ -1034,7 +1063,8 @@ Carrot.SoundManager = function(game)
 Carrot.SoundManager.prototype =
 {
     /**
-     * Plays an audio file that has been loaded before by the {Carrot.AssetLoader};
+     * Plays an audio file that has been loaded before by {Carrot.AssetLoader};
+     *
      * @method Carrot.SoundManager#play
      * @private
      */
@@ -1075,6 +1105,8 @@ Carrot.SoundManager.prototype.constructor = Carrot.SoundManager;
 Carrot.Physics = function(game)
 {
     this.game = game;
+
+    return this;
 }
 
 Carrot.Physics.prototype =
@@ -1086,6 +1118,7 @@ Carrot.Physics.prototype =
     * @param {Carrot.Group | Carrot.Sprite} entity1
     * @param {Carrot.Group | Carrot.Sprite} entity2
     * @param {function} [callback=null] - The function that shall be executed when the collision happens.
+    * @return {boolean} If a collision was detected.
     */
     collide(entity1, entity2, callback)
     {
@@ -1108,16 +1141,22 @@ Carrot.Physics.prototype =
             {
                 this.collideSpriteVsGroup(entity2, entity1, callback);
             }
+
+            else if (entity2.type === Carrot.GROUP)
+            {
+                this.collideGroupVsGroup(entity1, entity2, callback);
+            }
         }
     },
 
     /**
     * Checks for overlapping between entities which can be sprites or groups.
     *
-    * @method Carrot.Physics#collide
+    * @method Carrot.Physics#overlap
     * @param {Carrot.Group | Carrot.Sprite} entity1
     * @param {Carrot.Group | Carrot.Sprite} entity2
     * @param {function} [callback=null] - The function that shall be executed when the overlapping happens.
+    * @return {boolean} If an overlapping was detected.
     */
     overlap(entity1, entity2, callback)
     {
@@ -1140,17 +1179,23 @@ Carrot.Physics.prototype =
             {
                 this.collideSpriteVsGroup(entity2, entity1, callback, true);
             }
+
+            else if (entity2.type === Carrot.GROUP)
+            {
+                this.collideGroupVsGroup(entity1, entity2, callback, true);
+            }
         }
     },
 
     /**
-    * Checks for collision between groups. Use collide or overlap instead.
+    * Checks for collision between groups. Use {Carrot.Physics#collide} or {Carrot.Physics#overlap} instead.
     *
-    * @method Carrot.Physics#collide
+    * @method Carrot.Physics#collideGroupVsGroup
     * @param {Carrot.Group} group1
     * @param {Carrot.Group} group2
     * @param {function} [callback=null] - The function that shall be executed when the collision or overlapping happens.
     * @param {boolean} [overlapOnly=false] - Defines if the function shall only check for overlapping and disable physics.
+    * @return {boolean} If a collision was detected.
     * @private
     */
     collideGroupVsGroup(group1, group2, callback, overlapOnly)
@@ -1203,24 +1248,13 @@ Carrot.Physics.prototype =
         }
     },
 
-/*
-    var rect1 = {x: 5, y: 5, width: 50, height: 50}
-    var rect2 = {x: 20, y: 10, width: 10, height: 10}
-
-    if (rect1.x < rect2.x + rect2.width &&
-       rect1.x + rect1.width > rect2.x &&
-       rect1.y < rect2.y + rect2.height &&
-       rect1.height + rect1.y > rect2.y) {
-        // collision detected!
-    }
-    */
-
     /**
     * Checks for intersection between two rectangles.
     *
     * @method Carrot.Physics#intersectRectangles
     * @param {Carrot.Rectangle} a
     * @param {Carrot.Rectangle} b
+    * @return {boolean} If an intersection was detected.
     * @private
     */
     intersectRectangles(a, b)
@@ -1260,6 +1294,7 @@ Carrot.Physics.prototype =
     * @method Carrot.Physics#intersectRectangles
     * @param {Carrot.Circle} a
     * @param {Carrot.Circle} b
+    * @return {boolean} If an intersection was detected.
     * @private
     */
     intersectCircles(a, b)
@@ -1335,7 +1370,7 @@ Carrot.Physics.Body.prototype =
     /**
     * Changes the shape of the body and its parent sprite into a rectangle.
     *
-    * @method Carrot.Physics#setRectangle.
+    * @method Carrot.Physics#setRectangle
     */
     setRectangle()
     {
@@ -1372,7 +1407,7 @@ Carrot.Cache.prototype =
 Carrot.Cache.prototype.constructor = Carrot.Cache;
 
 /**
- * This class allows for creating ingame stylesheets.
+ * This class allows for creating custom stylesheets for game objects.
  *
  * @class Carrot.Class
  * @constructor
@@ -1395,7 +1430,7 @@ Carrot.Class.prototype =
      *
      * @method Carrot.Class#add
      * @param {string} name - The unique name of the class.
-     * @param {object} [style=null] - The style of the class. Default: null.
+     * @param {object} [style=null] - The style of the class.
      */
     add(name, style)
     {
@@ -1438,6 +1473,7 @@ Carrot.Class.prototype =
         let customClass = this.game.cache.classes[name];
         if (customClass)
         {
+            customClass[key] = value;
         }
     },
 };
@@ -1506,10 +1542,10 @@ Carrot.Rectangle.prototype =
      * Sets the rectangle up.
      *
      * @method Carrot.Rectangle#setTo
-     * @param {number} x
-     * @param {number} y
-     * @param {number} width
-     * @param {number} height
+     * @param {number} [x=0]
+     * @param {number} [y=0]
+     * @param {number} [width=0]
+     * @param {number} [height=0]
      */
     setTo(x, y, width, height)
     {
@@ -1546,9 +1582,9 @@ Carrot.Circle.prototype =
      * Sets the circle up.
      *
      * @method Carrot.Circle#setTo
-     * @param {number} x
-     * @param {number} y
-     * @param {number} diameter
+     * @param {number} [x=0]
+     * @param {number} [y=0]
+     * @param {diameter} [diameter=0]
      */
     setTo(x, y, diameter)
     {
@@ -1562,6 +1598,7 @@ Carrot.Circle.prototype =
 /**
  * This claass offers the possibility of creating sprites and groups.
  *
+ * @class Carrot.ObjectFactory
  * @constructor
  * @param {Carrot.Game} game - The core game object.
  */
@@ -1576,6 +1613,7 @@ Carrot.ObjectFactory.prototype =
 {
     /**
      * Creates a sprite.
+     *
      * @method Carrot.ObjectFactory#sprite
      * @param {number} [x=0] - X position
      * @param {number} [y=0] - Y position
@@ -1593,6 +1631,7 @@ Carrot.ObjectFactory.prototype =
 
     /**
      * Creates a group.
+     *
      * @method Carrot.ObjectFactory#group
      */
     group()
@@ -1713,8 +1752,8 @@ Carrot.AssetLoader.prototype =
      * Loads a sound.
      *
      * @method Carrot.AssetLoader#sound
-     * @param {string} key - The path (url) to the sound.
-     * @param {string} path - The key (name) for the sound.
+     * @param {string} key - The unique key (name) for the sound.
+     * @param {string} path - The path (url) to the sound.
      */
     sound(key, path)
     {
@@ -1737,7 +1776,7 @@ Carrot.AssetLoader.prototype =
     },
 
     /**
-     * Checks if all files are loaded. If yes, it starts the game.
+     * Checks if all files are loaded. If yes, it starts the game. Is automatically managed by {Carrot.AssetLoader};
      *
      * @method Carrot.AssetLoader#checkFilesLoaded
      * @private
@@ -1756,6 +1795,7 @@ Carrot.AssetLoader.prototype.constructor = Carrot.AssetLoader;
 /**
  * This class handles all keyboard interactions.
  *
+ * @class Carrot.Keyboard
  * @constructor
  * @param {Carrot.Game} game - The core game object.
  */
@@ -2042,7 +2082,7 @@ for (var key in Carrot.KeyCode)
 }
 
 /**
- * This class stores the hex values of the 140 standard HTML & CSS colors, so there is no need to memorize them.
+ * This class stores the hex values of the 140 standard HTML & CSS colors for easy access.
  *
  * @class Carrot.Color
  * @static
@@ -2350,6 +2390,7 @@ Carrot.Color =
 /**
  * This class handles all mouse interactions (but the mouse wheel, yet).
  *
+ * @class Carrot.Mouse
  * @constructor
  * @param {Carrot.Game} game - The core game object.
  */
@@ -2357,6 +2398,7 @@ Carrot.Mouse = function(game)
 {
     this.x = 0;
     this.y = 0;
+    this.wheel = 0;
     this.isDown = [];
     this.isUp = [];
 
