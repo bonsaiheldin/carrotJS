@@ -2,6 +2,30 @@
 
 ---
 
+## Version 0.0.7 - 21th May 2018
+
+The physics system got a great addition: Collision detection. All sprites are rectangles for now, so it only happens between rectangles. Bodies also have a new property called `acceleration`, see below. Also, physics can now be disabled on a body by setting its `enabled` property to `false` which disables physics completely or partly by setting `allowBounce`, `allowDrag`, `allowGravity` or `allowAcceleration` to `false`. Note: `Body.velocity` is an exception and cannot be disabled that way because other physics functions depend on it. Use `Body.enabled` for that instead.
+
+Sprites can now have custom update loops, too. They will are called right **after** the internal `update` loop which has been renamed to `_update` just like `_render`. Use them for running custom code for sprites (or only one of them).
+
+### New Features
+
+* `game.physics.collide(entity1, entity2, callback)` Checks a group or a sprite against a group or sprite for collision. In addition, one can give a callback as the third parameter which will be fired when the collision is detected and which returns the two given entities in the same order they were given. Put that function in a custom `update` loop.
+
+* `game.physics.overlap(entity1, entity2, callback)` The same as `collide` except that no physics are applied. That means, overlapping sprites are detected but not repelled or anything else.
+
+* `Sprite.update` By default an empty function which is called right after the internal `_update` loop. Assign a custom loop for the sprite with changes only applying to the sprite. Makes code organizing easier.
+
+* `Group.setAll(property, value)` has been modified to allow for changing nested objects, too. For example: `Group.setAll("body.enabled", false)` would disable physics on all the bodies of the children of the group. While `Group.setAll("x", 0)` still works as before. It scans down to the third level, so this would also work: `Group.setAll(object.object.property, value)`.
+
+* `Domy.Color` stores the hex values of the 140 standard HTML & CSS colors, so there is no need to memorize them.
+
+* `Domy.Keyboard` not only is the keyboard handler but now also stores the keyCodes of keyboard buttons. Access them by using, for example, `Domy.Keyboard.W` for the `w` button or `Domy.Keyboard.ENTER` for the `enter` button.
+
+* `Domy.Mouse` not only is the mouse handler but now also stores common keyCodes of mouse buttons. For example `Domy.Mouse.LEFT_BUTTON` equals `0`.
+
+---
+
 ## Version 0.0.6 - 21th May 2018
 
 Domy now has a very basic asset loader. Load images and sounds by using `game.load.image(key, path)` and `game.load.sound(key, path)`. They get automatically added to the list of files to download and if all are loaded, the game starts. This introduces a fourth custom state: `preload`. This one can be used to load assets and be added to `Domy.Game` as an additional state beside `create`, `upload` and `render`. Assets have to be loaded and therefore ready to use before the update and render loops should run. Also, the example i uploaded yesterday got updated accordingly.
@@ -10,13 +34,13 @@ The camera has been disabled because of a bug.
 
 ### New features
 
-* `preload()` A new custom state one can give when creating the game. Use it for loading images and sounds. It will be called upon game creation and the game only starts the internal `_update` and `render` loops if all assets have been loaded.
+* `preload()` A new custom state one can give when creating the game. Use it for loading images and sounds. It will be called upon game creation and the game only starts the internal `update` and `render` loops if all assets have been loaded.
 
-* `game.load.image(key, path)` Loads an image. Needs to be put in a `preload` function.
+* `game.load.image(key, path)` Loads an image. Needs to be put in the `preload` function.
 
-* `game.load.sound(key, path)` Load an sound. Needs to be put in a `preload` function.
+* `game.load.sound(key, path)` Load a sound. Needs to be put in the `preload` function.
 
-* `sprite.body.acceleration(x,y)` This the rate of change of the velocity. Measured in pixels per second squared. Use this to for "soft" movement rather than moving immediately.
+* `sprite.body.acceleration(x,y)` This the rate of change of the velocity. Measured in pixels per second squared. Use it for "soft" movement becoming faster rather than moving immediately at full speed.
 
 * `sprite.body.enabled` Disables physics on the sprite if set to `false`. Default: `true`.
 

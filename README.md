@@ -18,7 +18,7 @@ This creates an empty game container. One can also give that function a few para
 
 * `transparent` Defines if the container div shall be have a transparent background. If `false` or parameter not given, the container will have a black background. The default is `null`.
 
-Note: Creating the game returns its core object and one should reference it to a variable to be able to use most of the engine's functions. For example like this: `let game = new.Domy.Game()`.
+Note: Creating the game returns its core object and one should reference it to a variable to be able to use most of the engine's functions. For example like this: `var game = new.Domy.Game()`.
 
 Want to see more? Check out the first example: https://github.com/bonsaiheldin/domy/tree/master/examples/basics
 
