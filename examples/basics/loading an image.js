@@ -2,7 +2,7 @@ game = new Domy.Game
 (
     800, // Width
     600, // Height
-    null // Background div
+    null, // Background div
     { // Custom states and loops
         preload: preload,
         create: create,
