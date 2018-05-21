@@ -6,8 +6,6 @@
 
 Domy now has a very basic asset loader. Load images and sounds by using `game.load.image(key, path)` and `game.load.sound(key, path)`. They get automatically added to the list of files to download and if all are loaded, the game starts. This introduces a fourth custom state: `preload`. This one can be used to load assets and be added to `Domy.Game` as an additional state beside `create`, `upload` and `render`. Assets have to be loaded and therefore ready to use before the update and render loops should run. Also, the example i uploaded yesterday got updated accordingly.
 
-The physics system got a great addition: Collision detection. All sprites are rectangles for now, so it only happens between rectangles. Bodies also have a new property called `acceleration`, see below. Also, physics can now be disabled on a body by setting its `enabled` property to `false` which disables physics completely or partly by setting `allowBounce`, `allowDrag`, `allowGravity` or `allowAcceleration` to `false`. Note: `Body.velocity` is an exception and cannot be disabled that way because other physics functions depend on it. Use `Body.enabled` for that instead.
-
 The camera has been disabled because of a bug.
 
 ### New features
@@ -17,10 +15,6 @@ The camera has been disabled because of a bug.
 * `game.load.image(key, path)` Loads an image. Needs to be put in a `preload` function.
 
 * `game.load.sound(key, path)` Load an sound. Needs to be put in a `preload` function.
-
-* `game.physics.collide(entity1, entity2, callback)` Checks a group or a sprite against a group or sprite for collision. In addition, one can give a callback as the third parameter which will be fired when the collision is detected and which returns the two given entities in the same order they were given. Put that function in a custom `update` loop.
-
-* `game.physics.overlap(entity1, entity2, callback)` The same as `collide` except that no physics are applied. That means, overlapping sprites are detected but not repelled or anything else.
 
 * `sprite.body.acceleration(x,y)` This the rate of change of the velocity. Measured in pixels per second squared. Use this to for "soft" movement rather than moving immediately.
 
