@@ -1,4 +1,4 @@
-let game = new Domy.Game
+let game = new Carrot.Game
 (
     800, // Width
     600, // Height
@@ -15,13 +15,13 @@ let game = new Domy.Game
 function preload()
 {
     // Load an image.
-    game.load.image("test", "test.png");
+    game.load.image("carrot", "carrot.png");
 };
 
 function create()
 {
     // Create a sprite from the loaded image.
-    game.add.sprite(200, 200, "test");
+    game.add.sprite(360, 240, "carrot");
 };
 
 function update()
