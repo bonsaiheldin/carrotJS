@@ -15,13 +15,13 @@ game = new Domy.Game
 function preload()
 {
     // Load an image.
-    app.game.load.image("test", "test.png");
+    game.load.image("test", "test.png");
 };
 
 function create()
 {
     // Create a sprite from the loaded image.
-    app.game.add.sprite(200, 200, "test");
+    game.add.sprite(200, 200, "test");
 };
 
 function update()
