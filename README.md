@@ -31,4 +31,4 @@ https://bonsaiheldin.github.io/carrotjs/
 
 ---
 
-The carrot of the logo was made by @qubodup and was released under the Creative Commons 0 License (Public Domain). https://opengameart.org/content/easter-carrot-pick-up-item
+The carrot of the logo was made by [**@qubodup**](https://github.com/qubodup) and released under the Creative Commons 0 License (Public Domain). https://opengameart.org/content/easter-carrot-pick-up-item
