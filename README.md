@@ -3,6 +3,8 @@ Domy is a 2D game framework for making HTML5 games which follows a different app
 
 For now it thankfully includes https://github.com/IceCreamYou/MainLoop.js for the two core loops.
 
+> Please note that this framework is in active development and **not ready to use**.
+
 ### Introduction
 
 A game can be created and started by a single line of code:
