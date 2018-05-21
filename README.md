@@ -1,4 +1,4 @@
-# 🥕 CarrotJS - HTML5 Game Framework
+# ![]() CarrotJS - HTML5 Game Framework
 CarrotJS is a 2D game framework for making HTML5 games which follows a different approach: Instead of using Canvas2D or WebGL for rendering it is entirely based on DOM elements (divs, to be exactly) and CSS. It's an experiment to see what is possible since it is commonly known that DOM manipulations are rather slow in comparison to Canvas2D or WebGL. I'm also developing it just because it's fun and a possibility to learn more about Javascript, CSS and the DOM. ✨
 
 For now it thankfully includes https://github.com/IceCreamYou/MainLoop.js for the two core loops.
@@ -28,3 +28,7 @@ There is a documentation, too. Keep in mind that it is a work on progress, just 
 
 ## Documentation
 https://bonsaiheldin.github.io/carrotjs/
+
+---
+
+The carrot of the logo was made by @qubodup and was released under the Creative Commons 0 License (Public Domain). https://opengameart.org/content/easter-carrot-pick-up-item
