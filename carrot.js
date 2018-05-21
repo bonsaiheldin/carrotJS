@@ -1,45 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: domy.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: domy.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @author       Bonsaiheldin &lt;dm@bonsaiheld.org> (http://bonsaiheld.org/)
+/**
+ * @author       Bonsaiheldin <dm@bonsaiheld.org> (http://bonsaiheld.org/)
  * @copyright    2018 Bonsaiheldin
- * @license      {@link https://github.com/bonsaiheldin/domy/blob/master/LICENSE.md|MIT License}
+ * @license      {@link https://github.com/bonsaiheldin/carrotjs/blob/master/LICENSE.md|MIT License}
  */
 
 /** Initialize the main object with all expected properties
  *
- * @class Domy
+ * @class Carrot
  * @static
  */
-var Domy = Domy ||
+var Carrot = Carrot ||
 {
-    "Version": "0.0.6",
+    "Version": "0.0.7",
     /*
     "Game": {},
     "Camera": {},
@@ -58,12 +30,12 @@ var Domy = Domy ||
     */
 };
 
-console.log("%cDomy v" + Domy.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/domy", "font-weight: bold;");
+console.log("%CarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotjs", "font-weight: bold;");
 
 /**
  * The core game object. Starts the game.
  *
- * @class Domy.Game
+ * @class Carrot.Game
  * @constructor
  * @param {number} [width=800] - The width of the container.
  * @param {number} [height=600] - The height of the container.
@@ -71,7 +43,7 @@ console.log("%cDomy v" + Domy.Version + " | HTML5 DOM game engine | https://gith
  * @param {object} [states=null] - Custom states the game shall use.
  * @param {boolean} [transparent=false] - Defines if the container shall be transparent.
  */
-Domy.Game = function(width, height, parent, states, transparent)
+Carrot.Game = function(width, height, parent, states, transparent)
 {
     let that = this;
     let start = function()
@@ -114,19 +86,19 @@ Domy.Game = function(width, height, parent, states, transparent)
         that.background.style.width = that.width + 'px';
         that.background.style.height = that.height + 'px';
         that.background.style.overflow = "hidden";
-        that.parent.className = 'domy';
+        that.parent.className = 'carrotjs';
 
         // Init modules
-        that.physics  = new Domy.Physics(that);
-        that.world    = new Domy.World(that);
-        that.camera   = new Domy.Camera(that);
-        that.time     = new Domy.Time(that);
-        that.cache    = new Domy.Cache(that);
-        that.load     = new Domy.AssetLoader(that);
-        that.add      = new Domy.ObjectFactory(that);
-        that.sound    = new Domy.SoundManager(that);
-        that.keyboard = new Domy.Keyboard(that);
-        that.mouse    = new Domy.Mouse(that);
+        that.physics  = new Carrot.Physics(that);
+        that.world    = new Carrot.World(that);
+        that.camera   = new Carrot.Camera(that);
+        that.time     = new Carrot.Time(that);
+        that.cache    = new Carrot.Cache(that);
+        that.load     = new Carrot.AssetLoader(that);
+        that.add      = new Carrot.ObjectFactory(that);
+        that.sound    = new Carrot.SoundManager(that);
+        that.keyboard = new Carrot.Keyboard(that);
+        that.mouse    = new Carrot.Mouse(that);
 
         // Run the given preload state, if available.
         if (that.states !== null)
@@ -143,11 +115,11 @@ Domy.Game = function(width, height, parent, states, transparent)
     document.addEventListener('DOMContentLoaded', start, false);
 }
 
-Domy.Game.prototype =
+Carrot.Game.prototype =
 {
     /**
      * The update loop of the core. Happens automatically.
-     * @method Domy.Game#_update
+     * @method Carrot.Game#_update
      * @private
      */
     _update(delta)
@@ -168,7 +140,7 @@ Domy.Game.prototype =
 
     /**
      * The render loop of the core. Happens automatically.
-     * @method Domy.Game#_render
+     * @method Carrot.Game#_render
      * @private
      */
     _render()
@@ -188,7 +160,7 @@ Domy.Game.prototype =
 
     /**
      * Starts the update and the render loops of the core.
-     * @method Domy.Game#_render
+     * @method Carrot.Game#_render
      * @private
      */
     start(game)
@@ -213,35 +185,35 @@ Domy.Game.prototype =
     }
 };
 
-Domy.Game.prototype.constructor = Domy.Game;
+Carrot.Game.prototype.constructor = Carrot.Game;
 
 /**
  * The world container stores every sprite or group and updates them automatically.
  *
- * @class Domy.World
+ * @class Carrot.World
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.World = function(game)
+Carrot.World = function(game)
 {
     this.game = game;
-    this.camera = new Domy.Camera(this.game);
+    this.camera = new Carrot.Camera(this.game);
     this.x = 0;
     this.y = 0;
     this.width = this.game.width;
     this.height = this.game.height;
-    this.bounds = new Domy.Rectangle(this.x, this.y, this.width, this.height);
+    this.bounds = new Carrot.Rectangle(this.x, this.y, this.width, this.height);
 
     this.children = [];
 
     return this;
 };
 
-Domy.World.prototype =
+Carrot.World.prototype =
 {
     /**
      * Adds a child to the world container. The child can be a sprite or a group.
-     * @method Domy.World#addChild
+     * @method Carrot.World#addChild
      * @param {object} entity - The child.
      */
     addChild(entity)
@@ -251,7 +223,7 @@ Domy.World.prototype =
 
     /**
      * Removes the given child from the world container.
-     * @method Domy.World#removeChild
+     * @method Carrot.World#removeChild
      * @param {object} entity - The child.
      */
     removeChild(entity)
@@ -261,12 +233,12 @@ Domy.World.prototype =
 
     /**
      * The update loop of the world container. Happens automatically.
-     * @method Domy.World#_update
+     * @method Carrot.World#_update
      * @private
      */
     _update()
     {
-        for (let i = 0; i &lt; this.children.length; i++)
+        for (let i = 0; i < this.children.length; i++)
         {
             let child = this.children[i];
 
@@ -276,12 +248,12 @@ Domy.World.prototype =
 
     /**
      * The render loop of the world container. Happens automatically.
-     * @method Domy.World#_render
+     * @method Carrot.World#_render
      * @private
      */
     _render()
     {
-        for (let i = 0; i &lt; this.children.length; i++)
+        for (let i = 0; i < this.children.length; i++)
         {
             let child = this.children[i];
 
@@ -290,16 +262,16 @@ Domy.World.prototype =
     }
 };
 
-Domy.World.prototype.constructor = Domy.World;
+Carrot.World.prototype.constructor = Carrot.World;
 
 /**
  * The camera. It is added to the core loops and updates automatically.
  *
- * @class Domy.Camera
+ * @class Carrot.Camera
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Camera = function(game)
+Carrot.Camera = function(game)
 {
     this.game = game;
     this.world = this.game.world;
@@ -310,7 +282,7 @@ Domy.Camera = function(game)
     this.y = 0;
     this.width = this.game.width;
     this.height = this.game.height;
-    this.bounds = new Domy.Rectangle(this.x, this.y, this.width, this.height);
+    this.bounds = new Carrot.Rectangle(this.x, this.y, this.width, this.height);
     this.left   = this.x;
     this.right  = this.x + this.width;
     this.top    = this.y;
@@ -325,11 +297,11 @@ Domy.Camera = function(game)
     return this;
 };
 
-Domy.Camera.prototype =
+Carrot.Camera.prototype =
 {
     /**
      * Let the camera follow an entity.
-     * @method Domy.Camera#follow
+     * @method Carrot.Camera#follow
      * @param {object} game - The entity.
      */
     follow(target)
@@ -342,7 +314,7 @@ Domy.Camera.prototype =
 
     /**
      * Let the camera stop following any entity.
-     * @method Domy.Camera#unfollow
+     * @method Carrot.Camera#unfollow
      */
     unfollow()
     {
@@ -351,7 +323,7 @@ Domy.Camera.prototype =
 
     /**
      * The update loop of the camera. Happens automatically.
-     * @method Domy.Camera#_update
+     * @method Carrot.Camera#_update
      * @private
      */
     _update()
@@ -363,14 +335,14 @@ Domy.Camera.prototype =
 
             // Left / right
             if (targetX > this.width * 0.5
-             &amp;&amp; targetX &lt;= this.world.width - (this.width * 0.5))
+             && targetX <= this.world.width - (this.width * 0.5))
             {
                 this._x = targetX - (this.width * 0.5);
             }
 
             // Top / bottom
             if (targetY > this.height * 0.5
-             &amp;&amp; targetY &lt;= this.world.height - (this.height * 0.5))
+             && targetY <= this.world.height - (this.height * 0.5))
             {
                 this._y = targetY - (this.height * 0.5);
             }
@@ -385,7 +357,7 @@ Domy.Camera.prototype =
 
     /**
      * The render loop of the camera. Happens automatically.
-     * @method Domy.Camera#_render
+     * @method Carrot.Camera#_render
      * @private
      */
     _render()
@@ -402,22 +374,22 @@ Domy.Camera.prototype =
     }
 };
 
-Domy.Camera.prototype.constructor = Domy.Camera;
+Carrot.Camera.prototype.constructor = Carrot.Camera;
 
 /**
  * Groups are containers storing game objects (sprites). They are added automatically to the world container.
  *
- * @class Domy.Group
+ * @class Carrot.Group
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Group = function(game)
+Carrot.Group = function(game)
 {
     this.game = game;
     this.world = this.game.world;
 
     // Internal values
-    this.type = Domy.GROUP;
+    this.type = Carrot.GROUP;
     this.children = [];
     this.length = this.children.length;
 
@@ -427,12 +399,12 @@ Domy.Group = function(game)
     return this;
 };
 
-Domy.Group.prototype =
+Carrot.Group.prototype =
 {
     /**
      * Adds an entity to a group. The entity has to be a sprite.
      *
-     * @method Domy.Group#addChild
+     * @method Carrot.Group#addChild
      * @param {object} entity - The entity.
      */
     addChild(entity)
@@ -451,7 +423,7 @@ Domy.Group.prototype =
     /**
      * Removes the given entity from a group.
      *
-     * @method Domy.Group#removeChild
+     * @method Carrot.Group#removeChild
      * @param {object} entity - The entity.
      */
     removeChild(entity)
@@ -470,7 +442,7 @@ Domy.Group.prototype =
     /**
      * Iterates all children of the group and sets their `property` to the given `value`.
      *
-     * @method Domy.Group#setAll
+     * @method Carrot.Group#setAll
      * @param {string} property - The property to change.
      * @param {any} value - The new value for the property.
      */
@@ -478,7 +450,7 @@ Domy.Group.prototype =
     {
         property = property.split('.');
 
-        for (let i = 0; i &lt; this.children.length; i++)
+        for (let i = 0; i < this.children.length; i++)
         {
             let child = this.children[i];
 
@@ -510,7 +482,7 @@ Domy.Group.prototype =
     /**
      * Destroys the sprite and removes it entirely from the game world.
      *
-     * @method Domy.Group#destroy
+     * @method Carrot.Group#destroy
      */
     destroy()
     {
@@ -520,12 +492,12 @@ Domy.Group.prototype =
 
     /**
      * The update loop of the group. Happens automatically.
-     * @method Domy.Group#_update
+     * @method Carrot.Group#_update
      * @private
      */
     _update()
     {
-        for (let i = 0; i &lt; this.children.length; i++)
+        for (let i = 0; i < this.children.length; i++)
         {
             let child = this.children[i];
 
@@ -535,12 +507,12 @@ Domy.Group.prototype =
 
     /**
      * The render loop of the group. Happens automatically.
-     * @method Domy.Group#_render
+     * @method Carrot.Group#_render
      * @private
      */
     _render()
     {
-        for (let i = 0; i &lt; this.children.length; i++)
+        for (let i = 0; i < this.children.length; i++)
         {
             let child = this.children[i];
 
@@ -549,21 +521,21 @@ Domy.Group.prototype =
     }
 };
 
-Domy.Group.prototype.constructor = Domy.Group;
+Carrot.Group.prototype.constructor = Carrot.Group;
 
 /**
  * Sprites are game objects which contain the actual HTML elements for rendering.
  *
- * @class Domy.Sprite
+ * @class Carrot.Sprite
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  * @param {number} [x=0] - The x coordinate in the world of the sprite.
  * @param {number} [y=0] - The y coordinate in the world of the sprite.
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
  * @param {string} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
- * @param {Domy.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
+ * @param {Carrot.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
  */
-Domy.Sprite = function(game, x, y, key, frame, group)
+Carrot.Sprite = function(game, x, y, key, frame, group)
 {
     this.x = x || 0;
     this.y = y || 0;
@@ -574,7 +546,7 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     this.name = "Unknown sprite";
 
     // Internal values
-    this.type = Domy.SPRITE;
+    this.type = Carrot.SPRITE;
     this.game = game;
     this.world = this.game.world;
     this.camera = this.game.camera;
@@ -582,7 +554,7 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     this.alpha = 1;
     this.width = 32;
     this.height = 32;
-    this.anchor = new Domy.Point(0, 0);
+    this.anchor = new Carrot.Point(0, 0);
     this.left   = this.x - (this.width * this.anchor.x);
     this.right  = this.left + this.width;
     this.top    = this.y - (this.height * this.anchor.y);
@@ -593,7 +565,7 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     this.css.transform = ''; // String to collect CSS transforms for this sprite.
 
     // Physics body
-    this.body = new Domy.Physics.Body(this);
+    this.body = new Carrot.Physics.Body(this);
 
     // HTML magic
     this.image = document.createElement('div');
@@ -612,11 +584,15 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     // If an image was given, apply it as a background image
     else
     {
+        this.width  = this.game.cache.images[this.key].width;
+        this.height = this.game.cache.images[this.key].height;
         this.image.style.backgroundImage = "url(" + this.game.cache.images[this.key].src + ")";
 
         // Apply frame on spritesheet
         if (this.frame !== 0)
         {
+            this.width  = this.game.cache.images[this.key].width;
+            this.height = this.game.cache.images[this.key].height;
             let frame = this.game.cache.images[this.key].frames[this.frame];
             this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
         }
@@ -631,12 +607,12 @@ Domy.Sprite = function(game, x, y, key, frame, group)
     return this;
 };
 
-Domy.Sprite.prototype =
+Carrot.Sprite.prototype =
 {
     /**
      * Kills the sprite. Just a placeholder for now. Later it will be used as a soft destroy for object pooling.
      *
-     * @method Domy.Sprite#kill
+     * @method Carrot.Sprite#kill
      */
     kill()
     {
@@ -646,7 +622,7 @@ Domy.Sprite.prototype =
     /**
      * Destroys the sprite and removes it entirely from the game world.
      *
-     * @method Domy.Sprite#destroy
+     * @method Carrot.Sprite#destroy
      */
     destroy()
     {
@@ -668,7 +644,7 @@ Domy.Sprite.prototype =
     /**
      * Changes the width of the sprite.
      *
-     * @method Domy.Sprite#setWidth
+     * @method Carrot.Sprite#setWidth
      * @param {number} [width=0]
      */
     setWidth(width)
@@ -680,7 +656,7 @@ Domy.Sprite.prototype =
     /**
      * Changes the height of the sprite.
      *
-     * @method Domy.Sprite#setHeight
+     * @method Carrot.Sprite#setHeight
      * @param {number} [height=0]
      */
     setHeight(height)
@@ -692,7 +668,7 @@ Domy.Sprite.prototype =
     /**
      * Changes the frame shown. Only for spritesheets.
      *
-     * @method Domy.Sprite#setFrame
+     * @method Carrot.Sprite#setFrame
      * @param {number} [frame=0]
      */
     setFrame(frame)
@@ -705,10 +681,10 @@ Domy.Sprite.prototype =
     /**
      * Applies a glow effect on the sprite. Its shape is determined by the sprite's body and can be a rectangle or a circle.
      *
-     * @method Domy.Sprite#setGlow
+     * @method Carrot.Sprite#setGlow
      * @param {number} [blur=0] - Blur in pixels.
      * @param {number} [spread=0] - Spread in pixels.
-     * @param {Domy.Color | string} [color="#00ff00"] - The color of the glow. Must be given in one of the following formats: Hexadecimal, RGB, RGBA, HSL, HSLA or one of the 140 predefined browser colors.
+     * @param {Carrot.Color | string} [color="#00ff00"] - The color of the glow. Must be given in one of the following formats: Hexadecimal, RGB, RGBA, HSL, HSLA or one of the 140 predefined browser colors.
      * @param {boolean} [inset=null] - Defines if the glow should be go out or inside the sprite.
      */
      setGlow(blur, spread, color, inset)
@@ -736,7 +712,7 @@ Domy.Sprite.prototype =
 
     /**
      * The update loop of the sprite. Happens automatically.
-     * @method Domy.Sprite#_update
+     * @method Carrot.Sprite#_update
      * @private
      */
     _update()
@@ -751,9 +727,9 @@ Domy.Sprite.prototype =
         this.inCamera = false;
 
         if (this.right  >= this.camera.left
-         &amp;&amp; this.bottom >= this.camera.top
-         &amp;&amp; this.left   &lt;= this.camera.right
-         &amp;&amp; this.top    &lt;= this.camera.bottom)
+         && this.bottom >= this.camera.top
+         && this.left   <= this.camera.right
+         && this.top    <= this.camera.bottom)
         {
             this.inCamera = true;
         }
@@ -823,7 +799,7 @@ Domy.Sprite.prototype =
                 if (this.body.collideWorldBounds)
                 {
                     // Left, right, top, bottom
-                    if (this.x &lt;= thisWidth)
+                    if (this.x <= thisWidth)
                     {
                         this.x = thisWidth;
 
@@ -851,7 +827,7 @@ Domy.Sprite.prototype =
                         }
                     }
 
-                    if (this.y &lt;= thisHeight)
+                    if (this.y <= thisHeight)
                     {
                         this.y = thisHeight;
 
@@ -883,13 +859,13 @@ Domy.Sprite.prototype =
         }
 
         // Kill the sprite if it leaves the world bounds
-        // >>>>>>>>>>>>>>>>>>>>> Bug! &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+        // >>>>>>>>>>>>>>>>>>>>> Bug! <<<<<<<<<<<<<<<<<<
         if (this.outOfBoundsKill)
         {
             // Left, right, top, bottom
-            if (this.x &lt; thisWidth
+            if (this.x < thisWidth
              || this.x > worldWidth  + thisWidth
-             || this.y &lt; thisHeight
+             || this.y < thisHeight
              || this.y > worldHeight + thisHeight)
             {
                 //this.kill();
@@ -911,7 +887,7 @@ Domy.Sprite.prototype =
 
     /**
      * The render loop of the sprite. Happens automatically.
-     * @method Domy.Sprite#_render
+     * @method Carrot.Sprite#_render
      * @private
      */
     _render()
@@ -920,16 +896,16 @@ Domy.Sprite.prototype =
     }
 };
 
-Domy.Sprite.prototype.constructor = Domy.Sprite;
+Carrot.Sprite.prototype.constructor = Carrot.Sprite;
 
 /**
  * The Time container stores the current time, the time the game has started at and the delta time for animating.
  *
- * @class Domy.Time
+ * @class Carrot.Time
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Time = function(game)
+Carrot.Time = function(game)
 {
     this.game = game;
 
@@ -940,11 +916,11 @@ Domy.Time = function(game)
     return this;
 };
 
-Domy.Time.prototype =
+Carrot.Time.prototype =
 {
     /**
      * The update loop of the time object. Happens automatically.
-     * @method Domy.Time#_update
+     * @method Carrot.Time#_update
      * @private
      */
     _update(delta)
@@ -955,70 +931,70 @@ Domy.Time.prototype =
     }
 };
 
-Domy.Time.prototype.constructor = Domy.Time;
+Carrot.Time.prototype.constructor = Carrot.Time;
 
 /**
  * The Math object offers various standard math functions like measuring a distance.
  *
- * @class Domy.Math
+ * @class Carrot.Math
  * @static
  */
-Domy.Math = {
+Carrot.Math = {
 
     /**
     * PI.
-    * @property {number} Domy.Math#PI
+    * @property {number} Carrot.Math#PI
     * @type {number}
     */
     PI: Math.PI,
 
     /**
     * Twice PI.
-    * @property {number} Domy.Math#PI2
+    * @property {number} Carrot.Math#PI2
     * @type {number}
     */
     PI2: Math.PI * 2,
 
     /**
     * Degrees to Radians factor.
-    * @property {number} Domy.Math#DEG_TO_RAD
+    * @property {number} Carrot.Math#DEG_TO_RAD
     */
     DEG_TO_RAD: Math.PI / 180,
 
     /**
     * Degrees to Radians factor.
-    * @property {number} Domy.Math#RAD_TO_DEG
+    * @property {number} Carrot.Math#RAD_TO_DEG
     */
     RAD_TO_DEG: 180 / Math.PI,
 
     /**
     * Convert degrees to radians.
     *
-    * @method Domy.Math#degToRad
+    * @method Carrot.Math#degToRad
     * @param {number} degrees - Angle in degrees.
     * @return {number} Angle in radians.
     */
     degToRad(degrees)
     {
-        return degrees * Domy.Math.DEG_TO_RAD;
+        return degrees * Carrot.Math.DEG_TO_RAD;
     },
 
     /**
     * Convert radians to degrees.
     *
-    * @method Domy.Math#radToDeg
+    * @method Carrot.Math#radToDeg
     * @param {number} radians - Angle in radians.
     * @return {number} Angle in degrees.
     */
     radToDeg(radians)
     {
-        return radians * Domy.Math.RAD_TO_DEG;
+        return radians * Carrot.Math.RAD_TO_DEG;
     },
 
     /**
     * Returns an integer between (including) min and (including) max
     *
-    * @method Domy.Math#integerInRange
+    * @method Carrot.Math#integerInRange
     * @param {number} min - Min.
     * @param {number} max - Max.
     * @return {number}
@@ -1031,7 +1007,7 @@ Domy.Math = {
     /** Returns the direction between two poins in degrees */
     angleBetweenPoints(x1, y1, x2, y2)
     {
-        return Math.atan2(y2 - y1, x2 - x1) * Domy.Math.RAD_TO_DEG;
+        return Math.atan2(y2 - y1, x2 - x1) * Carrot.Math.RAD_TO_DEG;
     },
 
     /** Returns the distance between two vectors */
@@ -1044,27 +1020,27 @@ Domy.Math = {
 /**
  * The Sound Manager offers audio functions.
  *
- * @class Domy.SoundManager
+ * @class Carrot.SoundManager
  * @constructor
- * @param {Domy.Game} game - The global game object.
+ * @param {Carrot.Game} game - The global game object.
  */
-Domy.SoundManager = function(game)
+Carrot.SoundManager = function(game)
 {
     this.game = game;
 
     return this;
 };
 
-Domy.SoundManager.prototype =
+Carrot.SoundManager.prototype =
 {
     /**
-     * Plays an audio file that has been loaded before by the {Domy.AssetLoader};
-     * @method Domy.SoundManager#play
+     * Plays an audio file that has been loaded before by the {Carrot.AssetLoader};
+     * @method Carrot.SoundManager#play
      * @private
      */
     play(file, loop)
     {
-        var file = Domy.Sounds[file];
+        var file = Carrot.Sounds[file];
         if (! file.paused)
         {
             file.pause();
@@ -1085,50 +1061,50 @@ Domy.SoundManager.prototype =
     }
 };
 
-Domy.SoundManager.prototype.constructor = Domy.SoundManager;
+Carrot.SoundManager.prototype.constructor = Carrot.SoundManager;
 
 // Physics
 
 /**
  * The Physics object offers physics related functions like collision detection.
  *
- * @class Domy.Physics
+ * @class Carrot.Physics
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Physics = function(game)
+Carrot.Physics = function(game)
 {
     this.game = game;
 }
 
-Domy.Physics.prototype =
+Carrot.Physics.prototype =
 {
     /**
     * Checks for collision between entities which can be sprites or groups.
     *
-    * @method Domy.Physics#collide
-    * @param {Domy.Group | Domy.Sprite} entity1
-    * @param {Domy.Group | Domy.Sprite} entity2
+    * @method Carrot.Physics#collide
+    * @param {Carrot.Group | Carrot.Sprite} entity1
+    * @param {Carrot.Group | Carrot.Sprite} entity2
     * @param {function} [callback=null] - The function that shall be executed when the collision happens.
     */
     collide(entity1, entity2, callback)
     {
-        if (entity1.type === Domy.SPRITE)
+        if (entity1.type === Carrot.SPRITE)
         {
-            if (entity2.type === Domy.SPRITE)
+            if (entity2.type === Carrot.SPRITE)
             {
                 //this.collideSpriteVsSprite(entity1, entity2, callback);
             }
 
-            else if (entity2.type === Domy.GROUP)
+            else if (entity2.type === Carrot.GROUP)
             {
                 //this.collideSpriteVsGroup(entity1, entity2, callback);
             }
         }
 
-        else if (entity1.type === Domy.GROUP)
+        else if (entity1.type === Carrot.GROUP)
         {
-            if (entity2.type === Domy.SPRITE)
+            if (entity2.type === Carrot.SPRITE)
             {
                 this.collideSpriteVsGroup(entity2, entity1, callback);
             }
@@ -1138,29 +1114,29 @@ Domy.Physics.prototype =
     /**
     * Checks for overlapping between entities which can be sprites or groups.
     *
-    * @method Domy.Physics#collide
-    * @param {Domy.Group | Domy.Sprite} entity1
-    * @param {Domy.Group | Domy.Sprite} entity2
+    * @method Carrot.Physics#collide
+    * @param {Carrot.Group | Carrot.Sprite} entity1
+    * @param {Carrot.Group | Carrot.Sprite} entity2
     * @param {function} [callback=null] - The function that shall be executed when the overlapping happens.
     */
     overlap(entity1, entity2, callback)
     {
-        if (entity1.type === Domy.SPRITE)
+        if (entity1.type === Carrot.SPRITE)
         {
-            if (entity2.type === Domy.SPRITE)
+            if (entity2.type === Carrot.SPRITE)
             {
                 //this.collideSpriteVsSprite(entity1, entity2, callback, true);
             }
 
-            else if (entity2.type === Domy.GROUP)
+            else if (entity2.type === Carrot.GROUP)
             {
                 //this.collideSpriteVsGroup(entity1, entity2, callback, true);
             }
         }
 
-        else if (entity1.type === Domy.GROUP)
+        else if (entity1.type === Carrot.GROUP)
         {
-            if (entity2.type === Domy.SPRITE)
+            if (entity2.type === Carrot.SPRITE)
             {
                 this.collideSpriteVsGroup(entity2, entity1, callback, true);
             }
@@ -1170,19 +1146,19 @@ Domy.Physics.prototype =
     /**
     * Checks for collision between groups. Use collide or overlap instead.
     *
-    * @method Domy.Physics#collide
-    * @param {Domy.Group} group1
-    * @param {Domy.Group} group2
+    * @method Carrot.Physics#collide
+    * @param {Carrot.Group} group1
+    * @param {Carrot.Group} group2
     * @param {function} [callback=null] - The function that shall be executed when the collision or overlapping happens.
     * @param {boolean} [overlapOnly=false] - Defines if the function shall only check for overlapping and disable physics.
     * @private
     */
     collideGroupVsGroup(group1, group2, callback, overlapOnly)
     {
-        for (let i = 0; i &lt; group1.children.length; i++)
+        for (let i = 0; i < group1.children.length; i++)
         {
             let a = group1.children[i];
-            for (let j = 0; j &lt; group2.children.length; j++)
+            for (let j = 0; j < group2.children.length; j++)
             {
                 let b = group2.children[j];
                 if (b !== a)
@@ -1198,7 +1174,7 @@ Domy.Physics.prototype =
                             }
 
                             // Coming from the right.
-                            else if (a.body.velocity.x &lt; 0)
+                            else if (a.body.velocity.x < 0)
                             {
                                 a.x = b.right + 2;
                             }
@@ -1210,14 +1186,14 @@ Domy.Physics.prototype =
                             }
 
                             // Coming from the bottom.
-                            else if (a.body.velocity.y &lt; 0)
+                            else if (a.body.velocity.y < 0)
                             {
                                 a.y = b.bottom + 2;
                             }
                         }
 
                         // If a callback was given, fire it.
-                        if (callback !== null &amp;&amp; callback !== undefined)
+                        if (callback !== null && callback !== undefined)
                         {
                             callback(a, b);
                         }
@@ -1231,9 +1207,9 @@ Domy.Physics.prototype =
     var rect1 = {x: 5, y: 5, width: 50, height: 50}
     var rect2 = {x: 20, y: 10, width: 10, height: 10}
 
-    if (rect1.x &lt; rect2.x + rect2.width &amp;&amp;
-       rect1.x + rect1.width > rect2.x &amp;&amp;
-       rect1.y &lt; rect2.y + rect2.height &amp;&amp;
+    if (rect1.x < rect2.x + rect2.width &&
+       rect1.x + rect1.width > rect2.x &&
+       rect1.y < rect2.y + rect2.height &&
        rect1.height + rect1.y > rect2.y) {
         // collision detected!
     }
@@ -1242,19 +1218,19 @@ Domy.Physics.prototype =
     /**
     * Checks for intersection between two rectangles.
     *
-    * @method Domy.Physics#intersectRectangles
-    * @param {Domy.Rectangle} a
-    * @param {Domy.Rectangle} b
+    * @method Carrot.Physics#intersectRectangles
+    * @param {Carrot.Rectangle} a
+    * @param {Carrot.Rectangle} b
     * @private
     */
     intersectRectangles(a, b)
     {
-        if (a.right &lt;= b.x)
+        if (a.right <= b.x)
         {
             return false;
         }
 
-        if (a.bottom &lt;= b.y)
+        if (a.bottom <= b.y)
         {
             return false;
         }
@@ -1271,19 +1247,19 @@ Domy.Physics.prototype =
 
         return true;
         /*
-        return (a.left   &lt; b.right
-             &amp;&amp; a.right  > b.left
-             &amp;&amp; a.top    &lt; b.bottom
-             &amp;&amp; a.bottom > b.top);
+        return (a.left   < b.right
+             && a.right  > b.left
+             && a.top    < b.bottom
+             && a.bottom > b.top);
              */
     },
 
     /**
     * Checks for intersection between two circles.
     *
-    * @method Domy.Physics#intersectRectangles
-    * @param {Domy.Circle} a
-    * @param {Domy.Circle} b
+    * @method Carrot.Physics#intersectRectangles
+    * @param {Carrot.Circle} a
+    * @param {Carrot.Circle} b
     * @private
     */
     intersectCircles(a, b)
@@ -1291,32 +1267,32 @@ Domy.Physics.prototype =
         let x = a.x - b.x;
         let y = a.y - b.y;
         let r = (a.width * 0.5) + (b.width * 0.5);
-        return (x * x) + (y * y) &lt; (r * r);
+        return (x * x) + (y * y) < (r * r);
     }
 };
 
-Domy.Physics.prototype.constructor = Domy.Physics;
+Carrot.Physics.prototype.constructor = Carrot.Physics;
 
 /**
  * Creates a physics body.
  *
- * @class Domy.Physics.Body
+ * @class Carrot.Physics.Body
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  * @param {number} x - X position relative to the sprite.
  * @param {number} y - Y position relative the sprite.
  */
-Domy.Physics.Body = function(parent, x, y)
+Carrot.Physics.Body = function(parent, x, y)
 {
     this.parent = parent;
     this.x = x || 0;
     this.y = y || 0;
 
-    this.velocity     = new Domy.Point(0, 0);
-    this.bounce       = new Domy.Point(0, 0);
-    this.drag         = new Domy.Point(0, 0);
-    this.gravity      = new Domy.Point(0, 0);
-    this.acceleration = new Domy.Point(0, 0);
+    this.velocity     = new Carrot.Point(0, 0);
+    this.bounce       = new Carrot.Point(0, 0);
+    this.drag         = new Carrot.Point(0, 0);
+    this.gravity      = new Carrot.Point(0, 0);
+    this.acceleration = new Carrot.Point(0, 0);
 
     this.allowBounce       = true;
     this.allowDrag         = true;
@@ -1341,12 +1317,12 @@ Domy.Physics.Body = function(parent, x, y)
     return this;
 };
 
-Domy.Physics.Body.prototype =
+Carrot.Physics.Body.prototype =
 {
     /**
     * Changes the shape of the body and its parent sprite into a circle.
     *
-    * @method Domy.Physics#setCircle
+    * @method Carrot.Physics#setCircle
     */
     setCircle()
     {
@@ -1359,7 +1335,7 @@ Domy.Physics.Body.prototype =
     /**
     * Changes the shape of the body and its parent sprite into a rectangle.
     *
-    * @method Domy.Physics#setRectangle.
+    * @method Carrot.Physics#setRectangle.
     */
     setRectangle()
     {
@@ -1370,16 +1346,16 @@ Domy.Physics.Body.prototype =
     }
 };
 
-Domy.Physics.Body.prototype.constructor = Domy.Physics.Body;
+Carrot.Physics.Body.prototype.constructor = Carrot.Physics.Body;
 
 /**
  * This class stores images, sounds and custom CSS classes.
  *
- * @class Domy.Cache
+ * @class Carrot.Cache
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Cache = function(game)
+Carrot.Cache = function(game)
 {
     this.game = game;
 
@@ -1388,21 +1364,21 @@ Domy.Cache = function(game)
     this.classes = {};
 };
 
-Domy.Cache.prototype =
+Carrot.Cache.prototype =
 {
 
 };
 
-Domy.Cache.prototype.constructor = Domy.Cache;
+Carrot.Cache.prototype.constructor = Carrot.Cache;
 
 /**
  * This class allows for creating ingame stylesheets.
  *
- * @class Domy.Class
+ * @class Carrot.Class
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Class = function(game, name, css)
+Carrot.Class = function(game, name, css)
 {
     this.game = game;
 
@@ -1412,12 +1388,12 @@ Domy.Class = function(game, name, css)
     return this;
 };
 
-Domy.Class.prototype =
+Carrot.Class.prototype =
 {
     /**
      * Adds a new CSS rule to the class.
      *
-     * @method Domy.Class#add
+     * @method Carrot.Class#add
      * @param {string} name - The unique name of the class.
      * @param {object} [style=null] - The style of the class. Default: null.
      */
@@ -1441,7 +1417,7 @@ Domy.Class.prototype =
     /**
      * Removes an existing CSS rule from the class.
      *
-     * @method Domy.Class#remove
+     * @method Carrot.Class#remove
      * @param {string} name - The unique name of the class.
      */
     remove(name)
@@ -1452,7 +1428,7 @@ Domy.Class.prototype =
     /**
      * Edits an existing CSS rule of the class.
      *
-     * @method Domy.Class#add
+     * @method Carrot.Class#add
      * @param {string} name - The unique name of the class.
      * @param {string} key
      * @param {string} value
@@ -1466,17 +1442,17 @@ Domy.Class.prototype =
     },
 };
 
-Domy.Class.prototype.constructor = Domy.Class;
+Carrot.Class.prototype.constructor = Carrot.Class;
 
 /**
  * Creates a point.
  *
- * @class Domy.Point
+ * @class Carrot.Point
  * @constructor
  * @param {number} [x=0]
  * @param {number} [y=0]
  */
-Domy.Point = function(x, y)
+Carrot.Point = function(x, y)
 {
     x = x || 0;
     y = y || 0;
@@ -1486,12 +1462,12 @@ Domy.Point = function(x, y)
     return this;
 };
 
-Domy.Point.prototype =
+Carrot.Point.prototype =
 {
     /**
      * Sets the point up.
      *
-     * @method Domy.Point#setTo
+     * @method Carrot.Point#setTo
      * @param {number} x
      * @param {number} y
      */
@@ -1505,14 +1481,14 @@ Domy.Point.prototype =
 /**
  * Creates a rectangle.
  *
- * @class Domy.Rectangle
+ * @class Carrot.Rectangle
  * @constructor
  * @param {number} [x=0]
  * @param {number} [y=0]
  * @param {number} [width=0]
  * @param {number} [height=0]
  */
-Domy.Rectangle = function(x, y, width, height)
+Carrot.Rectangle = function(x, y, width, height)
 {
     x = x || 0;
     y = y || 0;
@@ -1524,12 +1500,12 @@ Domy.Rectangle = function(x, y, width, height)
     return this;
 };
 
-Domy.Rectangle.prototype =
+Carrot.Rectangle.prototype =
 {
     /**
      * Sets the rectangle up.
      *
-     * @method Domy.Rectangle#setTo
+     * @method Carrot.Rectangle#setTo
      * @param {number} x
      * @param {number} y
      * @param {number} width
@@ -1547,13 +1523,13 @@ Domy.Rectangle.prototype =
 /**
  * Creates a circle.
  *
- * @class Domy.Circle
+ * @class Carrot.Circle
  * @constructor
  * @param {number} [x=0]
  * @param {number} [y=0]
  * @param {diameter} [diameter=0]
  */
-Domy.Circle = function(x, y, diameter)
+Carrot.Circle = function(x, y, diameter)
 {
     x = x || 0;
     y = y || 0;
@@ -1564,12 +1540,12 @@ Domy.Circle = function(x, y, diameter)
     return this;
 };
 
-Domy.Circle.prototype =
+Carrot.Circle.prototype =
 {
     /**
      * Sets the circle up.
      *
-     * @method Domy.Circle#setTo
+     * @method Carrot.Circle#setTo
      * @param {number} x
      * @param {number} y
      * @param {number} diameter
@@ -1587,20 +1563,20 @@ Domy.Circle.prototype =
  * This claass offers the possibility of creating sprites and groups.
  *
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.ObjectFactory = function(game)
+Carrot.ObjectFactory = function(game)
 {
     this.game = game;
 
     return this;
 };
 
-Domy.ObjectFactory.prototype =
+Carrot.ObjectFactory.prototype =
 {
     /**
      * Creates a sprite.
-     * @method Domy.ObjectFactory#sprite
+     * @method Carrot.ObjectFactory#sprite
      * @param {number} [x=0] - X position
      * @param {number} [y=0] - Y position
      * @param {string} [key=null] - The key (name) of the image. If null, the sprite will be a green rectangle.
@@ -1612,29 +1588,29 @@ Domy.ObjectFactory.prototype =
         y = y || 0;
         key = key || null;
         frame = frame || 0;
-        return new Domy.Sprite(this.game, x, y, key, frame);
+        return new Carrot.Sprite(this.game, x, y, key, frame);
     },
 
     /**
      * Creates a group.
-     * @method Domy.ObjectFactory#group
+     * @method Carrot.ObjectFactory#group
      */
     group()
     {
-        return new Domy.Group(this.game);
+        return new Carrot.Group(this.game);
     }
 };
 
-Domy.ObjectFactory.prototype.constructor = Domy.ObjectFactory;
+Carrot.ObjectFactory.prototype.constructor = Carrot.ObjectFactory;
 
 /**
  * A very basic asset loader without progess functions. Yet.
  *
- * @class Domy.AssetLoader
+ * @class Carrot.AssetLoader
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.AssetLoader = function(game)
+Carrot.AssetLoader = function(game)
 {
     this.game = game;
 
@@ -1644,12 +1620,12 @@ Domy.AssetLoader = function(game)
     return this;
 };
 
-Domy.AssetLoader.prototype =
+Carrot.AssetLoader.prototype =
 {
     /**
      * Loads a simple image.
      *
-     * @method Domy.AssetLoader#image
+     * @method Carrot.AssetLoader#image
      * @param {string} key - The path (url) to the image.
      * @param {string} path - The key (name) for the image.
      */
@@ -1676,7 +1652,7 @@ Domy.AssetLoader.prototype =
     /**
      * Loads a spritesheet.
      *
-     * @method Domy.AssetLoader#spritesheet
+     * @method Carrot.AssetLoader#spritesheet
      * @param {string} key - The path (url) to the image.
      * @param {string} path - The key (name) for the image.
      * @param {number} [frameWidth=32] - The width of the spritesheet's frames.
@@ -1698,9 +1674,9 @@ Domy.AssetLoader.prototype =
             let frames = [];
             let frameFound = 0;
 
-            for (let x = 0; x &lt; that.width; x += frameWidth)
+            for (let x = 0; x < that.width; x += frameWidth)
             {
-                for (let y = 0; y &lt; that.height; y += frameHeight)
+                for (let y = 0; y < that.height; y += frameHeight)
                 {
                     frameFound += 1;
                     if (frameFound === frameIndexes) break;
@@ -1736,7 +1712,7 @@ Domy.AssetLoader.prototype =
     /**
      * Loads a sound.
      *
-     * @method Domy.AssetLoader#sound
+     * @method Carrot.AssetLoader#sound
      * @param {string} key - The path (url) to the sound.
      * @param {string} path - The key (name) for the sound.
      */
@@ -1763,7 +1739,7 @@ Domy.AssetLoader.prototype =
     /**
      * Checks if all files are loaded. If yes, it starts the game.
      *
-     * @method Domy.AssetLoader#checkFilesLoaded
+     * @method Carrot.AssetLoader#checkFilesLoaded
      * @private
      */
      checkFilesLoaded()
@@ -1775,15 +1751,15 @@ Domy.AssetLoader.prototype =
      }
 };
 
-Domy.AssetLoader.prototype.constructor = Domy.AssetLoader;
+Carrot.AssetLoader.prototype.constructor = Carrot.AssetLoader;
 
 /**
  * This class handles all keyboard interactions.
  *
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Keyboard = function(game)
+Carrot.Keyboard = function(game)
 {
     this.isDown = {};
     this.isPressed = {};
@@ -1793,7 +1769,7 @@ Domy.Keyboard = function(game)
     this.game = game;
 
     // Set all buttons to false
-    for (let i = 0; i &lt; 200; i++)
+    for (let i = 0; i < 200; i++)
     {
         this.isDown[i]    = false;
         this.isPressed[i] = false;
@@ -1827,7 +1803,7 @@ Domy.Keyboard = function(game)
     return this;
 };
 
-Domy.Keyboard.prototype =
+Carrot.Keyboard.prototype =
 {
     isDown(key)
     {
@@ -1840,15 +1816,15 @@ Domy.Keyboard.prototype =
     }
 };
 
-Domy.Keyboard.prototype.constructor = Domy.Keyboard;
+Carrot.Keyboard.prototype.constructor = Carrot.Keyboard;
 
 /**
  * This class stores common keyCodes of keyboards, so there is no need to memorize them.
  *
- * @class Domy.KeyCode
+ * @class Carrot.KeyCode
  * @static
  */
-Domy.KeyCode =
+Carrot.KeyCode =
 {
     /** @static */
     A: "A".toUpperCase().charCodeAt(0),
@@ -2056,22 +2032,22 @@ Domy.KeyCode =
     NUM_LOCK: 144
 };
 
-// Duplicate Domy.KeyCode values in Domy.Keyboard for compatibility
-for (var key in Domy.KeyCode)
+// Duplicate Carrot.KeyCode values in Carrot.Keyboard for compatibility
+for (var key in Carrot.KeyCode)
 {
-    if (Domy.KeyCode.hasOwnProperty(key) &amp;&amp; !key.match(/[a-z]/))
+    if (Carrot.KeyCode.hasOwnProperty(key) && !key.match(/[a-z]/))
     {
-        Domy.Keyboard[key] = Domy.KeyCode[key];
+        Carrot.Keyboard[key] = Carrot.KeyCode[key];
     }
 }
 
 /**
- * This class stores the hex values of the 140 standard HTML &amp; CSS colors, so there is no need to memorize them.
+ * This class stores the hex values of the 140 standard HTML & CSS colors, so there is no need to memorize them.
  *
- * @class Domy.Color
+ * @class Carrot.Color
  * @static
  */
-Domy.Color =
+Carrot.Color =
 {
     /** @static */
     AliceBlue: "#F0F8FF",
@@ -2375,9 +2351,9 @@ Domy.Color =
  * This class handles all mouse interactions (but the mouse wheel, yet).
  *
  * @constructor
- * @param {Domy.Game} game - The core game object.
+ * @param {Carrot.Game} game - The core game object.
  */
-Domy.Mouse = function(game)
+Carrot.Mouse = function(game)
 {
     this.x = 0;
     this.y = 0;
@@ -2413,14 +2389,14 @@ Domy.Mouse = function(game)
 }
 
 /** @static */
-Domy.Mouse.LEFT_BUTTON = 0;
+Carrot.Mouse.LEFT_BUTTON = 0;
 /** @static */
-Domy.Mouse.MIDDLE_BUTTON = 1;
+Carrot.Mouse.MIDDLE_BUTTON = 1;
 /** @static */
-Domy.Mouse.RIGHT_BUTTON = 2;
+Carrot.Mouse.RIGHT_BUTTON = 2;
 
 // The stuff below is not working yet
-Domy.Mouse.prototype =
+Carrot.Mouse.prototype =
 {
     onMouseMove(event)
     {
@@ -2441,14 +2417,14 @@ Domy.Mouse.prototype =
     }
 };
 
-Domy.Mouse.prototype.constructor = Domy.Mouse;
+Carrot.Mouse.prototype.constructor = Carrot.Mouse;
 
 // Type IDs
 
 /** @static */
-Domy.SPRITE = 0;
+Carrot.SPRITE = 0;
 /** @static */
-Domy.GROUP = 1;
+Carrot.GROUP = 1;
 
 /******************************************************************************/
 /******************************************************************************/
@@ -2461,27 +2437,4 @@ Domy.GROUP = 1;
  * @license MIT
  */
 
-!function(a){function b(a){if(x=q(b),!(a&lt;e+l)){for(d+=a-e,e=a,t(a,d),a>i+h&amp;&amp;(f=g*j*1e3/(a-i)+(1-g)*f,i=a,j=0),j++,k=0;d>=c;)if(u(c),d-=c,++k>=240){o=!0;break}v(d/c),w(f,o),o=!1}}var c=1e3/60,d=0,e=0,f=60,g=.9,h=1e3,i=0,j=0,k=0,l=0,m=!1,n=!1,o=!1,p="object"==typeof window?window:a,q=p.requestAnimationFrame||function(){var a=Date.now(),b,d;return function(e){return b=Date.now(),d=Math.max(0,c-(b-a)),a=b+d,setTimeout(function(){e(b+d)},d)}}(),r=p.cancelAnimationFrame||clearTimeout,s=function(){},t=s,u=s,v=s,w=s,x;a.MainLoop={getSimulationTimestep:function(){return c},setSimulationTimestep:function(a){return c=a,this},getFPS:function(){return f},getMaxAllowedFPS:function(){return 1e3/l},setMaxAllowedFPS:function(a){return"undefined"==typeof a&amp;&amp;(a=1/0),0===a?this.stop():l=1e3/a,this},resetFrameDelta:function(){var a=d;return d=0,a},setBegin:function(a){return t=a||t,this},setUpdate:function(a){return u=a||u,this},setDraw:function(a){return v=a||v,this},setEnd:function(a){return w=a||w,this},start:function(){return n||(n=!0,x=q(function(a){v(1),m=!0,e=a,i=a,j=0,x=q(b)})),this},stop:function(){return m=!1,n=!1,r(x),this},isRunning:function(){return m}},"function"==typeof define&amp;&amp;define.amd?define(a.MainLoop):"object"==typeof module&amp;&amp;null!==module&amp;&amp;"object"==typeof module.exports&amp;&amp;(module.exports=a.MainLoop)}(this);
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Domy.html">Domy</a></li><li><a href="Domy.AssetLoader.html">AssetLoader</a></li><li><a href="Domy.Cache.html">Cache</a></li><li><a href="Domy.Camera.html">Camera</a></li><li><a href="Domy.Circle.html">Circle</a></li><li><a href="Domy.Class.html">Class</a></li><li><a href="Domy.Color.html">Color</a></li><li><a href="Domy.Game.html">Game</a></li><li><a href="Domy.Group.html">Group</a></li><li><a href="Domy.Keyboard.html">Keyboard</a></li><li><a href="Domy.KeyCode.html">KeyCode</a></li><li><a href="Domy.Math.html">Math</a></li><li><a href="Domy.Mouse.html">Mouse</a></li><li><a href="Domy.ObjectFactory.html">ObjectFactory</a></li><li><a href="Domy.Physics.html">Physics</a></li><li><a href="Domy.Physics.Body.html">Body</a></li><li><a href="Domy.Point.html">Point</a></li><li><a href="Domy.Rectangle.html">Rectangle</a></li><li><a href="Domy.SoundManager.html">SoundManager</a></li><li><a href="Domy.Sprite.html">Sprite</a></li><li><a href="Domy.Time.html">Time</a></li><li><a href="Domy.World.html">World</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 21 2018 13:53:39 GMT+0200 (CEST)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>
+!function(a){function b(a){if(x=q(b),!(a<e+l)){for(d+=a-e,e=a,t(a,d),a>i+h&&(f=g*j*1e3/(a-i)+(1-g)*f,i=a,j=0),j++,k=0;d>=c;)if(u(c),d-=c,++k>=240){o=!0;break}v(d/c),w(f,o),o=!1}}var c=1e3/60,d=0,e=0,f=60,g=.9,h=1e3,i=0,j=0,k=0,l=0,m=!1,n=!1,o=!1,p="object"==typeof window?window:a,q=p.requestAnimationFrame||function(){var a=Date.now(),b,d;return function(e){return b=Date.now(),d=Math.max(0,c-(b-a)),a=b+d,setTimeout(function(){e(b+d)},d)}}(),r=p.cancelAnimationFrame||clearTimeout,s=function(){},t=s,u=s,v=s,w=s,x;a.MainLoop={getSimulationTimestep:function(){return c},setSimulationTimestep:function(a){return c=a,this},getFPS:function(){return f},getMaxAllowedFPS:function(){return 1e3/l},setMaxAllowedFPS:function(a){return"undefined"==typeof a&&(a=1/0),0===a?this.stop():l=1e3/a,this},resetFrameDelta:function(){var a=d;return d=0,a},setBegin:function(a){return t=a||t,this},setUpdate:function(a){return u=a||u,this},setDraw:function(a){return v=a||v,this},setEnd:function(a){return w=a||w,this},start:function(){return n||(n=!0,x=q(function(a){v(1),m=!0,e=a,i=a,j=0,x=q(b)})),this},stop:function(){return m=!1,n=!1,r(x),this},isRunning:function(){return m}},"function"==typeof define&&define.amd?define(a.MainLoop):"object"==typeof module&&null!==module&&"object"==typeof module.exports&&(module.exports=a.MainLoop)}(this);
