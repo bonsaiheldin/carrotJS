@@ -11,7 +11,7 @@
  */
 var Carrot = Carrot ||
 {
-    "Version": "0.0.7"
+    "Version": "0.0.8"
 };
 
 console.log("%ccarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotJS", "font-weight: bold;");
@@ -915,7 +915,7 @@ Carrot.Sprite.prototype =
 
                         else if (this.y > worldHeight - this.height)
                         {
-                            this.y = worldWidth - this.height;
+                            this.y = worldHeight - this.height;
 
                             this.body.touching.none = false;
                             this.body.touching.bottom = true;
@@ -931,7 +931,6 @@ Carrot.Sprite.prototype =
             }
 
             // Kill the sprite if it leaves the world bounds
-            // >>>>>>>>>>>>>>>>>>>>> Bug! <<<<<<<<<<<<<<<<<<
             if (this.outOfBoundsKill)
             {
                 // Left, right, top, bottom
@@ -963,7 +962,7 @@ Carrot.Sprite.prototype =
             }
         }
 
-        // Update children
+        // Update the sprite's children
         for (let i = 0; i < this.children.length; i++)
         {
             let child = this.children[i];
@@ -1023,7 +1022,7 @@ Carrot.Sprite.prototype =
         // Apply CSS transform.
         this.style.transform = this.css.transform;
         this.style.left = this.x + "px";
-        this.style.top = this.y + "px";
+        this.style.top  = this.y + "px";
     }
 };
 
