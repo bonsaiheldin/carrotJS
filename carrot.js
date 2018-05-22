@@ -1,7 +1,7 @@
 /**
  * @author       Bonsaiheldin <dm@bonsaiheld.org> (http://bonsaiheld.org/)
  * @copyright    2018 Bonsaiheldin
- * @license      {@link https://github.com/bonsaiheldin/carrotjs/blob/master/LICENSE.md|MIT License}
+ * @license      {@link https://github.com/bonsaiheldin/carrotJS/blob/master/LICENSE.md|MIT License}
  */
 
 /** Initialize the main object. It will be populated afterwards.
@@ -11,10 +11,10 @@
  */
 var Carrot = Carrot ||
 {
-    "Version": "0.0.7"
+    "Version": "0.0.8"
 };
 
-console.log("%cCarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotjs", "font-weight: bold;");
+console.log("%ccarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotJS", "font-weight: bold;");
 
 /**
  * The core game object. Starts the game.
@@ -44,7 +44,7 @@ Carrot.Game = function(width, height, parent, states, transparent)
             // Create background div
             let backgroundDiv = document.createElement('div');
             document.body.appendChild(backgroundDiv);
-            backgroundDiv.className = "carrotjs";
+            backgroundDiv.className = "carrotJS";
             that.background = backgroundDiv;
 
             // Create main div for game content
@@ -57,7 +57,7 @@ Carrot.Game = function(width, height, parent, states, transparent)
         else
         {
             // Prepare background div which has been passed.
-            that.parent.className = "carrotjs"
+            that.parent.className = "carrotJS"
 
             // Create a main div and put it inside the background div.
             let mainDiv = document.createElement('div');
@@ -2529,7 +2529,7 @@ Carrot.SPRITE = 0;
 Carrot.GROUP = 1;
 
 /******************************************************************************/
-/****************************** CarrotJS END **********************************/
+/****************************** carrotJS END **********************************/
 /******************************************************************************/
 
 /**

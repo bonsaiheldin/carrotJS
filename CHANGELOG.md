@@ -2,6 +2,16 @@
 
 ---
 
+## Version 0.0.8 - 21th May 2018
+
+The physics system got a nice addition: Overlap detection between rectangles. Sprites can only be rectangles for now.
+
+### New Features
+
+* `Sprite.style` is a shortcut to the CSS rules of a sprite's image. Changing `Sprite.style` also changes `Sprite.image.style`.
+
+---
+
 ## Version 0.0.7 - 22th May 2018
 
 The physics system got a nice addition: Overlap detection between rectangles. Sprites can only be rectangles for now. Note: This is only an overlap detection, there is no actual collision happening which would mean physics like repelling. Actual collision detection will follow later.
