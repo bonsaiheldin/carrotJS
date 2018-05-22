@@ -201,6 +201,7 @@ Carrot.World = function(game)
     this.bounds = new Carrot.Rectangle(this.x, this.y, this.width, this.height);
 
     this.children = [];
+    this.length = this.children.length;
 
     return this;
 };
@@ -216,6 +217,7 @@ Carrot.World.prototype =
     addChild(entity)
     {
         this.children.push(entity);
+        entity.parent = this; // Update the entity's reference to the world container.
     },
 
     /**
@@ -227,6 +229,7 @@ Carrot.World.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
+        entity.parent = null; // Remove the entity's reference to the world container.
     },
 
     /**
@@ -419,7 +422,7 @@ Carrot.Group.prototype =
     addChild(entity)
     {
         this.children.push(entity);
-        entity.group = this; // Update the sprite's reference to the group.
+        entity.parent = this; // Update the sprite's reference to the group.
 
         // Update child counter
         this.length = this.children.length;
@@ -438,7 +441,7 @@ Carrot.Group.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
-        entity.group = null; // Update the sprite's reference to the group.
+        entity.parent = null; // Update the sprite's reference to the group.
 
         // Update child counter
         this.length = this.children.length;
@@ -558,13 +561,12 @@ Carrot.Group.prototype.constructor = Carrot.Group;
  * @param {number} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
  * @param {Carrot.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
  */
-Carrot.Sprite = function(game, x, y, key, frame, group)
+Carrot.Sprite = function(game, x, y, key, frame)
 {
     this.x = x || 0;
     this.y = y || 0;
     this.key = key || null;
     this.frame = frame || 0;
-    this.group = group || null;
 
     this.name = "Unknown sprite";
 
@@ -574,6 +576,10 @@ Carrot.Sprite = function(game, x, y, key, frame, group)
     this.world = this.game.world;
     this.camera = this.game.camera;
     this.time = this.game.time;
+    this.parent = null;
+    this.children = [];
+    this.length = this.children.length;
+
     this.alive = true;
     this.alpha = 1;
     this.width = 32;
@@ -616,23 +622,62 @@ Carrot.Sprite = function(game, x, y, key, frame, group)
     }
 
     // Add it to the world
-    // If a group was given, add the sprite to that
-    if (this.group !== null) { this.group.addChild(this); }
-    // If no group was given, add the sprite to the world container
-    else { this.world.addChild(this); }
+    this.world.addChild(this);
 
     // Add the HTML div to the page.
     this.game.parent.appendChild(this.image);
-    // Chooses a random entry of specified arguments
-    let choose = function() { return arguments[~~(Math.random() * arguments.length)] };
-    this.angleLeft = choose(true, false);
-    this.angleSpeed = choose(45, 90, 135, 180, 225, 270, 315, 360);
 
     return this;
 };
 
 Carrot.Sprite.prototype =
 {
+    /**
+     * Adds an entity to the sprite. The entity must be another sprite.
+     *
+     * @method Carrot.Sprite#addChild
+     * @param {Carrot.Sprite} entity - The entity to add.
+     */
+    addChild(entity)
+    {
+        this.children.push(entity);
+        entity.parent = this; // Update the sprite's reference to the parent sprite.
+
+        // Update child counter
+        this.length = this.children.length;
+
+        // If the entity was inside a group, remove it from there.
+        if (entity.parent !== null)
+        {
+            entity.parent.removeChild(entity);
+        }
+
+        // If the entity was inside the world container, remove it from there.
+        if (entity.parent === this.world)
+        {
+            this.world.removeChild(entity);
+        }
+    },
+
+    /**
+     * Removes the given entity from a group.
+     *
+     * @method Carrot.Sprite#removeChild
+     * @param {Carrot.Sprite} entity - The entity to remove.
+     */
+    removeChild(entity)
+    {
+        this.children.splice(this.children.indexOf(entity), 1);
+        entity.parent = null; // Update the sprite's reference to the parent sprite..
+
+        // Update child counter
+        this.length = this.children.length;
+
+        // Since the entity left the group, it has to be added as a child of
+        // the world again, so it still gets updates.
+        this.world.addChild(entity);
+    },
+
     /**
      * Kills the sprite. Not much more than a placeholder for now. Later this will be used as a soft destroy() to enable object pools.
      *
@@ -652,9 +697,9 @@ Carrot.Sprite.prototype =
     destroy()
     {
         // If in a group, remove it from there
-        if (this.group !== null)
+        if (this.parent !== null)
         {
-            this.group.removeChild(this);
+            this.parent.removeChild(this);
         }
 
         // If not in a group, remove it from world container
@@ -868,9 +913,9 @@ Carrot.Sprite.prototype =
                             }
                         }
 
-                        else if (this.y > worldWidth - this.height)
+                        else if (this.y > worldHeight - this.height)
                         {
-                            this.y = worldWidth - this.height;
+                            this.y = worldHeight - this.height;
 
                             this.body.touching.none = false;
                             this.body.touching.bottom = true;
@@ -908,11 +953,6 @@ Carrot.Sprite.prototype =
             // Collect all transforms and apply them in the render function
             this.css.transform = "";
 
-            if (this.angleLeft) this.angle -= 90 * this.time.delta;
-            else this.angle += this.angleSpeed * this.time.delta;
-
-            this.css.transform += " rotate(" + this.angle + "deg) ";
-
             // There is no need to transform if the position is 0,0
             if (this.left > 0 || this.top > 0)
             {
@@ -920,6 +960,20 @@ Carrot.Sprite.prototype =
                 let y = (this.top - (this.height * this.anchor.y));
                 //this.image.style.transformOrigin = "center center"
                 //this.css.transform += " translate(" + x + "px, " + y + "px) ";
+            }
+        }
+
+        // Update children
+        for (let i = 0; i < this.children.length; i++)
+        {
+            let child = this.children[i];
+
+            child._update();
+
+            // If the child is a sprite, call its custom loop
+            if (child.update)
+            {
+                child.update();
             }
         }
     },
