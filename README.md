@@ -1,4 +1,4 @@
-# ![carrotJS](https://raw.githubusercontent.com/bonsaiheldin/carrotJS/master/carrotJS-logo.svg?sanitize=true) carrotJS - HTML5 Game Framework
+# ![carrotJS](https://raw.githubusercontent.com/bonsaiheldin/carrotJS/master/carrotjs-logo.svg?sanitize=true) carrotJS - HTML5 Game Framework
 
 > Please note that carrotJS is in a **very** early state and **not ready to use**.
 
