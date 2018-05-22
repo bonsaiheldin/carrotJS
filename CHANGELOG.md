@@ -2,7 +2,7 @@
 
 ---
 
-## Version 0.0.7 - 21th May 2018
+## Version 0.0.7 - 22th May 2018
 
 The physics system got a nice addition: Overlap detection between rectangles. Sprites can only be rectangles for now. Note: This is only an overlap detection, there is no actual collision happening which would mean physics like repelling. Actual collision detection will follow later.
 
