@@ -36,6 +36,8 @@ There is a documentation, too:
 ## Documentation
 https://bonsaiheldin.github.io/carrotJS/
 
+![](https://raw.githubusercontent.com/bonsaiheldin/carrotJS/master/preview.gif)
+
 ---
 
 The carrot logo was made by [**@qubodup**](https://github.com/qubodup) and released under the Creative Commons 0 License (Public Domain). https://opengameart.org/content/easter-carrot-pick-up-item - Thank you! 🥕
