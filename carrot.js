@@ -11,7 +11,7 @@
  */
 var Carrot = Carrot ||
 {
-    "Version": "0.0.8"
+    "Version": "0.0.7"
 };
 
 console.log("%ccarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotJS", "font-weight: bold;");
