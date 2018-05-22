@@ -915,7 +915,7 @@ Carrot.Sprite.prototype =
 
                         else if (this.y > worldHeight - this.height)
                         {
-                            this.y = worldHeight - this.height;
+                            this.y = worldWidth - this.height;
 
                             this.body.touching.none = false;
                             this.body.touching.bottom = true;
