@@ -2,13 +2,43 @@
 
 ---
 
+## Version 0.0.7 - 21th May 2018
+
+The physics system got a nice addition: Overlap detection between rectangles. Sprites can only be rectangles for now. Note: This is only an overlap detection, there is no actual collision happening which would mean physics like repelling. Actual collision detection will follow later.
+
+Sprites can now have thei own custom update loops, too. They are are called right **after** their internal `update` loop which has been renamed to `_update` just like `_render`. Use them for running custom code for sprites (or only one of them).
+
+### New Features
+
+* `game.physics.overlap(entity1, entity2, callback)` Checks a group or a sprite against a group or sprite for overlaps. In addition, one can give a callback as the third parameter which will be fired when the overlap is detected and which returns the two given entities in the same order they were given. Put that function in a custom `update` loop.
+
+* `Sprite.update` By default `null`. Pass a function that is called right **after** the internal `_update` loop of the sprite. Makes code organizing easier and helps performance. One can use it for custom code for sprites, so there's no need to iterate all of them each frame.
+
+* `Sprite.body.acceleration(x,y)` Allows for "softer" movement if moving instantly at full speed is not desired. Measured in pixels per second squared.
+
+* `Group.setAll(property, value)` has been modified to allow for changing nested objects, too. For example: `Group.setAll("body.enabled", false)` would disable physics on all the bodies of the children of the group. While `Group.setAll("x", 0)` still works as before. It scans down to the third level, so this would also work: `Group.setAll(object.object.property, value)`.
+
+* `Carrot.Color` stores the hex values of the 140 standard HTML & CSS colors, so there is no need to memorize them.
+
+* `Carrot.Keyboard` not only is the keyboard handler but now also stores the keyCodes of keyboard buttons. Access them by using, for example, `Carrot.Keyboard.W` for the `w` button or `Carrot.Keyboard.ENTER` for the `enter` button.
+
+* `Carrot.Mouse` not only is the mouse handler but now also stores common keyCodes of mouse buttons. For example `Carrot.Mouse.LEFT_BUTTON` equals `0`.
+
+### Bug fixes
+
+* The follow function of the camera is working again.
+
+* Creating the game container was still not functioning well. If a parent div is passed when creating a game, CarrotJS takes that as its background div, creates a second one inside it and use that for game objects. If no parent div is passed, then CarrotJS creates a background div, adds it to the page's body and does the same: It puts a second div inside it as its main one. Now it should work. Note: If a debug display or else is needed above the game container, it makes more sense to prepare the HTML structure for that and pass a div, instead of letting CarrotJS do its thing.
+
+---
+
 ## Version 0.0.6 - 21th May 2018
 
 CarrotJS now has a very basic asset loader. Load images and sounds by using `game.load.image(key, path)` and `game.load.sound(key, path)`. They get automatically added to the list of files to download and if all are loaded, the game starts. This introduces a fourth custom state: `preload`. This one can be used to load assets and be added to `Carrot.Game` as an additional state beside `create`, `upload` and `render`. Assets have to be loaded and therefore ready to use before the update and render loops should run. Also, the example i uploaded yesterday got updated accordingly.
 
 Also, physics can now be disabled on a body by setting its `enabled` property to `false` which disables physics completely or partly by setting `allowBounce`, `allowDrag`, `allowGravity` or `allowAcceleration` to `false`. Note: `Body.velocity` is an exception and cannot be disabled that way because other physics functions depend on it. Use `Body.enabled` for that instead.
 
-The camera has been disabled because of a bug.
+The follow function of the camera has been disabled because of a bug.
 
 ### New features
 
