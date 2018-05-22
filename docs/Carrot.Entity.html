@@ -5,7 +5,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Documentation Class: Carrot</title>
+	<title>Documentation Class: Entity</title>
 	<link rel="stylesheet" href="styles/site.phaser.css?2018052213">
 </head>
 
@@ -102,14 +102,18 @@
 		
 			<div id="main">
 
-	<h1 class="page-title">Class: Carrot</h1>
+	<h1 class="page-title">Class: Entity</h1>
 <section>
 
 <header>
     
         <h2>
-        Carrot
+            <span class="ancestors"><a href="Carrot.html">.Carrot</a>.</span>
+        
+        Entity
         </h2>
+        
+            <div class="class-description">Carrot.Entity</div>
         
     
 </header>
@@ -120,8 +124,8 @@
     
         
 <dt>
-    <h4 class="name" id="Carrot" data-name="Carrot">
-      <span class="type-signature"></span>new Carrot()
+    <h4 class="name" id="Entity" data-name="Entity">
+      <span class="type-signature"></span>new Entity(game)
       
     </h4>
     
@@ -130,7 +134,7 @@
 
     
     <div class="description method-description">
-        Initialize the main object. It will be populated afterwards.
+        This class allows for creating custom stylesheets for game objects.
     </div>
     
 
@@ -140,6 +144,56 @@
 
     
     
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>game</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Carrot.Game.html">Carrot.Game</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description param-description last">The core game object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
 
     
 <dl class="details">
@@ -204,69 +258,7 @@
     
 
     
-        <h3 class="subsection-title">Classes</h3>
 
-        <dl>
-            <dt><a href="Carrot.AssetLoader.html">AssetLoader</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Cache.html">Cache</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Camera.html">Camera</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Circle.html">Circle</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Color.html">Color</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Entity.html">Entity</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Game.html">Game</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Group.html">Group</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Keyboard.html">Keyboard</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.KeyCode.html">KeyCode</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Math.html">Math</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Mouse.html">Mouse</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.ObjectFactory.html">ObjectFactory</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Physics.html">Physics</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Point.html">Point</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Rectangle.html">Rectangle</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.SoundManager.html">SoundManager</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Sprite.html">Sprite</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.Time.html">Time</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Carrot.World.html">World</a></dt>
-            <dd></dd>
-        </dl>
     
 
     
@@ -274,19 +266,127 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
+        <h3 class="subsection-title">Methods</h3>
 
         <dl>
             
 <dt>
-    <h4 id=".GROUP" data-name="GROUP">
-      <span class="type-signature">&lt;static> </span>GROUP<span class="type-signature"></span>
+    <h4 class="name" id="add" data-name="add">
+      <span class="type-signature"></span>add(name, key, value)
       
     </h4>
     
 </dt>
 <dd>
+
     
+    <div class="description method-description">
+        Edits an existing CSS rule of the class.
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description param-description last">The unique name of the class.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description param-description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description param-description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
     
 
@@ -331,19 +431,147 @@
 
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dd>
 
         
             
 <dt>
-    <h4 id=".SPRITE" data-name="SPRITE">
-      <span class="type-signature">&lt;static> </span>SPRITE<span class="type-signature"></span>
+    <h4 class="name" id="add" data-name="add">
+      <span class="type-signature"></span>add(name [, style])
       
     </h4>
     
 </dt>
 <dd>
+
     
+    <div class="description method-description">
+        Adds a new CSS rule to the class.
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description param-description last">The unique name of the class.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>style</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description param-description last">The style of the class.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
     
 
@@ -388,11 +616,150 @@
 
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="remove" data-name="remove">
+      <span class="type-signature"></span>remove(name)
+      
+    </h4>
+    
+</dt>
+<dd>
+
+    
+    <div class="description method-description">
+        Removes an existing CSS rule from the class.
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description param-description last">The unique name of the class.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dd>
 
         </dl>
-    
-
     
 
     

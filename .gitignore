@@ -1,2 +1,4 @@
 /node_modules/
+/jsdocs_templates/
+jsdocs_config.json
 IDEAS.md
