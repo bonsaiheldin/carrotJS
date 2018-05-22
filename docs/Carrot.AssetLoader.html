@@ -1,153 +1,74 @@
 <!DOCTYPE html>
-
-
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Documentation Class: AssetLoader</title>
-	<link rel="stylesheet" href="styles/site.phaser.css?2018052213">
+    <meta charset="utf-8">
+    <title>JSDoc: Class: AssetLoader</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
 <body>
 
+<div id="main">
 
-<div class="navbar navbar-default navbar-fixed-top ">
-  <div class="container-fluid">
-  	<div class="navbar-header">
-  		<a class="navbar-brand" href="index.html">Documentation</a>
-  		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
-  			<span class="icon-bar"></span>
-  			<span class="icon-bar"></span>
-  			<span class="icon-bar"></span>
-      </button>
-  	</div>
-  	<div class="navbar-collapse collapse" id="topNavigation">
-  		<ul class="nav navbar-nav">
-  			
-  			<li class="dropdown">
-  				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
-  				<ul class="dropdown-menu ">
-  					<li><a href="Carrot.html">Carrot</a></li><li><a href="Carrot.AssetLoader.html">Carrot.AssetLoader</a></li><li><a href="Carrot.Cache.html">Carrot.Cache</a></li><li><a href="Carrot.Camera.html">Carrot.Camera</a></li><li><a href="Carrot.Circle.html">Carrot.Circle</a></li><li><a href="Carrot.Color.html">Carrot.Color</a></li><li><a href="Carrot.Entity.html">Carrot.Entity</a></li><li><a href="Carrot.Game.html">Carrot.Game</a></li><li><a href="Carrot.Group.html">Carrot.Group</a></li><li><a href="Carrot.Keyboard.html">Carrot.Keyboard</a></li><li><a href="Carrot.KeyCode.html">Carrot.KeyCode</a></li><li><a href="Carrot.Math.html">Carrot.Math</a></li><li><a href="Carrot.Mouse.html">Carrot.Mouse</a></li><li><a href="Carrot.ObjectFactory.html">Carrot.ObjectFactory</a></li><li><a href="Carrot.Physics.html">Carrot.Physics</a></li><li><a href="Carrot.Physics.Body.html">Carrot.Physics.Body</a></li><li><a href="Carrot.Point.html">Carrot.Point</a></li><li><a href="Carrot.Rectangle.html">Carrot.Rectangle</a></li><li><a href="Carrot.SoundManager.html">Carrot.SoundManager</a></li><li><a href="Carrot.Sprite.html">Carrot.Sprite</a></li><li><a href="Carrot.Time.html">Carrot.Time</a></li><li><a href="Carrot.World.html">Carrot.World</a></li>
-  				</ul>
-  			</li>
-  			
-        <li>
-  <a href="https://github.com/photonstorm/phaser-ce/blob/master/README.md">
-    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-    README
-  </a>
-</li>
+    <h1 class="page-title">Class: AssetLoader</h1>
 
-<li>
-  <a href="https://github.com/photonstorm/phaser-ce/blob/master/CHANGELOG.md">
-    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-    CHANGELOG
-  </a>
-</li>
-
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-    Community
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu">
-    <li>
-      <a href="http://phaser.io">Phaser</a>
-    </li>
-    <li>
-      <a href="https://github.com/photonstorm/phaser-ce">Phaser CE on GitHub</a>
-    </li>
-    <li>
-      <a href="https://codepen.io/collection/AMbZgY/">Phaser CE Examples</a>
-    </li>
-    <li>
-      <a href="http://www.html5gamedevs.com/forum/14-phaser/">Forum</a>
-    </li>
-    <li>
-      <a href="https://twitter.com/photonstorm">Twitter</a>
-    </li>
-    <li>
-      <a href="http://phaser.io/community/slack">Slack</a>
-    </li>
-    <li>
-      <a href="http://phaser.io/community/donate">Donate</a>
-    </li>
-  </ul>
-</li>
-
-  		</ul>
-          
-              <div class="col-sm-3 col-md-3">
-                  <form class="navbar-form" role="search">
-                      <div class="input-group">
-                          <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
-                          <div class="input-group-btn">
-                              <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
-                          </div>
-                      </div>
-                  </form>
-              </div>
-          
-  	</div>
-  </div>
-</div>
+    
 
 
-<div class="container-fluid" id="toc-content">
-	<div class="row">
-		
-	  <div class="col-md-9 col-md-offset-3">
-		
-			<div id="main">
 
-	<h1 class="page-title">Class: AssetLoader</h1>
+
 <section>
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="Carrot.html">.Carrot</a>.</span>
-        
-        AssetLoader
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="Carrot.html">.Carrot</a>.</span>AssetLoader<span class="signature">(game)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Carrot.AssetLoader</div>
         
     
 </header>
 
-
 <article>
     <div class="container-overview">
     
         
-<dt>
-    <h4 class="name" id="AssetLoader" data-name="AssetLoader">
-      <span class="type-signature"></span>new AssetLoader(game)
-      
-    </h4>
-    
-</dt>
-<dd>
 
     
-    <div class="description method-description">
-        A very basic asset loader without progess functions. Yet.
-    </div>
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="AssetLoader"><span class="type-signature"></span>new AssetLoader<span class="signature">(game)</span><span class="type-signature"></span></h4>
     
 
     
 
+
+
+<div class="description">
+    A very basic asset loader without progess functions. Yet.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
 
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
+<table class="params">
     <thead>
     <tr>
         
@@ -178,7 +99,6 @@
 <span class="param-type"><a href="Carrot.Game.html">Carrot.Game</a></span>
 
 
-
             
             </td>
 
@@ -186,24 +106,19 @@
 
             
 
-            <td class="description param-description last">The core game object.</td>
+            <td class="description last">The core game object.</td>
         </tr>
 
     
     </tbody>
 </table>
 
-    
 
-    
+
+
+
+
 <dl class="details">
-    
-
-	
-
-	
-
-	
 
     
 
@@ -213,45 +128,57 @@
 
     
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
+    
 
+    
 
-	
+    
 
-	
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line1712">line 1712</a>
+    </li></ul></dd>
+    
 
-	
+    
 
-	
+    
+
+    
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
+
+
+
+
+
+
+
+
+
 
     
     </div>
+
+    
 
     
 
@@ -268,33 +195,35 @@
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
-            
-<dt>
-    <h4 class="name" id="image" data-name="image">
-      <span class="type-signature"></span>image(key, path)
-      
-    </h4>
-    
-</dt>
-<dd>
-
-    
-    <div class="description method-description">
-        Loads a simple image.
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
         
+            
 
-<table class="params table table-striped">
+    
+
+    
+    <h4 class="name" id="image"><span class="type-signature"></span>image<span class="signature">(key, path)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Loads a simple image.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
     <thead>
     <tr>
         
@@ -325,7 +254,6 @@
 <span class="param-type">string</span>
 
 
-
             
             </td>
 
@@ -333,7 +261,7 @@
 
             
 
-            <td class="description param-description last">The path (url) to the image.</td>
+            <td class="description last">The path (url) to the image.</td>
         </tr>
 
     
@@ -349,7 +277,6 @@
 <span class="param-type">string</span>
 
 
-
             
             </td>
 
@@ -357,24 +284,19 @@
 
             
 
-            <td class="description param-description last">The key (name) for the image.</td>
+            <td class="description last">The key (name) for the image.</td>
         </tr>
 
     
     </tbody>
 </table>
 
-    
 
-    
+
+
+
+
 <dl class="details">
-    
-
-	
-
-	
-
-	
 
     
 
@@ -384,70 +306,82 @@
 
     
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
+    
 
+    
 
-	
+    
 
-	
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line1724">line 1724</a>
+    </li></ul></dd>
+    
 
-	
+    
 
-	
+    
+
+    
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
+
+
+
+
+
+
+
+
+
 
         
             
-<dt>
-    <h4 class="name" id="sound" data-name="sound">
-      <span class="type-signature"></span>sound(key, path)
-      
-    </h4>
-    
-</dt>
-<dd>
-
-    
-    <div class="description method-description">
-        Loads a sound.
-    </div>
-    
 
     
 
     
+    <h4 class="name" id="sound"><span class="type-signature"></span>sound<span class="signature">(key, path)</span><span class="type-signature"></span></h4>
+    
 
     
-    
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+
+
+<div class="description">
+    Loads a sound.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
     <thead>
     <tr>
         
@@ -478,7 +412,6 @@
 <span class="param-type">string</span>
 
 
-
             
             </td>
 
@@ -486,7 +419,7 @@
 
             
 
-            <td class="description param-description last">The unique key (name) for the sound.</td>
+            <td class="description last">The unique key (name) for the sound.</td>
         </tr>
 
     
@@ -502,7 +435,6 @@
 <span class="param-type">string</span>
 
 
-
             
             </td>
 
@@ -510,24 +442,19 @@
 
             
 
-            <td class="description param-description last">The path (url) to the sound.</td>
+            <td class="description last">The path (url) to the sound.</td>
         </tr>
 
     
     </tbody>
 </table>
 
-    
 
-    
+
+
+
+
 <dl class="details">
-    
-
-	
-
-	
-
-	
 
     
 
@@ -537,70 +464,82 @@
 
     
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
+    
 
+    
 
-	
+    
 
-	
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line1811">line 1811</a>
+    </li></ul></dd>
+    
 
-	
+    
 
-	
+    
+
+    
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
+
+
+
+
+
+
+
+
+
 
         
             
-<dt>
-    <h4 class="name" id="spritesheet" data-name="spritesheet">
-      <span class="type-signature"></span>spritesheet(key, path [, frameWidth] [, frameHeight] [, frameIndexes])
-      
-    </h4>
-    
-</dt>
-<dd>
-
-    
-    <div class="description method-description">
-        Loads a spritesheet.
-    </div>
-    
 
     
 
     
+    <h4 class="name" id="spritesheet"><span class="type-signature"></span>spritesheet<span class="signature">(key, path, frameWidth<span class="signature-attributes">opt</span>, frameHeight<span class="signature-attributes">opt</span>, frameIndexes<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
 
     
-    
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+
+
+<div class="description">
+    Loads a spritesheet.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
     <thead>
     <tr>
         
@@ -610,7 +549,7 @@
         <th>Type</th>
 
         
-        <th>Argument</th>
+        <th>Attributes</th>
         
 
         
@@ -635,7 +574,6 @@
 <span class="param-type">string</span>
 
 
-
             
             </td>
 
@@ -655,7 +593,7 @@
                 </td>
             
 
-            <td class="description param-description last">The path (url) to the image.</td>
+            <td class="description last">The path (url) to the image.</td>
         </tr>
 
     
@@ -671,7 +609,6 @@
 <span class="param-type">string</span>
 
 
-
             
             </td>
 
@@ -691,7 +628,7 @@
                 </td>
             
 
-            <td class="description param-description last">The key (name) for the image.</td>
+            <td class="description last">The key (name) for the image.</td>
         </tr>
 
     
@@ -707,7 +644,6 @@
 <span class="param-type">number</span>
 
 
-
             
             </td>
 
@@ -731,7 +667,7 @@
                 </td>
             
 
-            <td class="description param-description last">The width of the spritesheet's frames.</td>
+            <td class="description last">The width of the spritesheet's frames.</td>
         </tr>
 
     
@@ -747,7 +683,6 @@
 <span class="param-type">number</span>
 
 
-
             
             </td>
 
@@ -771,7 +706,7 @@
                 </td>
             
 
-            <td class="description param-description last">The height of the spritesheet's frames.</td>
+            <td class="description last">The height of the spritesheet's frames.</td>
         </tr>
 
     
@@ -785,7 +720,6 @@
             
                 
 <span class="param-type">number</span>
-
 
 
             
@@ -811,24 +745,19 @@
                 </td>
             
 
-            <td class="description param-description last">The frames indexes.</td>
+            <td class="description last">The frames indexes.</td>
         </tr>
 
     
     </tbody>
 </table>
 
-    
 
-    
+
+
+
+
 <dl class="details">
-    
-
-	
-
-	
-
-	
 
     
 
@@ -838,44 +767,54 @@
 
     
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
-	
+    
 
+    
 
+    
 
-	
+    
 
-	
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line1751">line 1751</a>
+    </li></ul></dd>
+    
 
-	
+    
 
-	
+    
+
+    
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
 
-        </dl>
+
+
+
+
+
+
+
+
+
+        
     
 
     
@@ -887,58 +826,20 @@
 
 
 
+
 </div>
-	    <footer class="footer">
 
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Carrot.html">Carrot</a></li><li><a href="Carrot.AssetLoader.html">AssetLoader</a></li><li><a href="Carrot.Cache.html">Cache</a></li><li><a href="Carrot.Camera.html">Camera</a></li><li><a href="Carrot.Circle.html">Circle</a></li><li><a href="Carrot.Color.html">Color</a></li><li><a href="Carrot.Entity.html">Entity</a></li><li><a href="Carrot.Game.html">Game</a></li><li><a href="Carrot.Group.html">Group</a></li><li><a href="Carrot.Keyboard.html">Keyboard</a></li><li><a href="Carrot.KeyCode.html">KeyCode</a></li><li><a href="Carrot.Math.html">Math</a></li><li><a href="Carrot.Mouse.html">Mouse</a></li><li><a href="Carrot.ObjectFactory.html">ObjectFactory</a></li><li><a href="Carrot.Physics.html">Physics</a></li><li><a href="Carrot.Physics.Body.html">Body</a></li><li><a href="Carrot.Point.html">Point</a></li><li><a href="Carrot.Rectangle.html">Rectangle</a></li><li><a href="Carrot.SoundManager.html">SoundManager</a></li><li><a href="Carrot.Sprite.html">Sprite</a></li><li><a href="Carrot.Time.html">Time</a></li><li><a href="Carrot.World.html">World</a></li></ul>
+</nav>
 
-<p class="package-signature">
-  @
-  is on
-  <a href="https://github.com/photonstorm/undefined/releases/tag/vundefined">GitHub</a>
-  and
-  <a href="https://www.npmjs.com/package/undefined">NPM</a>
-</p>
+<br class="clear">
 
-
-
-
-
-
-<p class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
-	
-		on 2018-05-22T13:18:12+02:00
-	
-	using <a href="https://github.com/photonstorm/phaser-ce/tree/master/resources/docstrap-master">Tomorrow</a>.
-</p>
-
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 22 2018 13:19:55 GMT+0200 (CEST)
 </footer>
 
-		</div>
-    
-      <div class="toc-container hidden-xs hidden-sm">
-  <div class="toc-filter">
-    <div class="form-inline">
-    <div class="form-group">
-      <label for="filter" class="control-label">Filter</label>
-      <input type="text" class="form-control" id="toc-filter-input">
-    </div>
-  </div>
-  </div>
-  <div id="toc">
-    <div class="list-group">
-      <div id="toc-insert"></div>
-    </div>
-  </div>
-</div>
-
-    
-	</div>
-</div>
-
-<script defer src="scripts/bundle.js?2018052213"></script>
-
-
-
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
 </body>
 </html>
