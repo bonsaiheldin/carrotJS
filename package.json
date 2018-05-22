@@ -1,23 +1,24 @@
 {
-  "name": "my_package",
-  "description": "",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ashleygwilliams/my_package.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ashleygwilliams/my_package/issues"
-  },
-  "homepage": "https://github.com/ashleygwilliams/my_package",
-  "devDependencies": {
-    "minami": "^1.2.3"
-  }
+    "name": "carrotjs",
+    "description": "",
+    "version": "0.0.6",
+    "main": "carrot.js",
+    "scripts":
+    {
+    },
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/bonsaiheldin/carrotjs.git"
+    },
+    "keywords": ["carrotjs", "html5-game-development", "javascript", "html5", "game-development", "game-framework", "dom", "dom-manipulation"],
+    "author": "Bonsaiheldin",
+    "license": "MIT",
+    "bugs":
+    {
+        "url": ""
+    },
+    "homepage": "https://github.com/bonsaiheldin/carrotjs",
+    "devDependencies": {
+    }
 }
