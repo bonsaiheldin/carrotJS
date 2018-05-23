@@ -21,8 +21,8 @@ console.log("%ccarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https:
  *
  * @class Carrot.Game
  * @constructor
- * @param {number} [width=800] - The width of the container.
- * @param {number} [height=600] - The height of the container.
+ * @param {integer} [width=800] - The width of the container.
+ * @param {integer} [height=600] - The height of the container.
  * @param {string} [parent=null] - The parent div of the container.
  * @param {object} [states=null] - Custom states the game shall use.
  * @param {boolean} [transparent=false] - Defines if the container shall be transparent.
@@ -117,7 +117,7 @@ Carrot.Game.prototype =
     /**
      * The internal update loop of the core. Happens automatically.
      * @method Carrot.Game#_update
-     * @param {number} delta - The time the last frame took in miliseconds. It is managed by the `_update` loop of {Carrot.Time}.
+     * @param {integer} delta - The time the last frame took in miliseconds. It is managed by the `_update` loop of {Carrot.Time}.
      * @private
      */
     _update(delta)
@@ -220,12 +220,17 @@ Carrot.World.prototype =
     addChild(entity)
     {
         // Remove from old parent
-        //if (entity.parent !== this) entity.parent.removeChild(entity);
-        //console.log(entity.parent);
+        if (entity.parent !== this)
+        {
+            entity.parent.removeChild(entity);
+        }
 
         // Add to world
         this.children.push(entity);
-        entity.parent = this; // Update parent.
+        entity.parent = this; // Update parent
+
+        // Update child counter
+        this.length = this.children.length;
     },
 
     /**
@@ -237,6 +242,64 @@ Carrot.World.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
+
+        // Update child counter
+        this.length = this.children.length;
+    },
+
+    /**
+     * Creates a sprite and immediately adds it to the world container.
+     *
+     * @method Carrot.World#create
+     * @param {integer} [x=0] - The x coordinate in the world of the sprite.
+     * @param {integer} [y=0] - The y coordinate in the world of the sprite.
+     * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+     * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
+     * @param {boolean} [alive=false] - The default alive state of the sprite.
+     */
+    create(x, y, key, frame, alive)
+    {
+        x = x || 0;
+        y = y || 0;
+        key = key || null;
+        frame = frame || 0;
+        alive = alive || false;
+
+        let sprite = this.game.add.sprite(x, y, key, frame);
+        sprite.alive = alive;
+
+        // Add the sprite to the group.
+        this.addChild(sprite);
+    },
+
+    /**
+     * Creates multiple sprites and immediately adds them to the world container.
+     *
+     * @method Carrot.World#createMultiple
+     * @param {integer} [quantity=1] - The x coordinate in the world of the sprite.
+     * @param {integer} [x=0] - The x coordinate in the world of the sprite.
+     * @param {integer} [y=0] - The y coordinate in the world of the sprite.
+     * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+     * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
+     * @param {boolean} [alive=false] - The default alive state of the sprites.
+     */
+    createMultiple(quantity, x, y, key, frame, alive)
+    {
+        quantity = quantity || 0;
+        x = x || 0;
+        y = y || 0;
+        key = key || null;
+        frame = frame || 0;
+        alive = alive || false;
+
+        for (let i = 0; i < quantity; i++)
+        {
+            let sprite = this.game.add.sprite(x, y, key, frame);
+            sprite.alive = alive;
+
+            // Add the sprite to the group.
+            this.addChild(sprite);
+        }
     },
 
     /**
@@ -409,6 +472,7 @@ Carrot.Group = function(game)
 
     // Internal values
     this.type = Carrot.GROUP;
+    this.parent = this.world;
     this.children = [];
     this.length = this.children.length;
 
@@ -429,11 +493,17 @@ Carrot.Group.prototype =
     addChild(entity)
     {
         // Remove from old parent
-        if (entity.parent !== this) entity.parent.removeChild(entity);
+        if (entity.parent !== this)
+        {
+            entity.parent.removeChild(entity);
+        }
 
         // Add to group
         this.children.push(entity);
         entity.parent = this; // Update parent.
+
+        // Update child counter
+        this.length = this.children.length;
     },
 
     /**
@@ -448,10 +518,6 @@ Carrot.Group.prototype =
 
         // Update child counter
         this.length = this.children.length;
-
-        // Since the entity left the group, it has to be added as a child of
-        // the world again, so it still gets updates.
-        this.world.addChild(entity);
     },
 
     /**
@@ -491,6 +557,61 @@ Carrot.Group.prototype =
                     child[key1] = value;
                 }
             }
+        }
+    },
+
+    /**
+     * Creates a sprite and immediately adds it to the group.
+     *
+     * @method Carrot.Group#create
+     * @param {integer} [x=0] - The x coordinate in the world of the sprite.
+     * @param {integer} [y=0] - The y coordinate in the world of the sprite.
+     * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+     * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
+     * @param {boolean} [alive=false] - The default alive state of the sprite.
+     */
+    create(x, y, key, frame, alive)
+    {
+        x = x || 0;
+        y = y || 0;
+        key = key || null;
+        frame = frame || 0;
+        alive = alive || false;
+
+        let sprite = this.game.add.sprite(x, y, key, frame);
+        sprite.alive = alive;
+
+        // Add the sprite to the group.
+        this.addChild(sprite);
+    },
+
+    /**
+     * Creates multiple sprites and immediately adds them to the group.
+     *
+     * @method Carrot.Group#createMultiple
+     * @param {integer} [quantity=1] - The x coordinate in the world of the sprite.
+     * @param {integer} [x=0] - The x coordinate in the world of the sprite.
+     * @param {integer} [y=0] - The y coordinate in the world of the sprite.
+     * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+     * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
+     * @param {boolean} [alive=false] - The default alive state of the sprites.
+     */
+    createMultiple(quantity, x, y, key, frame, alive)
+    {
+        quantity = quantity || 0;
+        x = x || 0;
+        y = y || 0;
+        key = key || null;
+        frame = frame || 0;
+        alive = alive || false;
+
+        for (let i = 0; i < quantity; i++)
+        {
+            let sprite = this.game.add.sprite(x, y, key, frame);
+            sprite.alive = alive;
+
+            // Add the sprite to the group.
+            this.addChild(sprite);
         }
     },
 
@@ -570,10 +691,10 @@ Carrot.Group.prototype.constructor = Carrot.Group;
  * @class Carrot.Sprite
  * @constructor
  * @param {Carrot.Game} game - The core game object.
- * @param {number} [x=0] - The x coordinate in the world of the sprite.
- * @param {number} [y=0] - The y coordinate in the world of the sprite.
+ * @param {integer} [x=0] - The x coordinate in the world of the sprite.
+ * @param {integer} [y=0] - The y coordinate in the world of the sprite.
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
- * @param {number} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
+ * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
  */
 Carrot.Sprite = function(game, x, y, key, frame)
 {
@@ -654,16 +775,24 @@ Carrot.Sprite.prototype =
      */
     addChild(entity)
     {
-        //  HTML magic
-        this.game.parent.removeChild(entity.image);
-        this.image.appendChild(entity.image);
+        /*
+        // HTML magic
+        //this.game.parent.removeChild(entity.image);
+        //this.image.appendChild(entity.image);
 
         // Remove from old parent
-        if (entity.parent !== this) entity.parent.removeChild(entity);
+        if (entity.parent !== this)
+        {
+            entity.parent.removeChild(entity);
+        }
 
         // Add to sprite
         this.children.push(entity);
         entity.parent = this; // Update parent
+
+        // Update child counter
+        this.length = this.children.length;
+        */
     },
 
     /**
@@ -674,14 +803,12 @@ Carrot.Sprite.prototype =
      */
     removeChild(entity)
     {
+        /*
         this.children.splice(this.children.indexOf(entity), 1);
 
         // Update child counter
         this.length = this.children.length;
-
-        // Since the entity left the group, it has to be added as a child of
-        // the world again, so it still gets updates.
-        this.world.addChild(entity);
+        */
     },
 
     /**
@@ -731,7 +858,7 @@ Carrot.Sprite.prototype =
      * Changes the frame shown. Only for spritesheets.
      *
      * @method Carrot.Sprite#setFrame
-     * @param {number} [frame=0]
+     * @param {integer} [frame=0]
      */
     setFrame(frame)
     {
@@ -744,8 +871,8 @@ Carrot.Sprite.prototype =
      * Applies a glow effect on the sprite. Its shape is determined by the sprite's body which can be a rectangle or a circle.
      *
      * @method Carrot.Sprite#setGlow
-     * @param {number} [blur=0] - Blur in pixels.
-     * @param {number} [spread=0] - Spread in pixels.
+     * @param {integer} [blur=0] - Blur in pixels.
+     * @param {integer} [spread=0] - Spread in pixels.
      * @param {Carrot.Color | string} [color="#00ff00"] - The color of the glow. Must be given in one of the following formats: Hexadecimal, RGB, RGBA, HSL, HSLA or one of the 140 predefined browser colors.
      * @param {boolean} [inset=null] - Defines if the glow should be go out or inside the sprite.
      */
@@ -853,6 +980,15 @@ Carrot.Sprite.prototype =
                         this.body.velocity.x *= (1 - this.body.drag.x);
                         this.body.velocity.y *= (1 - this.body.drag.y);
                     }
+
+                    // Limit velocity
+                    let maxVelX = this.body.maxVelocity.x;
+                    let maxVelY = this.body.maxVelocity.y;
+
+                         if (this.body.velocity.x > maxVelX)  { this.body.velocity.x = maxVelX; }
+                    else if (this.body.velocity.x < -maxVelX) { this.body.velocity.x = -maxVelX; }
+                         if (this.body.velocity.y > maxVelY)  { this.body.velocity.y = maxVelY; }
+                    else if (this.body.velocity.y < -maxVelY) { this.body.velocity.y = -maxVelY; }
 
                     // Moving
                     this.x += this.body.velocity.x * this.time.delta;
@@ -1077,27 +1213,27 @@ Carrot.Math.prototype =
 {
     /**
      * PI.
-     * @property {number} Carrot.Math#PI
-     * @type {number}
+     * @property {integer} Carrot.Math#PI
+     * @type {integer}
      */
     PI: Math.PI,
 
     /**
      * Twice PI.
-     * @property {number} Carrot.Math#PI2
-     * @type {number}
+     * @property {integer} Carrot.Math#PI2
+     * @type {integer}
      */
     PI2: Math.PI * 2,
 
     /**
      * Degrees to Radians factor.
-     * @property {number} Carrot.Math#DEG_TO_RAD
+     * @property {integer} Carrot.Math#DEG_TO_RAD
      */
     DEG_TO_RAD: Math.PI / 180,
 
     /**
      * Degrees to Radians factor.
-     * @property {number} Carrot.Math#RAD_TO_DEG
+     * @property {integer} Carrot.Math#RAD_TO_DEG
      */
     RAD_TO_DEG: 180 / Math.PI,
 
@@ -1105,8 +1241,8 @@ Carrot.Math.prototype =
      * Converts degrees to radians.
      *
      * @method Carrot.Math#degToRad
-     * @param {number} degrees - Angle in degrees.
-     * @return {number} Angle in radians.
+     * @param {integer} degrees - Angle in degrees.
+     * @return {integer} Angle in radians.
      */
     degToRad(degrees)
     {
@@ -1117,8 +1253,8 @@ Carrot.Math.prototype =
      * Converts radians to degrees.
      *
      * @method Carrot.Math#radToDeg
-     * @param {number} radians - Angle in radians.
-     * @return {number} Angle in degrees.
+     * @param {integer} radians - Angle in radians.
+     * @return {integer} Angle in degrees.
      */
     radToDeg(radians)
     {
@@ -1129,9 +1265,9 @@ Carrot.Math.prototype =
      * Returns an integer between (including) min and (including) max
      *
      * @method Carrot.Math#integerInRange
-     * @param {number} min - Min.
-     * @param {number} max - Max.
-     * @return {number}
+     * @param {integer} min - Min.
+     * @param {integer} max - Max.
+     * @return {integer}
      */
     integerInRange(min, max)
     {
@@ -1142,11 +1278,11 @@ Carrot.Math.prototype =
      * Calculates the angle between two vectors in degrees.
      *
      * @method Carrot.Math#angleBetweenPoints
-     * @param {number} x1 - x1
-     * @param {number} y1 - x1
-     * @param {number} x2 - x2
-     * @param {number} y2 - y2
-     * @return {number}
+     * @param {integer} x1 - x1
+     * @param {integer} y1 - x1
+     * @param {integer} x2 - x2
+     * @param {integer} y2 - y2
+     * @return {integer}
      */
     angleBetweenPoints(x1, y1, x2, y2)
     {
@@ -1159,7 +1295,7 @@ Carrot.Math.prototype =
      * @method Carrot.Math#angleBetween
      * @param {Carrot.Sprite | object} a - The first entity.
      * @param {Carrot.Sprite | object} b - The second entity.
-     * @return {number}
+     * @return {integer}
      */
     angleBetween(a, b)
     {
@@ -1170,11 +1306,11 @@ Carrot.Math.prototype =
      * Calculates the distance between two vectors in pixels.
      *
      * @method Carrot.Math#distanceBetweenPoints
-     * @param {number} x1 - x1
-     * @param {number} y1 - x1
-     * @param {number} x2 - x2
-     * @param {number} y2 - y2
-     * @return {number}
+     * @param {integer} x1 - x1
+     * @param {integer} y1 - x1
+     * @param {integer} x2 - x2
+     * @param {integer} y2 - y2
+     * @return {integer}
      */
     distanceBetweenPoints(x1, y1, x2, y2)
     {
@@ -1187,7 +1323,7 @@ Carrot.Math.prototype =
      * @method Carrot.Math#distanceBetween
      * @param {Carrot.Sprite | object} a - The first entity.
      * @param {Carrot.Sprite | object} b - The second entity.
-     * @return {number}
+     * @return {integer}
      */
     distanceBetween(a, b)
     {
@@ -1449,8 +1585,8 @@ Carrot.Physics.prototype.constructor = Carrot.Physics;
  * @class Carrot.Physics.Body
  * @constructor
  * @param {Carrot.Game} game - The core game object.
- * @param {number} x - X position relative to the sprite.
- * @param {number} y - Y position relative the sprite.
+ * @param {integer} x - X position relative to the sprite.
+ * @param {integer} y - Y position relative the sprite.
  */
 Carrot.Physics.Body = function(parent, x, y)
 {
@@ -1463,6 +1599,8 @@ Carrot.Physics.Body = function(parent, x, y)
     this.drag         = new Carrot.Point(0, 0);
     this.gravity      = new Carrot.Point(0, 0);
     this.acceleration = new Carrot.Point(0, 0);
+
+    this.maxVelocity = new Carrot.Point(10000, 10000);
 
     this.allowBounce       = true;
     this.allowDrag         = true;
@@ -1620,13 +1758,13 @@ Carrot.Entity.prototype.constructor = Carrot.Entity;
  *
  * @class Carrot.Point
  * @constructor
- * @param {number} [x=0]
- * @param {number} [y=0]
+ * @param {integer} [x=0]
+ * @param {integer} [y=x]
  */
 Carrot.Point = function(x, y)
 {
     x = x || 0;
-    y = y || 0;
+    y = y || x;
 
     this.setTo(x, y);
 
@@ -1639,8 +1777,8 @@ Carrot.Point.prototype =
      * Sets the point up.
      *
      * @method Carrot.Point#setTo
-     * @param {number} x
-     * @param {number} y
+     * @param {integer} [x=0]
+     * @param {integer} [y=x]
      */
     setTo(x, y)
     {
@@ -1654,10 +1792,10 @@ Carrot.Point.prototype =
  *
  * @class Carrot.Rectangle
  * @constructor
- * @param {number} [x=0]
- * @param {number} [y=0]
- * @param {number} [width=0]
- * @param {number} [height=0]
+ * @param {integer} [x=0]
+ * @param {integer} [y=0]
+ * @param {integer} [width=0]
+ * @param {integer} [height=0]
  */
 Carrot.Rectangle = function(x, y, width, height)
 {
@@ -1677,10 +1815,10 @@ Carrot.Rectangle.prototype =
      * Sets the rectangle up.
      *
      * @method Carrot.Rectangle#setTo
-     * @param {number} [x=0]
-     * @param {number} [y=0]
-     * @param {number} [width=0]
-     * @param {number} [height=0]
+     * @param {integer} [x=0]
+     * @param {integer} [y=x]
+     * @param {integer} [width=0]
+     * @param {integer} [height=0]
      */
     setTo(x, y, width, height)
     {
@@ -1696,8 +1834,8 @@ Carrot.Rectangle.prototype =
  *
  * @class Carrot.Circle
  * @constructor
- * @param {number} [x=0]
- * @param {number} [y=0]
+ * @param {integer} [x=0]
+ * @param {integer} [y=x]
  * @param {diameter} [diameter=0]
  */
 Carrot.Circle = function(x, y, diameter)
@@ -1717,14 +1855,14 @@ Carrot.Circle.prototype =
      * Sets the circle up.
      *
      * @method Carrot.Circle#setTo
-     * @param {number} [x=0]
-     * @param {number} [y=0]
+     * @param {integer} [x=0]
+     * @param {integer} [y=x]
      * @param {diameter} [diameter=0]
      */
     setTo(x, y, diameter)
     {
        this.x = x || 0;
-       this.y = y || 0;
+       this.y = y || x;
        this.diameter = diameter || 0;
        this.radius = diameter * 0.5;
    }
@@ -1750,10 +1888,10 @@ Carrot.ObjectFactory.prototype =
      * Creates a sprite.
      *
      * @method Carrot.ObjectFactory#sprite
-     * @param {number} [x=0] - X position
-     * @param {number} [y=0] - Y position
+     * @param {integer} [x=0] - X position
+     * @param {integer} [y=0] - Y position
      * @param {string} [key=null] - The key (name) of the image. If null, the sprite will be a green rectangle.
-     * @param {number} [frame=0] - The initial frame to show. Only for spritesheets.
+     * @param {integer} [frame=0] - The initial frame to show. Only for spritesheets.
      */
     sprite(x, y, key, frame)
     {
@@ -1829,9 +1967,9 @@ Carrot.AssetLoader.prototype =
      * @method Carrot.AssetLoader#spritesheet
      * @param {string} key - The path (url) to the image.
      * @param {string} path - The key (name) for the image.
-     * @param {number} [frameWidth=32] - The width of the spritesheet's frames.
-     * @param {number} [frameHeight=32] - The height of the spritesheet's frames.
-     * @param {number} [frameIndexes=Infinity] - The frames indexes.
+     * @param {integer} [frameWidth=32] - The width of the spritesheet's frames.
+     * @param {integer} [frameHeight=32] - The height of the spritesheet's frames.
+     * @param {integer} [frameIndexes=Infinity] - The frames indexes.
      */
     spritesheet(key, path, frameWidth, frameHeight, frameIndexes)
     {

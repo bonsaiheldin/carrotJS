@@ -2,6 +2,39 @@
 
 ---
 
+
+## Version 0.0.8 - 23th May 2018
+
+Sprites can now be limited in speed using `Sprite.body.maxVelocity`, measured in pixels squared.
+
+Added some basic math functions and the mouse object now stores its coordinates in the world, too.
+
+### New Features
+
+* `Sprite.style` A shortcut to the CSS rules of a sprite's image. Changing `Sprite.style` also changes `Sprite.image.style`.
+
+* `Sprite.body.maxVelocity(x,y)` Limit the max speed a physics body can rach. Default: `10000` on each `x` and `y`.
+
+* `Group.destroy(destroyChildren)` If `true` is passed when destroying a group, all its children and their children are destroyed altogether. Otherwise all its children are added to the world container as standalone sprites. Default: `false`.
+
+* `Sprite.destroy(destroyChildren)` If `true` is passed when destroying a group, all its children and their children are destroyed altogether. Otherwise all its children are added to the world container as standalone sprites. Default: `false`.
+
+* `game.math.angleBetween(a, b)` Calculates the angle between two sprites (or other objects) in radians. They both must have x / y coordinates. Use `game.math.radToDeg(radians)` if degrees are needed.
+
+* `game.math.angleBetweenPoints(x1, y1, x2, y2)` Same as above, but the coordinates can be any.
+
+* `game.math.distanceBetween(a, b)` Calculates the distance between to sprites (or other) in pixels. Both must have x / y coordinates.
+
+* `game.math.distanceBetweenPoints(x1, y1, x2, y2)` Same as above, but the coordinates can be any.
+
+* `game.math.degToRad(degrees)` Converts degrees into radians. Alternative: `number * game.math.DEG_TO_RAD`.
+
+* `game.math.radToDeg(radians)` Converts radians into degrees. Alternative: `number * game.math.RAD_TO_DEG`.
+
+* `game.mouse.worldX / worldY` Stores the position of the mouse inside the game world. Note: `game.mouse.x / y` only stores its position relative to the game container.
+
+---
+
 ## Version 0.0.7 - 22th May 2018
 
 The physics system got a nice addition: Overlap detection between rectangles. Sprites can only be rectangles for now. Note: This is only an overlap detection, there is no actual collision happening which would mean physics like repelling. Actual collision detection will follow later.
