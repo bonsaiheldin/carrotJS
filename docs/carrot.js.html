@@ -246,6 +246,9 @@ Carrot.World.prototype =
     {
         this.children.push(entity);
         entity.parent = this; // Update the entity's reference to the world container.
+
+        // Update child counter
+        this.length = this.children.length;
     },
 
     /**
@@ -257,7 +260,6 @@ Carrot.World.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
-        entity.parent = null; // Remove the entity's reference to the world container.
     },
 
     /**
@@ -469,7 +471,6 @@ Carrot.Group.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
-        entity.parent = null; // Update the sprite's reference to the group.
 
         // Update child counter
         this.length = this.children.length;
@@ -523,17 +524,29 @@ Carrot.Group.prototype =
      * Destroys the group and removes it entirely from the game world.
      *
      * @method Carrot.Group#destroy
+     * @param {boolean} [destroyChildren=false] - If true, all the children of the sprite and their children are destroyed, too.
      */
-    destroy()
+    destroy(destroyChildren)
     {
-        // Release all children from the group and add them to the game world, so they're still updated.
         for (let i = 0; i &lt; this.children.length; i++)
         {
-            this.removeChild(this.children[i]);
+            let child = this.children[i];
+
+            // If the children of the sprite shall be destroyed, too.
+            if (destroyChildren)
+            {
+                child.destroy(true);
+            }
+
+            // If not, add them to the world container instead, so they're still updated.
+            else
+            {
+                this.removeChild(child);
+            }
         }
 
         // Remove the group from the world container
-        this.world.removeChild(this);
+        this.parent.removeChild(this);
     },
 
     /**
@@ -586,8 +599,7 @@ Carrot.Group.prototype.constructor = Carrot.Group;
  * @param {number} [x=0] - The x coordinate in the world of the sprite.
  * @param {number} [y=0] - The y coordinate in the world of the sprite.
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
- * @param {number} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
- * @param {Carrot.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
+ * @param {number} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
  */
 Carrot.Sprite = function(game, x, y, key, frame)
 {
@@ -604,7 +616,7 @@ Carrot.Sprite = function(game, x, y, key, frame)
     this.world = this.game.world;
     this.camera = this.game.camera;
     this.time = this.game.time;
-    this.parent = null;
+    this.parent = this.world;
     this.children = [];
     this.length = this.children.length;
 
@@ -621,7 +633,7 @@ Carrot.Sprite = function(game, x, y, key, frame)
     this.inCamera = false;
     this.css = {}; // This object stores all data relevant to CSS rendering.
     this.css.transform = ''; // String to collect CSS transforms for this sprite.
-    this.angle = 0; // Image angle
+    this.angle = 0; // Default image angle
 
     // Physics body
     this.body = new Carrot.Physics.Body(this);
@@ -661,34 +673,29 @@ Carrot.Sprite = function(game, x, y, key, frame)
 Carrot.Sprite.prototype =
 {
     /**
-     * Adds an entity to the sprite. The entity must be another sprite.
+     * Adds a child to the sprite. The entity must be another sprite.
      *
      * @method Carrot.Sprite#addChild
      * @param {Carrot.Sprite} entity - The entity to add.
      */
     addChild(entity)
     {
-        this.children.push(entity);
-        entity.parent = this; // Update the sprite's reference to the parent sprite.
-
-        // Update child counter
-        this.length = this.children.length;
-
-        // If the entity was inside a group, remove it from there.
-        if (entity.parent !== null)
+        // Sprites shall not be added to themselves.
+        if (entity !== this)
         {
+            this.children.push(entity);
+            entity.parent = this; // Update the sprite's reference to the parent sprite.
+
+            // Update child counter
+            this.length = this.children.length;
+
+            // Remove from game
             entity.parent.removeChild(entity);
-        }
-
-        // If the entity was inside the world container, remove it from there.
-        if (entity.parent === this.world)
-        {
-            this.world.removeChild(entity);
         }
     },
 
     /**
-     * Removes the given entity from a group.
+     * Removes the passed child from the sprite.
      *
      * @method Carrot.Sprite#removeChild
      * @param {Carrot.Sprite} entity - The entity to remove.
@@ -696,7 +703,6 @@ Carrot.Sprite.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
-        entity.parent = null; // Update the sprite's reference to the parent sprite..
 
         // Update child counter
         this.length = this.children.length;
@@ -721,47 +727,32 @@ Carrot.Sprite.prototype =
      * Destroys the sprite and removes it from its group and the game world.
      *
      * @method Carrot.Sprite#destroy
+     * @param {boolean} [destroyChildren=false] - If true, all the children of the sprite and their children are destroyed, too.
      */
-    destroy()
+    destroy(destroyChildren)
     {
-        // If in a group, remove it from there
-        if (this.parent !== null)
+        for (let i = 0; i &lt; this.children.length; i++)
         {
-            this.parent.removeChild(this);
+            let child = this.children[i];
+
+            // If the children of the sprite shall be destroyed, too.
+            if (destroyChildren)
+            {
+                child.destroy(true);
+            }
+
+            // If not, add them to the world container instead, so they're still updated.
+            else
+            {
+                this.removeChild(child);
+            }
         }
 
-        // If not in a group, remove it from world container
-        else
-        {
-            this.world.removeChild(this);
-        }
+        // Remove from world container or group
+        this.parent.removeChild(this);
 
-        // Remove the HTML element
+        // Remove the HTML element of the sprite
         this.game.parent.removeChild(this.image);
-    },
-
-    /**
-     * Changes the width of the sprite.
-     *
-     * @method Carrot.Sprite#setWidth
-     * @param {number} [width=0]
-     */
-    setWidth(width)
-    {
-        this.width = width || 0;
-        this.image.style.width = value + "px";
-    },
-
-    /**
-     * Changes the height of the sprite.
-     *
-     * @method Carrot.Sprite#setHeight
-     * @param {number} [height=0]
-     */
-    setHeight(height)
-    {
-        this.height = height || 0;
-        this.image.style.height = value + "px";
     },
 
     /**
@@ -943,7 +934,7 @@ Carrot.Sprite.prototype =
 
                         else if (this.y > worldHeight - this.height)
                         {
-                            this.y = worldWidth - this.height;
+                            this.y = worldHeight - this.height;
 
                             this.body.touching.none = false;
                             this.body.touching.bottom = true;
@@ -959,15 +950,15 @@ Carrot.Sprite.prototype =
             }
 
             // Kill the sprite if it leaves the world bounds
-            // >>>>>>>>>>>>>>>>>>>>> Bug! &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
             if (this.outOfBoundsKill)
             {
                 // Left, right, top, bottom
-                if (this.right  &lt; 0
-                 || this.left   > worldWidth
+                if (this.left  &lt; 0
+                 || this.right   > worldWidth
                  || this.top    &lt; 0
                  || this.bottom > worldHeight)
                 {
+                    console.log("bullet outOfBoundsKill")
                     this.kill();
                 }
             }
@@ -989,9 +980,14 @@ Carrot.Sprite.prototype =
                 //this.image.style.transformOrigin = "center center"
                 //this.css.transform += " translate(" + x + "px, " + y + "px) ";
             }
+
+            if (this.angle !== 0)
+            {
+                this.css.transform += " rotate(" + this.angle + "deg) ";
+            }
         }
 
-        // Update children
+        // Update the sprite's children
         for (let i = 0; i &lt; this.children.length; i++)
         {
             let child = this.children[i];
@@ -1050,8 +1046,8 @@ Carrot.Sprite.prototype =
 
         // Apply CSS transform.
         this.style.transform = this.css.transform;
-        this.style.left = this.x + "px";
-        this.style.top = this.y + "px";
+        this.style.left = this.x - (this.width * this.anchor.x) + "px";
+        this.style.top  = this.y - (this.height * this.anchor.y) + "px";
     }
 };
 
@@ -1135,7 +1131,7 @@ Carrot.Math.prototype =
     RAD_TO_DEG: 180 / Math.PI,
 
     /**
-     * Convert degrees to radians.
+     * Converts degrees to radians.
      *
      * @method Carrot.Math#degToRad
      * @param {number} degrees - Angle in degrees.
@@ -1143,11 +1139,11 @@ Carrot.Math.prototype =
      */
     degToRad(degrees)
     {
-        return degrees * Carrot.Math.DEG_TO_RAD;
+        return degrees * this.DEG_TO_RAD;
     },
 
     /**
-     * Convert radians to degrees.
+     * Converts radians to degrees.
      *
      * @method Carrot.Math#radToDeg
      * @param {number} radians - Angle in radians.
@@ -1155,7 +1151,7 @@ Carrot.Math.prototype =
      */
     radToDeg(radians)
     {
-        return radians * Carrot.Math.RAD_TO_DEG;
+        return radians * this.RAD_TO_DEG;
     },
 
     /**
@@ -1172,9 +1168,9 @@ Carrot.Math.prototype =
     },
 
     /**
-     * Returns the direction between two poins in degrees
+     * Calculates the angle between two vectors in degrees.
      *
-     * @method Carrot.Math#integerInRange
+     * @method Carrot.Math#angleBetweenPoints
      * @param {number} x1 - x1
      * @param {number} y1 - x1
      * @param {number} x2 - x2
@@ -1183,13 +1179,26 @@ Carrot.Math.prototype =
      */
     angleBetweenPoints(x1, y1, x2, y2)
     {
-        return Math.atan2(y2 - y1, x2 - x1) * this.RAD_TO_DEG;
+        return Math.atan2(y2 - y1, x2 - x1);
     },
 
     /**
-     * Returns the distance between two vectors in pixels.
+     * Calculates the angle between two entities in degrees. Both must have x / y coordinates.
      *
-     * @method Carrot.Math#integerInRange
+     * @method Carrot.Math#angleBetween
+     * @param {Carrot.Sprite | object} a - The first entity.
+     * @param {Carrot.Sprite | object} b - The second entity.
+     * @return {number}
+     */
+    angleBetween(a, b)
+    {
+        return Math.atan2(b.y - a.y, b.x - a.x);
+    },
+
+    /**
+     * Calculates the distance between two vectors in pixels.
+     *
+     * @method Carrot.Math#distanceBetweenPoints
      * @param {number} x1 - x1
      * @param {number} y1 - x1
      * @param {number} x2 - x2
@@ -1199,6 +1208,19 @@ Carrot.Math.prototype =
     distanceBetweenPoints(x1, y1, x2, y2)
     {
         return Math.hypot(x2 - x1, y2 - y1);
+    },
+
+    /**
+     * Calculates the distance between two entities. Both must have x / y coordinates.
+     *
+     * @method Carrot.Math#distanceBetween
+     * @param {Carrot.Sprite | object} a - The first entity.
+     * @param {Carrot.Sprite | object} b - The second entity.
+     * @return {number}
+     */
+    distanceBetween(a, b)
+    {
+        return Math.hypot(b.x - a.x, b.y - a.y);
     }
 };
 
@@ -1964,15 +1986,11 @@ Carrot.Keyboard = function(game)
     window.addEventListener('keydown', function(event)
     {
         that.isDown[event.keyCode]    = true;
-        that.isPressed[event.keyCode] = false;
-        that.isUp[event.keyCode]      = false;
     }, false);
 
     window.addEventListener('keypress', function(event)
     {
-        that.isDown[event.keyCode]    = true;
         that.isPressed[event.keyCode] = true;
-        that.isUp[event.keyCode]      = false;
     }, false);
 
     window.addEventListener('keyup', function(event)
@@ -2548,7 +2566,7 @@ Carrot.Mouse = function(game)
     this.game = game;
 
     // Add the event listeners for the mouse to the game container
-    let gameDiv = this.game.parent;
+    let gameDiv = this.game.background;
     let that = this;
 
     gameDiv.addEventListener("mousemove", function(event)
@@ -2638,7 +2656,7 @@ Carrot.GROUP = 1;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 22 2018 19:40:31 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 22 2018 23:24:31 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

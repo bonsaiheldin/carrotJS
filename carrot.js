@@ -81,6 +81,9 @@ Carrot.Game = function(width, height, parent, states, transparent)
         that.background.style.height = that.height + 'px';
         that.background.style.overflow = "hidden";
 
+        that.parent.style.width = that.width + 'px';
+        that.parent.style.height = that.height + 'px';
+
         // Init modules
         that.time     = new Carrot.Time(that);
         that.physics  = new Carrot.Physics(that);
@@ -216,8 +219,13 @@ Carrot.World.prototype =
      */
     addChild(entity)
     {
+        // Remove from old parent
+        //if (entity.parent !== this) entity.parent.removeChild(entity);
+        //console.log(entity.parent);
+
+        // Add to world
         this.children.push(entity);
-        entity.parent = this; // Update the entity's reference to the world container.
+        entity.parent = this; // Update parent.
     },
 
     /**
@@ -229,7 +237,6 @@ Carrot.World.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
-        entity.parent = null; // Remove the entity's reference to the world container.
     },
 
     /**
@@ -421,15 +428,12 @@ Carrot.Group.prototype =
      */
     addChild(entity)
     {
+        // Remove from old parent
+        if (entity.parent !== this) entity.parent.removeChild(entity);
+
+        // Add to group
         this.children.push(entity);
-        entity.parent = this; // Update the sprite's reference to the group.
-
-        // Update child counter
-        this.length = this.children.length;
-
-        // Since the entity is now in the group, there is no need for it to be
-        // a child of the world, because it gets updated through the group now.
-        this.world.removeChild(entity);
+        entity.parent = this; // Update parent.
     },
 
     /**
@@ -441,7 +445,6 @@ Carrot.Group.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
-        entity.parent = null; // Update the sprite's reference to the group.
 
         // Update child counter
         this.length = this.children.length;
@@ -495,17 +498,29 @@ Carrot.Group.prototype =
      * Destroys the group and removes it entirely from the game world.
      *
      * @method Carrot.Group#destroy
+     * @param {boolean} [destroyChildren=false] - If true, all the children of the sprite and their children are destroyed, too.
      */
-    destroy()
+    destroy(destroyChildren)
     {
-        // Release all children from the group and add them to the game world, so they're still updated.
         for (let i = 0; i < this.children.length; i++)
         {
-            this.removeChild(this.children[i]);
+            let child = this.children[i];
+
+            // If the children of the sprite shall be destroyed, too.
+            if (destroyChildren)
+            {
+                child.destroy(true);
+            }
+
+            // If not, add them to the world container instead, so they're still updated.
+            else
+            {
+                this.removeChild(child);
+            }
         }
 
         // Remove the group from the world container
-        this.world.removeChild(this);
+        this.parent.removeChild(this);
     },
 
     /**
@@ -558,8 +573,7 @@ Carrot.Group.prototype.constructor = Carrot.Group;
  * @param {number} [x=0] - The x coordinate in the world of the sprite.
  * @param {number} [y=0] - The y coordinate in the world of the sprite.
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
- * @param {number} [frame=0] - The starting frame of the image (only for spritesheets). If left empty, it will be null.
- * @param {Carrot.Group} [group=null] - The group this sprite shall be added to. If left empty, it will be added directly to the world container
+ * @param {number} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
  */
 Carrot.Sprite = function(game, x, y, key, frame)
 {
@@ -576,7 +590,7 @@ Carrot.Sprite = function(game, x, y, key, frame)
     this.world = this.game.world;
     this.camera = this.game.camera;
     this.time = this.game.time;
-    this.parent = null;
+    this.parent = this.world;
     this.children = [];
     this.length = this.children.length;
 
@@ -593,7 +607,7 @@ Carrot.Sprite = function(game, x, y, key, frame)
     this.inCamera = false;
     this.css = {}; // This object stores all data relevant to CSS rendering.
     this.css.transform = ''; // String to collect CSS transforms for this sprite.
-    this.angle = 0; // Image angle
+    this.angle = 0; // Default image angle
 
     // Physics body
     this.body = new Carrot.Physics.Body(this);
@@ -633,34 +647,27 @@ Carrot.Sprite = function(game, x, y, key, frame)
 Carrot.Sprite.prototype =
 {
     /**
-     * Adds an entity to the sprite. The entity must be another sprite.
+     * Adds a child to the sprite. The entity must be another sprite.
      *
      * @method Carrot.Sprite#addChild
      * @param {Carrot.Sprite} entity - The entity to add.
      */
     addChild(entity)
     {
+        //  HTML magic
+        this.game.parent.removeChild(entity.image);
+        this.image.appendChild(entity.image);
+
+        // Remove from old parent
+        if (entity.parent !== this) entity.parent.removeChild(entity);
+
+        // Add to sprite
         this.children.push(entity);
-        entity.parent = this; // Update the sprite's reference to the parent sprite.
-
-        // Update child counter
-        this.length = this.children.length;
-
-        // If the entity was inside a group, remove it from there.
-        if (entity.parent !== null)
-        {
-            entity.parent.removeChild(entity);
-        }
-
-        // If the entity was inside the world container, remove it from there.
-        if (entity.parent === this.world)
-        {
-            this.world.removeChild(entity);
-        }
+        entity.parent = this; // Update parent
     },
 
     /**
-     * Removes the given entity from a group.
+     * Removes the passed child from the sprite.
      *
      * @method Carrot.Sprite#removeChild
      * @param {Carrot.Sprite} entity - The entity to remove.
@@ -668,7 +675,6 @@ Carrot.Sprite.prototype =
     removeChild(entity)
     {
         this.children.splice(this.children.indexOf(entity), 1);
-        entity.parent = null; // Update the sprite's reference to the parent sprite..
 
         // Update child counter
         this.length = this.children.length;
@@ -693,47 +699,32 @@ Carrot.Sprite.prototype =
      * Destroys the sprite and removes it from its group and the game world.
      *
      * @method Carrot.Sprite#destroy
+     * @param {boolean} [destroyChildren=false] - If true, all the children of the sprite and their children are destroyed, too.
      */
-    destroy()
+    destroy(destroyChildren)
     {
-        // If in a group, remove it from there
-        if (this.parent !== null)
+        for (let i = 0; i < this.children.length; i++)
         {
-            this.parent.removeChild(this);
+            let child = this.children[i];
+
+            // If the children of the sprite shall be destroyed, too.
+            if (destroyChildren)
+            {
+                child.destroy(true);
+            }
+
+            // If not, add them to the world container instead, so they're still updated.
+            else
+            {
+                this.removeChild(child);
+            }
         }
 
-        // If not in a group, remove it from world container
-        else
-        {
-            this.world.removeChild(this);
-        }
+        // Remove from world container or group
+        this.parent.removeChild(this);
 
-        // Remove the HTML element
+        // Remove the HTML element of the sprite
         this.game.parent.removeChild(this.image);
-    },
-
-    /**
-     * Changes the width of the sprite.
-     *
-     * @method Carrot.Sprite#setWidth
-     * @param {number} [width=0]
-     */
-    setWidth(width)
-    {
-        this.width = width || 0;
-        this.image.style.width = value + "px";
-    },
-
-    /**
-     * Changes the height of the sprite.
-     *
-     * @method Carrot.Sprite#setHeight
-     * @param {number} [height=0]
-     */
-    setHeight(height)
-    {
-        this.height = height || 0;
-        this.image.style.height = value + "px";
     },
 
     /**
@@ -934,8 +925,8 @@ Carrot.Sprite.prototype =
             if (this.outOfBoundsKill)
             {
                 // Left, right, top, bottom
-                if (this.right  < 0
-                 || this.left   > worldWidth
+                if (this.left  < 0
+                 || this.right   > worldWidth
                  || this.top    < 0
                  || this.bottom > worldHeight)
                 {
@@ -959,6 +950,11 @@ Carrot.Sprite.prototype =
                 let y = (this.top - (this.height * this.anchor.y));
                 //this.image.style.transformOrigin = "center center"
                 //this.css.transform += " translate(" + x + "px, " + y + "px) ";
+            }
+
+            if (this.angle !== 0)
+            {
+                this.css.transform += " rotate(" + this.angle + "deg) ";
             }
         }
 
@@ -1021,8 +1017,8 @@ Carrot.Sprite.prototype =
 
         // Apply CSS transform.
         this.style.transform = this.css.transform;
-        this.style.left = this.x + "px";
-        this.style.top  = this.y + "px";
+        this.style.left = this.x - (this.width * this.anchor.x) + "px";
+        this.style.top  = this.y - (this.height * this.anchor.y) + "px";
     }
 };
 
@@ -1106,7 +1102,7 @@ Carrot.Math.prototype =
     RAD_TO_DEG: 180 / Math.PI,
 
     /**
-     * Convert degrees to radians.
+     * Converts degrees to radians.
      *
      * @method Carrot.Math#degToRad
      * @param {number} degrees - Angle in degrees.
@@ -1114,11 +1110,11 @@ Carrot.Math.prototype =
      */
     degToRad(degrees)
     {
-        return degrees * Carrot.Math.DEG_TO_RAD;
+        return degrees * this.DEG_TO_RAD;
     },
 
     /**
-     * Convert radians to degrees.
+     * Converts radians to degrees.
      *
      * @method Carrot.Math#radToDeg
      * @param {number} radians - Angle in radians.
@@ -1126,7 +1122,7 @@ Carrot.Math.prototype =
      */
     radToDeg(radians)
     {
-        return radians * Carrot.Math.RAD_TO_DEG;
+        return radians * this.RAD_TO_DEG;
     },
 
     /**
@@ -1143,9 +1139,9 @@ Carrot.Math.prototype =
     },
 
     /**
-     * Returns the direction between two poins in degrees
+     * Calculates the angle between two vectors in degrees.
      *
-     * @method Carrot.Math#integerInRange
+     * @method Carrot.Math#angleBetweenPoints
      * @param {number} x1 - x1
      * @param {number} y1 - x1
      * @param {number} x2 - x2
@@ -1154,13 +1150,26 @@ Carrot.Math.prototype =
      */
     angleBetweenPoints(x1, y1, x2, y2)
     {
-        return Math.atan2(y2 - y1, x2 - x1) * this.RAD_TO_DEG;
+        return Math.atan2(y2 - y1, x2 - x1);
     },
 
     /**
-     * Returns the distance between two vectors in pixels.
+     * Calculates the angle between two entities in degrees. Both must have x / y coordinates.
      *
-     * @method Carrot.Math#integerInRange
+     * @method Carrot.Math#angleBetween
+     * @param {Carrot.Sprite | object} a - The first entity.
+     * @param {Carrot.Sprite | object} b - The second entity.
+     * @return {number}
+     */
+    angleBetween(a, b)
+    {
+        return Math.atan2(b.y - a.y, b.x - a.x);
+    },
+
+    /**
+     * Calculates the distance between two vectors in pixels.
+     *
+     * @method Carrot.Math#distanceBetweenPoints
      * @param {number} x1 - x1
      * @param {number} y1 - x1
      * @param {number} x2 - x2
@@ -1170,6 +1179,19 @@ Carrot.Math.prototype =
     distanceBetweenPoints(x1, y1, x2, y2)
     {
         return Math.hypot(x2 - x1, y2 - y1);
+    },
+
+    /**
+     * Calculates the distance between two entities. Both must have x / y coordinates.
+     *
+     * @method Carrot.Math#distanceBetween
+     * @param {Carrot.Sprite | object} a - The first entity.
+     * @param {Carrot.Sprite | object} b - The second entity.
+     * @return {number}
+     */
+    distanceBetween(a, b)
+    {
+        return Math.hypot(b.x - a.x, b.y - a.y);
     }
 };
 
@@ -1192,14 +1214,14 @@ Carrot.SoundManager = function(game)
 Carrot.SoundManager.prototype =
 {
     /**
-     * Plays an audio file that has been loaded before by {Carrot.AssetLoader};
+     * Plays an audio file that has been loaded before by {Carrot.AssetLoader}. If the sound is already playing, restart it.
      *
      * @method Carrot.SoundManager#play
      * @private
      */
     play(file, loop)
     {
-        var file = Carrot.Sounds[file];
+        var file = this.game.cache.sounds[file];
         if (! file.paused)
         {
             file.pause();
@@ -1873,7 +1895,7 @@ Carrot.AssetLoader.prototype =
         let that = this;
         let sound = new Audio();
         sound.src = path;
-        sound.onload = function(event)
+        sound.oncanplaythrough = function(event)
         {
             that.filesLoaded += 1;
 
@@ -1935,15 +1957,11 @@ Carrot.Keyboard = function(game)
     window.addEventListener('keydown', function(event)
     {
         that.isDown[event.keyCode]    = true;
-        that.isPressed[event.keyCode] = false;
-        that.isUp[event.keyCode]      = false;
     }, false);
 
     window.addEventListener('keypress', function(event)
     {
-        that.isDown[event.keyCode]    = true;
         that.isPressed[event.keyCode] = true;
-        that.isUp[event.keyCode]      = false;
     }, false);
 
     window.addEventListener('keyup', function(event)
@@ -2511,6 +2529,8 @@ Carrot.Mouse = function(game)
 {
     this.x = 0;
     this.y = 0;
+    this.worldX = 0;
+    this.worldY = 0;
     this.wheel = 0;
     this.isDown = [];
     this.isUp = [];
@@ -2519,13 +2539,15 @@ Carrot.Mouse = function(game)
     this.game = game;
 
     // Add the event listeners for the mouse to the game container
-    let gameDiv = this.game.parent;
+    let gameDiv = this.game.background;
     let that = this;
 
     gameDiv.addEventListener("mousemove", function(event)
     {
         that.x = event.offsetX;
         that.y = event.offsetY;
+        that.worldX = that.x + that.game.camera.x;
+        that.worldY = that.y + that.game.camera.y;
     }, true);
 
     gameDiv.addEventListener("mousedown", function(event)
