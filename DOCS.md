@@ -64,13 +64,6 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | Class | Via | Description |
 | --- | --- | --- |
 | [Physics](./Carrot.Physics.html) | `physics` | The core Physics Manager. Provides access to all of the physics sub-systems. |
-
-<a name="arcadephysics"></a>
-
-## Physics
-
-| Class | Via | Description |
-| --- | --- | --- |
 | [Body](./Carrot.Physics.Body.html) | `sprite.body` | An Physics Body. Contains velocity, acceleration, drag and other related properties. |
 
 ## Input
