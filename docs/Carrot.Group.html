@@ -147,7 +147,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line468">line 468</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line483">line 483</a>
     </li></ul></dd>
     
 
@@ -305,7 +305,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line487">line 487</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line503">line 503</a>
     </li></ul></dd>
     
 
@@ -339,7 +339,7 @@
     
 
     
-    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, key<span class="signature-attributes">opt</span>, frame<span class="signature-attributes">opt</span>, alive<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, key<span class="signature-attributes">opt</span>, frame<span class="signature-attributes">opt</span>, alive<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Carrot.Sprite.html">Carrot.Sprite</a>}</span></h4>
     
 
     
@@ -347,7 +347,7 @@
 
 
 <div class="description">
-    Creates a sprite and immediately adds it to the group.
+    Creates one or multiple sprites and immediately adds it or them to the group.
 </div>
 
 
@@ -575,7 +575,7 @@
                 </td>
             
 
-            <td class="description last">The default alive state of the sprite.</td>
+            <td class="description last">The default alive state of the sprites.</td>
         </tr>
 
     
@@ -616,7 +616,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line563">line 563</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line579">line 579</a>
     </li></ul></dd>
     
 
@@ -639,6 +639,24 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Carrot.Sprite.html">Carrot.Sprite</a></span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -650,7 +668,7 @@
     
 
     
-    <h4 class="name" id="createMultiple"><span class="type-signature"></span>createMultiple<span class="signature">(quantity<span class="signature-attributes">opt</span>, x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, key<span class="signature-attributes">opt</span>, frame<span class="signature-attributes">opt</span>, alive<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="createMultiple"><span class="type-signature"></span>createMultiple<span class="signature">(quantity<span class="signature-attributes">opt</span>, x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, key<span class="signature-attributes">opt</span>, frame<span class="signature-attributes">opt</span>, alive<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
 
     
@@ -658,7 +676,7 @@
 
 
 <div class="description">
-    Creates multiple sprites and immediately adds them to the group.
+    Creates one or multiple sprites and adds it or them to the group.
 </div>
 
 
@@ -725,12 +743,12 @@
             
                 <td class="default">
                 
-                    1
+                    0
                 
                 </td>
             
 
-            <td class="description last">The x coordinate in the world of the sprite.</td>
+            <td class="description last">The quantity of sprites to create.</td>
         </tr>
 
     
@@ -966,7 +984,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line588">line 588</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line612">line 612</a>
     </li></ul></dd>
     
 
@@ -989,6 +1007,24 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1121,7 +1157,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line618">line 618</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line701">line 701</a>
     </li></ul></dd>
     
 
@@ -1144,6 +1180,335 @@
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getDead"><span class="type-signature"></span>getDead<span class="signature">(createIfNull<span class="signature-attributes">opt</span>, x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, key<span class="signature-attributes">opt</span>, frame<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Carrot.Sprite.html">Carrot.Sprite</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns a dead sprite from the group.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>createIfNull</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">If no dead sprite could be found, create one, add it to this group and return it.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The x coordinate in the world of the sprite.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The y coordinate in the world of the sprite.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">This is the image for the sprite. If left empty, the sprite will be just a green rectangle.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frame</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line655">line 655</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Carrot.Sprite.html">Carrot.Sprite</a></span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1259,7 +1624,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line509">line 509</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line525">line 525</a>
     </li></ul></dd>
     
 
@@ -1417,7 +1782,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line523">line 523</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line539">line 539</a>
     </li></ul></dd>
     
 
@@ -1467,7 +1832,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed May 23 2018 22:04:55 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 24 2018 19:54:14 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
