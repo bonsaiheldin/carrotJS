@@ -2,6 +2,30 @@
 
 ---
 
+## Version 0.0.9 - 24th May 2018
+
+Sprites now have physics disabled by default. Enable it using `game.physics.enable(sprite)` on a sprite after creating it.
+
+Destroying sprites should now work more reliable.
+
+Working towards object pooling, the creation of the HTML elements for sprites has been separated into a function: `Sprite.createNode()`. Also, it is now possible to create multiple sprites at once using a single command.
+
+
+### New Features
+
+* `Sprite.createNode()` Creates the HTML element of the sprite. Is being called automatically if the sprite is being created with its `alive` property set to `true`.
+
+* `Sprite.destroyNode()` Destroys the HTML element of the sprite. Is being called automatically by `Sprite.destroy()` or `Sprite.kill(true)`.
+
+* `game.physics.enable(sprite)` Enables physics on the passed sprite by creating a physics body for it.
+
+* `game.physics.disable(sprite)` Disables physics on the passed sprite by setting its body to `null`.
+
+* `Group.create(x, y, key, frame, alive)` Creates a sprite and adds it to the group. Returns the new sprite. One can also create an alive sprite by passing a `true` as the fifth parameter.
+
+* `Group.createMultiple(quantity, x, y, key, frame, alive)` Creates multiple new sprites and adds them to the group. Returns them as an array. One can also create multiple alive sprites by passing a `true` as the sixth parameter.
+
+---
 
 ## Version 0.0.8 - 23th May 2018
 
@@ -43,7 +67,7 @@ Sprites can now have thei own custom update loops, too. They are are called righ
 
 ### New Features
 
-* `game.physics.overlap(entity1, entity2, callback)` Checks a group or a sprite against a group or sprite for overlaps. In addition, one can give a callback as the third parameter which will be fired when the overlap is detected and which returns the two given entities in the same order they were given. Put that function in a custom `update` loop.
+* `game.physics.overlap(entity1, entity2, callback)` Checks a group against another group, a sprite against another sprite or a sprite against group for overlaps. In addition, one can give a callback as the third parameter which will be fired when the overlap is detected and which returns the two given entities in the same order they were given. Put that function in a custom `update` loop.
 
 * `Sprite.update` By default `null`. Pass a function that is called right **after** the internal `_update` loop of the sprite. Makes code organizing easier and helps performance. One can use it for custom code for sprites, so there's no need to iterate all of them each frame.
 

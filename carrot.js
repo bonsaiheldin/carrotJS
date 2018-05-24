@@ -11,7 +11,7 @@
  */
 var Carrot = Carrot ||
 {
-    "Version": "0.0.8"
+    "Version": "0.0.9"
 };
 
 console.log("%ccarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotJS", "font-weight: bold;");
@@ -24,7 +24,7 @@ console.log("%ccarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https:
  * @param {integer} [width=800] - The width of the container.
  * @param {integer} [height=600] - The height of the container.
  * @param {string} [parent=null] - The parent div of the container.
- * @param {object} [states=null] - Custom states the game shall use.
+ * @param {Object} [states=null] - Custom states the game shall use.
  * @param {boolean} [transparent=false] - Defines if the container shall be transparent.
  */
 Carrot.Game = function(width, height, parent, states, transparent)
@@ -32,10 +32,10 @@ Carrot.Game = function(width, height, parent, states, transparent)
     let that = this;
     let start = function()
     {
-        that.width = width || 800;
-        that.height = height || 600;
-        that.parent = document.getElementById(parent) || null;
-        that.states = states || null;
+        that.width       = width || 800;
+        that.height      = height || 600;
+        that.parent      = document.getElementById(parent) || null;
+        that.states      = states || null;
         that.transparent = transparent || false;
 
         // If no container was passed, create one
@@ -44,7 +44,7 @@ Carrot.Game = function(width, height, parent, states, transparent)
             // Create background div
             let backgroundDiv = document.createElement('div');
             document.body.appendChild(backgroundDiv);
-            backgroundDiv.className = "carrotJS";
+            backgroundDiv.className = "carrotJS background";
             that.background = backgroundDiv;
 
             // Create main div for game content
@@ -56,9 +56,6 @@ Carrot.Game = function(width, height, parent, states, transparent)
 
         else
         {
-            // Prepare background div which has been passed.
-            that.parent.className = "carrotJS"
-
             // Create a main div and put it inside the background div.
             let mainDiv = document.createElement('div');
             mainDiv.className = "main";
@@ -77,12 +74,16 @@ Carrot.Game = function(width, height, parent, states, transparent)
             that.background.style.backgroundColor = '#000000';
         }
 
-        that.background.style.width = that.width + 'px';
-        that.background.style.height = that.height + 'px';
-        that.background.style.overflow = "hidden";
+        // Apply inline CSS
+        that.background.style.position   = "relative";
+        that.background.style.width      = that.width + 'px';
+        that.background.style.height     = that.height + 'px';
+        that.background.style.overflow   = "hidden";
+        that.background.style.fontFamily = "sans-serif";
 
-        that.parent.style.width = that.width + 'px';
-        that.parent.style.height = that.height + 'px';
+        that.parent.style.position = "relative";
+        that.parent.style.width    = that.width + 'px';
+        that.parent.style.height   = that.height + 'px';
 
         // Init modules
         that.time     = new Carrot.Time(that);
@@ -96,6 +97,9 @@ Carrot.Game = function(width, height, parent, states, transparent)
         that.sound    = new Carrot.SoundManager(that);
         that.keyboard = new Carrot.Keyboard(that);
         that.mouse    = new Carrot.Mouse(that);
+
+        // Default values
+        that.roundPixels = false;
 
         // Run the given preload state, if available.
         if (that.states !== null)
@@ -253,9 +257,10 @@ Carrot.World.prototype =
      * @method Carrot.World#create
      * @param {integer} [x=0] - The x coordinate in the world of the sprite.
      * @param {integer} [y=0] - The y coordinate in the world of the sprite.
-     * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+     * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
      * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
      * @param {boolean} [alive=false] - The default alive state of the sprite.
+     * @return {Carrot.Sprite}
      */
     create(x, y, key, frame, alive)
     {
@@ -265,15 +270,16 @@ Carrot.World.prototype =
         frame = frame || 0;
         alive = alive || false;
 
-        let sprite = this.game.add.sprite(x, y, key, frame);
-        sprite.alive = alive;
+        let sprite = this.game.add.sprite(x, y, key, frame, alive);
 
         // Add the sprite to the group.
         this.addChild(sprite);
+
+        return sprite;
     },
 
     /**
-     * Creates multiple sprites and immediately adds them to the world container.
+     * Creates multiple sprites and adds them to the world container.
      *
      * @method Carrot.World#createMultiple
      * @param {integer} [quantity=1] - The x coordinate in the world of the sprite.
@@ -282,24 +288,30 @@ Carrot.World.prototype =
      * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
      * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
      * @param {boolean} [alive=false] - The default alive state of the sprites.
+     * @return {Array}
      */
     createMultiple(quantity, x, y, key, frame, alive)
     {
-        quantity = quantity || 0;
+        quantity = quantity || 1;
         x = x || 0;
         y = y || 0;
         key = key || null;
         frame = frame || 0;
         alive = alive || false;
 
+        let sprites = [];
+
         for (let i = 0; i < quantity; i++)
         {
-            let sprite = this.game.add.sprite(x, y, key, frame);
-            sprite.alive = alive;
+            let sprite = this.game.add.sprite(x, y, key, frame, alive);
 
-            // Add the sprite to the group.
+            // Add the sprites to the group.
             this.addChild(sprite);
+
+            sprites.push(sprite);
         }
+
+        return sprites;
     },
 
     /**
@@ -314,12 +326,15 @@ Carrot.World.prototype =
         {
             let child = this.children[i];
 
-            child._update();
-
-            // If the child is a sprite, call its custom loop
-            if (child.update)
+            if (child.alive)
             {
-                child.update();
+                child._update();
+
+                // If the child has a custom update loop, call it.
+                if (child.update)
+                {
+                    child.update();
+                }
             }
         }
     },
@@ -472,6 +487,7 @@ Carrot.Group = function(game)
 
     // Internal values
     this.type = Carrot.GROUP;
+    this.alive = true;
     this.parent = this.world;
     this.children = [];
     this.length = this.children.length;
@@ -561,57 +577,124 @@ Carrot.Group.prototype =
     },
 
     /**
-     * Creates a sprite and immediately adds it to the group.
+     * Creates one or multiple sprites and immediately adds it or them to the group.
      *
      * @method Carrot.Group#create
-     * @param {integer} [x=0] - The x coordinate in the world of the sprite.
-     * @param {integer} [y=0] - The y coordinate in the world of the sprite.
-     * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
-     * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
-     * @param {boolean} [alive=false] - The default alive state of the sprite.
-     */
-    create(x, y, key, frame, alive)
-    {
-        x = x || 0;
-        y = y || 0;
-        key = key || null;
-        frame = frame || 0;
-        alive = alive || false;
-
-        let sprite = this.game.add.sprite(x, y, key, frame);
-        sprite.alive = alive;
-
-        // Add the sprite to the group.
-        this.addChild(sprite);
-    },
-
-    /**
-     * Creates multiple sprites and immediately adds them to the group.
-     *
-     * @method Carrot.Group#createMultiple
-     * @param {integer} [quantity=1] - The x coordinate in the world of the sprite.
      * @param {integer} [x=0] - The x coordinate in the world of the sprite.
      * @param {integer} [y=0] - The y coordinate in the world of the sprite.
      * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
      * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
      * @param {boolean} [alive=false] - The default alive state of the sprites.
+     * @return {Carrot.Sprite}
+     */
+    create(x, y, key, frame, alive)
+    {
+        x = x;
+        y = y;
+        key = key;
+        frame = frame;
+        alive = alive;
+
+        if (x     === undefined) x     = 0;
+        if (y     === undefined) y     = 0;
+        if (key   === undefined) key   = null;
+        if (frame === undefined) frame = 0;
+        if (alive === undefined) alive = false;
+
+        let sprite = this.game.add.sprite(x, y, key, frame, alive);
+
+        // Add the sprite to the group.
+        this.addChild(sprite);
+
+        return sprite;
+    },
+
+    /**
+     * Creates one or multiple sprites and adds it or them to the group.
+     *
+     * @method Carrot.Group#createMultiple
+     * @param {integer} [quantity=0] - The quantity of sprites to create.
+     * @param {integer} [x=0] - The x coordinate in the world of the sprite.
+     * @param {integer} [y=0] - The y coordinate in the world of the sprite.
+     * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+     * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
+     * @param {boolean} [alive=false] - The default alive state of the sprites.
+     * @return {Array}
      */
     createMultiple(quantity, x, y, key, frame, alive)
     {
         quantity = quantity || 0;
+        x = x;
+        y = y;
+        key = key;
+        frame = frame;
+        alive = alive;
+
+        if (quantity === undefined) quantity = 0;
+        if (x        === undefined) x        = 0;
+        if (y        === undefined) y        = 0;
+        if (key      === undefined) key      = null;
+        if (frame    === undefined) frame    = 0;
+        if (alive    === undefined) alive    = false;
+
+        let sprites = [];
+
+        for (let i = 0; i < quantity; i++)
+        {
+            let sprite = this.game.add.sprite(x, y, key, frame, alive);
+
+            // Add the sprites to the group.
+            this.addChild(sprite);
+
+            sprites.push(sprite);
+        }
+
+        return sprites;
+    },
+
+    /**
+     * Returns a dead sprite from the group.
+     *
+     * @method Carrot.Group#getDead
+     * @param {boolean} [createIfNull=false] - If no dead sprite could be found, create one, add it to this group and return it.
+     * @param {integer} [x=0] - The x coordinate in the world of the sprite.
+     * @param {integer} [y=0] - The y coordinate in the world of the sprite.
+     * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
+     * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
+     * @return {Carrot.Sprite}
+     */
+    getDead(createIfNull, x, y, key, frame)
+    {
+        createIfNull = createIfNull || false;
         x = x || 0;
         y = y || 0;
         key = key || null;
         frame = frame || 0;
-        alive = alive || false;
 
-        for (let i = 0; i < quantity; i++)
+        if (createIfNull === undefined) createIfNull = false;;
+        if (x            === undefined) x            = 0;
+        if (y            === undefined) y            = 0;
+        if (key          === undefined) key          = null;
+        if (frame        === undefined) frame        = 0;
+
+        for (let i = 0; i < this.children.length; i++)
         {
-            let sprite = this.game.add.sprite(x, y, key, frame);
-            sprite.alive = alive;
+            let child = this.children[i];
+            if (child.alive === false)
+            {
+                return child;
+            }
+        }
 
-            // Add the sprite to the group.
-            this.addChild(sprite);
+        // If no dead sprite could be found, consider creating a new one.
+        if (createIfNull)
+        {
+            return this.create(x, y, key, frame, false);
+        }
+
+        else
+        {
+            return null;
         }
     },
 
@@ -640,6 +723,8 @@ Carrot.Group.prototype =
             }
         }
 
+        this.alive = false;
+
         // Remove the group from the world container
         this.parent.removeChild(this);
     },
@@ -656,12 +741,15 @@ Carrot.Group.prototype =
         {
             let child = this.children[i];
 
-            child._update();
-
-            // If the child is a sprite, call its custom loop
-            if (child.update)
+            if (child.alive)
             {
-                child.update();
+                child._update();
+
+                // If the child has a custom update loop, call it.
+                if (child.update)
+                {
+                    child.update();
+                }
             }
         }
     },
@@ -696,14 +784,19 @@ Carrot.Group.prototype.constructor = Carrot.Group;
  * @param {string} [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
  * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
  */
-Carrot.Sprite = function(game, x, y, key, frame)
+Carrot.Sprite = function(game, x, y, key, frame, alive)
 {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.key = key || null;
-    this.frame = frame || 0;
+    this.x = x;
+    this.y = y;
+    this.key = key;
+    this.frame = frame;
+    this.alive = alive;
 
-    this.name = "Unknown sprite";
+    if (x     === undefined) this.x     = 0;
+    if (y     === undefined) this.y     = 0;
+    if (key   === undefined) this.key   = null;
+    if (frame === undefined) this.frame = 0;
+    if (alive === undefined) this.alive = true;
 
     // Internal values
     this.type = Carrot.SPRITE;
@@ -715,7 +808,6 @@ Carrot.Sprite = function(game, x, y, key, frame)
     this.children = [];
     this.length = this.children.length;
 
-    this.alive = true;
     this.alpha = 1;
     this.width = 32;
     this.height = 32;
@@ -730,43 +822,98 @@ Carrot.Sprite = function(game, x, y, key, frame)
     this.css.transform = ''; // String to collect CSS transforms for this sprite.
     this.angle = 0; // Default image angle
 
-    // Physics body
-    this.body = new Carrot.Physics.Body(this);
+    // Values from the previous frame
+    this._x     = this.x;
+    this._y     = this.y;
+    this._angle = this.angle;
+    this._alpha = this.alpha;
 
-    // HTML magic
-    this.image = document.createElement('div');
-    this.image.className = "sprite";
+    // Physics are disabled by default.
+    this.body = null;
 
-    // Shortcut to the CSS rules
-    this.style = this.image.style;
+    // Create HTML element if desired.
+    this.image = null;
+    this.style = null;
 
-    // If an image was given, apply it as a background image
-    if (this.key !== null)
+    if (this.alive)
     {
-        let width = this.game.cache.images[this.key].width;
-        let height = this.game.cache.images[this.key].height;
-        if (width !== 32) { this.width  = this.game.cache.images[this.key].width; }
-        if (height !== 32) { this.height = this.game.cache.images[this.key].height; }
-
-        // Apply frame on spritesheet
-        if (this.frame !== 0)
-        {
-            let frame = this.game.cache.images[this.key].frames[this.frame];
-            this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
-        }
+        this.image = this.createNode();
+        this.style = this.image.style;
     }
 
     // Add it to the world
     this.world.addChild(this);
 
-    // Add the HTML div to the page.
-    this.game.parent.appendChild(this.image);
+    // Test
+    this.name = "Unknown sprite";
 
     return this;
 };
 
 Carrot.Sprite.prototype =
 {
+    /**
+     * Creates the HTML element for this sprite. Called by {Carrot.Sprite} or revive().
+     *
+     * @method Carrot.Sprite#createNode
+     * @return {Object}
+     */
+    createNode()
+    {
+        if (this.image === null)
+        {
+            // HTML magic
+            let node = document.createElement('div');
+            this.image = node;
+
+            // Apply standard values
+            this.image.style.position = "absolute";
+            this.image.style.width = "32px";
+            this.image.style.height = "32px";
+            this.image.style.backgroundSize = "cover";
+
+            // If an image was given, apply it as a background image
+            if (this.key !== null)
+            {
+                let width = this.game.cache.images[this.key].width;
+                let height = this.game.cache.images[this.key].height;
+                if (width !== 32) { this.width  = this.game.cache.images[this.key].width; }
+                if (height !== 32) { this.height = this.game.cache.images[this.key].height; }
+
+                // Apply frame on spritesheet
+                if (this.frame !== 0)
+                {
+                    let frame = this.game.cache.images[this.key].frames[this.frame];
+                    this.image.style.backgroundPosition = frame.x + "px " + frame.y + "px";
+                }
+            }
+
+            // Render it once
+            this.image.style.left = this.x - (this.width  * 0.5) + "px";
+            this.image.style.top  = this.y - (this.height * 0.5) + "px";
+
+            // Add the HTML div to the page.
+            this.game.parent.appendChild(this.image);
+
+            return node;
+        }
+    },
+
+    /**
+     * Removes the HTML element of this sprite. Called by {Carrot.Sprite}, kill or destroy.
+     *
+     * @method Carrot.Sprite#destroyNode
+     */
+    destroyNode()
+    {
+        if (this.image !== null)
+        {
+            this.image.parentNode.removeChild(this.image);
+            this.image = null;
+            this.style = null;
+        }
+    },
+
     /**
      * Adds a child to the sprite. The entity must be another sprite.
      *
@@ -775,10 +922,19 @@ Carrot.Sprite.prototype =
      */
     addChild(entity)
     {
-        /*
         // HTML magic
-        //this.game.parent.removeChild(entity.image);
-        //this.image.appendChild(entity.image);
+        if (entity.image !== null)
+        {
+            // Remove the sprite's image from the main HTML and add it to the sprite's div.
+            this.game.parent.removeChild(entity.image);
+            this.image.appendChild(entity.image);
+
+            entity.x -= this.x;
+            entity.y -= this.y;
+
+            entity.image.style.left = entity.x - (entity.width  * entity.anchor.x) + "px";
+            entity.image.style.top  = entity.y - (entity.height * entity.anchor.y) + "px";
+        }
 
         // Remove from old parent
         if (entity.parent !== this)
@@ -792,7 +948,6 @@ Carrot.Sprite.prototype =
 
         // Update child counter
         this.length = this.children.length;
-        */
     },
 
     /**
@@ -803,23 +958,44 @@ Carrot.Sprite.prototype =
      */
     removeChild(entity)
     {
-        /*
+        // Remove the sprite's image from the sprite and add it to the main HTML.
+        this.image.removeChild(entity.image);
+        this.game.parent.appendChild(entity.image);
+
         this.children.splice(this.children.indexOf(entity), 1);
 
         // Update child counter
         this.length = this.children.length;
-        */
     },
 
     /**
-     * Kills the sprite. Not much more than a placeholder for now. Later this will be used as a soft destroy() to enable object pools.
+     * Kills the sprite. Used for object pools.
      *
      * @method Carrot.Sprite#kill
+     * @param {boolean} [destroyNode] - If `true`, will destroy the sprite's HTML element.
      */
-    kill()
+    kill(destroyNode)
     {
         this.alive = false;
-        this.destroy();
+
+        // Remove the sprite's HTML element
+        if (destroyNode)
+        {
+            this.destroyNode();
+        }
+    },
+
+    /**
+     * Revives the sprite. Used for object pools.
+     *
+     * @method Carrot.Sprite#revive
+     */
+    revive()
+    {
+        this.alive = true;
+
+        // Create HTML element
+        this.createNode();
     },
 
     /**
@@ -830,6 +1006,8 @@ Carrot.Sprite.prototype =
      */
     destroy(destroyChildren)
     {
+        destroyChildren = destroyChildren || false;
+
         for (let i = 0; i < this.children.length; i++)
         {
             let child = this.children[i];
@@ -847,11 +1025,13 @@ Carrot.Sprite.prototype =
             }
         }
 
-        // Remove from world container or group
+        // Remove the sprite from its group or the world container.
         this.parent.removeChild(this);
 
+        this.alive = false;
+
         // Remove the HTML element of the sprite
-        this.game.parent.removeChild(this.image);
+        this.destroyNode();
     },
 
     /**
@@ -873,8 +1053,8 @@ Carrot.Sprite.prototype =
      * @method Carrot.Sprite#setGlow
      * @param {integer} [blur=0] - Blur in pixels.
      * @param {integer} [spread=0] - Spread in pixels.
-     * @param {Carrot.Color | string} [color="#00ff00"] - The color of the glow. Must be given in one of the following formats: Hexadecimal, RGB, RGBA, HSL, HSLA or one of the 140 predefined browser colors.
-     * @param {boolean} [inset=null] - Defines if the glow should be go out or inside the sprite.
+     * @param {Carrot.Color | string} [color=Carrot.Color.Lime] - The color of the glow. Must be given in one of the following formats: Hexadecimal, RGB, RGBA, HSL, HSLA or one of the 140 predefined browser colors.
+     * @param {boolean} [inset=false] - Defines if the glow should be go out or inside the sprite.
      */
      setGlow(blur, spread, color, inset)
      {
@@ -884,7 +1064,7 @@ Carrot.Sprite.prototype =
              blur   = blur + "px ";
              spread = spread || 0;
              spread = spread + "px ";
-             color = color || "#00ff00 ";
+             color = color || Carrot.Color.Lime;
              if (inset) { inset = " inset"; }
                    else { inset = ""; }
 
@@ -892,25 +1072,9 @@ Carrot.Sprite.prototype =
          }
 
          // If the first parameter is false or not given, disable the glow.
-         if (blur === false || blur === undefined)
+         else if (blur === undefined)
          {
              this.image.style.boxShadow = "";
-         }
-     },
-
-     /**
-      * Sets a CSS animation for this sprite
-      *
-      * @method Carrot.Sprite#setAnimation
-      * @param {string} type - The name of the animation
-      */
-     setAnimation(type)
-     {
-         type = type || null;
-
-         if (type !== null)
-         {
-             app.player.image.style.animation = "";
          }
      },
 
@@ -920,7 +1084,7 @@ Carrot.Sprite.prototype =
       * @method Carrot.Sprite#_update
       * @private
       */
-     update: null,
+     update: function(){},
 
     /**
      * The internal update loop of the sprite. It is managed automatically by {@link Carrot.World} or {@link Carrot.Group}, depending on whhich it was added to.
@@ -930,168 +1094,178 @@ Carrot.Sprite.prototype =
      */
     _update()
     {
-        if (this.alive)
+        // Save values of this frame
+        this._x     = this.x;
+        this._y     = this.y;
+        this._angle = this.angle;
+        this._alpha = this.alpha;
+
+        // Store some variables for faster accessing
+        let worldWidth   = this.world.width;
+        let worldHeight  = this.world.height;
+
+        // Check if inside camera bounds
+        this.inCamera = false;
+
+        if (this.right  > this.camera.left
+         && this.bottom > this.camera.top
+         && this.left   < this.camera.right
+         && this.top    < this.camera.bottom)
         {
-            // Store some variables for faster accessing
-            let worldWidth   = this.world.width;
-            let worldHeight  = this.world.height;
+            this.inCamera = true;
+        }
 
-            // Check if inside camera bounds
-            this.inCamera = false;
-
-            if (this.right  > this.camera.left
-             && this.bottom > this.camera.top
-             && this.left   < this.camera.right
-             && this.top    < this.camera.bottom)
+        // Physics
+        if (this.body !== null)
+        {
+            // Physics enabled on this body?
+            if (this.body.enabled)
             {
-                this.inCamera = true;
-            }
+                // Reset body.touching
+                this.body.touching.none   = true;
+                this.body.touching.left   = false;
+                this.body.touching.right  = false;
+                this.body.touching.top    = false;
+                this.body.touching.bottom = false;
 
-            // Physics
-            if (this.body !== null)
-            {
-                // Physics enabled on this body?
-                if (this.body.enabled)
+                // Acceleration
+                if (this.body.allowAcceleration)
                 {
-                    // Reset body.touching
-                    this.body.touching.none   = true;
-                    this.body.touching.left   = false;
-                    this.body.touching.right  = false;
-                    this.body.touching.top    = false;
-                    this.body.touching.bottom = false;
+                    this.body.velocity.x += this.body.acceleration.x * this.time.delta;
+                    this.body.velocity.y += this.body.acceleration.y * this.time.delta;
+                }
 
-                    // Acceleration
-                    if (this.body.allowAcceleration)
+                // Gravity
+                if (this.body.allowGravity)
+                {
+                    this.body.velocity.x += this.body.gravity.x;
+                    this.body.velocity.y += this.body.gravity.y;
+                }
+
+                // Drag: Deceleration
+                if (this.body.allowDrag)
+                {
+                    this.body.velocity.x *= (1 - this.body.drag.x);
+                    this.body.velocity.y *= (1 - this.body.drag.y);
+                }
+
+                // Limit velocity
+                let maxVelX = this.body.maxVelocity.x;
+                let maxVelY = this.body.maxVelocity.y;
+
+                     if (this.body.velocity.x > maxVelX)  { this.body.velocity.x = maxVelX; }
+                else if (this.body.velocity.x < -maxVelX) { this.body.velocity.x = -maxVelX; }
+                     if (this.body.velocity.y > maxVelY)  { this.body.velocity.y = maxVelY; }
+                else if (this.body.velocity.y < -maxVelY) { this.body.velocity.y = -maxVelY; }
+
+                // Moving
+                this.x += this.body.velocity.x * this.time.delta;
+                this.y += this.body.velocity.y * this.time.delta;
+
+                // Let the sprite collide with the world bounds
+                if (this.body.collideWorldBounds)
+                {
+                    // Left, right, top, bottom
+                    if (this.x < 0)
                     {
-                        this.body.velocity.x += this.body.acceleration.x * this.time.delta;
-                        this.body.velocity.y += this.body.acceleration.y * this.time.delta;
+                        this.x = 0;
+
+                        this.body.touching.none = false;
+                        this.body.touching.left = true;
+
+                        // Bouncing
+                        if (this.body.allowBounce)
+                        {
+                            this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                        }
                     }
 
-                    // Gravity
-                    if (this.body.allowGravity)
+                    else if (this.x > worldWidth - this.width)
                     {
-                        this.body.velocity.x += this.body.gravity.x;
-                        this.body.velocity.y += this.body.gravity.y;
+                        this.x = worldWidth - this.width;
+
+                        this.body.touching.none = false;
+                        this.body.touching.right = true;
+
+                        // Bouncing
+                        if (this.body.allowBounce)
+                        {
+                            this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                        }
                     }
 
-                    // Drag: Deceleration
-                    if (this.body.allowDrag)
+                    if (this.y < 0)
                     {
-                        this.body.velocity.x *= (1 - this.body.drag.x);
-                        this.body.velocity.y *= (1 - this.body.drag.y);
+                        this.y = 0;
+
+                        this.body.touching.none = false;
+                        this.body.touching.top = true;
+
+                        // Bouncing
+                        if (this.body.allowBounce)
+                        {
+                            this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                        }
                     }
 
-                    // Limit velocity
-                    let maxVelX = this.body.maxVelocity.x;
-                    let maxVelY = this.body.maxVelocity.y;
-
-                         if (this.body.velocity.x > maxVelX)  { this.body.velocity.x = maxVelX; }
-                    else if (this.body.velocity.x < -maxVelX) { this.body.velocity.x = -maxVelX; }
-                         if (this.body.velocity.y > maxVelY)  { this.body.velocity.y = maxVelY; }
-                    else if (this.body.velocity.y < -maxVelY) { this.body.velocity.y = -maxVelY; }
-
-                    // Moving
-                    this.x += this.body.velocity.x * this.time.delta;
-                    this.y += this.body.velocity.y * this.time.delta;
-
-                    // Let the sprite collide with the world bounds
-                    if (this.body.collideWorldBounds)
+                    else if (this.y > worldHeight - this.height)
                     {
-                        // Left, right, top, bottom
-                        if (this.x < 0)
+                        this.y = worldHeight - this.height;
+
+                        this.body.touching.none = false;
+                        this.body.touching.bottom = true;
+
+                        // Bouncing
+                        if (this.body.allowBounce)
                         {
-                            this.x = 0;
-
-                            this.body.touching.none = false;
-                            this.body.touching.left = true;
-
-                            // Bouncing
-                            if (this.body.allowBounce)
-                            {
-                                this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
-                            }
-                        }
-
-                        else if (this.x > worldWidth - this.width)
-                        {
-                            this.x = worldWidth - this.width;
-
-                            this.body.touching.none = false;
-                            this.body.touching.right = true;
-
-                            // Bouncing
-                            if (this.body.allowBounce)
-                            {
-                                this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
-                            }
-                        }
-
-                        if (this.y < 0)
-                        {
-                            this.y = 0;
-
-                            this.body.touching.none = false;
-                            this.body.touching.top = true;
-
-                            // Bouncing
-                            if (this.body.allowBounce)
-                            {
-                                this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
-                            }
-                        }
-
-                        else if (this.y > worldHeight - this.height)
-                        {
-                            this.y = worldHeight - this.height;
-
-                            this.body.touching.none = false;
-                            this.body.touching.bottom = true;
-
-                            // Bouncing
-                            if (this.body.allowBounce)
-                            {
-                                this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
-                            }
+                            this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
                         }
                     }
                 }
             }
+        }
 
-            // Kill the sprite if it leaves the world bounds
-            if (this.outOfBoundsKill)
+        // Rounding pixels if desired.
+        if (this.game.roundPixels === true)
+        {
+            this.x = Math.round(this.x);
+            this.y = Math.round(this.y);
+        }
+
+        // Kill the sprite if it leaves the world bounds
+        if (this.outOfBoundsKill)
+        {
+            // Left, right, top, bottom
+            if (this.left   < 0
+             || this.right  > worldWidth
+             || this.top    < 0
+             || this.bottom > worldHeight)
             {
-                // Left, right, top, bottom
-                if (this.left  < 0
-                 || this.right   > worldWidth
-                 || this.top    < 0
-                 || this.bottom > worldHeight)
-                {
-                    this.kill();
-                }
+                this.destroy(true); // Remove HTML element, too.
             }
+        }
 
-            // Update some internal stuff
-            this.left   = Math.round(this.x);
-            this.right  = Math.round(this.left + this.width);
-            this.top    = Math.round(this.y);
-            this.bottom = Math.round(this.top + this.height);
+        // Update some internal stuff
+        this.left   = Math.round(this.x);
+        this.right  = Math.round(this.left + this.width);
+        this.top    = Math.round(this.y);
+        this.bottom = Math.round(this.top + this.height);
 
-            // Collect all transforms and apply them in the render function
-            this.css.transform = "";
+        // Collect all transforms and apply them in the render function
+        this.css.transform = "";
 
-            // There is no need to transform if the position is 0,0
-            if (this.left > 0 || this.top > 0)
-            {
-                let x = (this.left - (this.width * this.anchor.x));
-                let y = (this.top - (this.height * this.anchor.y));
-                //this.image.style.transformOrigin = "center center"
-                //this.css.transform += " translate(" + x + "px, " + y + "px) ";
-            }
+        // There is no need to transform if the position is 0,0
+        if (this.left > 0 || this.top > 0)
+        {
+            let x = (this.left - (this.width * this.anchor.x));
+            let y = (this.top - (this.height * this.anchor.y));
+            //this.image.style.transformOrigin = "center center"
+            //this.css.transform += " translate(" + x + "px, " + y + "px) ";
+        }
 
-            if (this.angle !== 0)
-            {
-                this.css.transform += " rotate(" + this.angle + "deg) ";
-            }
+        if (this.angle !== 0)
+        {
+            this.css.transform += " rotate(" + this.angle + "deg) ";
         }
 
         // Update the sprite's children
@@ -1099,12 +1273,15 @@ Carrot.Sprite.prototype =
         {
             let child = this.children[i];
 
-            child._update();
-
-            // If the child is a sprite, call its custom loop
-            if (child.update)
+            if (child.alive)
             {
-                child.update();
+                child._update();
+
+                // If the child has a custom update loop, call it.
+                if (child.update)
+                {
+                    child.update();
+                }
             }
         }
     },
@@ -1117,44 +1294,67 @@ Carrot.Sprite.prototype =
      */
     _render()
     {
-        // Remove unnecessary CSS rules when outside camera bounds. Should improve performance.
-        if (this.inCamera === false)
+        if (this.alive)
         {
-            this.style.width   = "";
-            this.style.height  = "";
-            this.style.opacity = "";
-            this.style.backgroundColor = "";
-            this.style.backgroundImage = "";
+            // Remove unnecessary CSS rules when outside camera bounds. Should improve performance.
+            if (this.inCamera === false)
+            {
+                this.style.width   = "";
+                this.style.height  = "";
+                this.style.opacity = "";
+                this.style.backgroundColor = "";
+                this.style.backgroundImage = "";
+            }
+
+            // Apply cosmetic CSS rules only when inside camera bounds.
+            else
+            {
+                if (this.width !== 32)
+                {
+                    this.style.width = this.width + "px";
+                }
+
+                if (this.height !== 32)
+                {
+                    this.style.height = this.height + "px";
+                }
+
+                if (this.alpha !== this._alpha)
+                {
+                    if (this.alpha < 1)
+                    {
+                        this.style.opacity = this.alpha;
+                    }
+                }
+
+                if (this.key !== null)
+                {
+                    this.style.backgroundImage = "url(" + this.game.cache.images[this.key].src + ")";
+                }
+            }
+
+            // Apply CSS transform.
+            this.style.transform = this.css.transform;
+
+            // Update only if the current values don't match the ones from the last frame
+            if (this.x !== this._x)
+            {
+                this.image.style.left = this.x - (this.width * this.anchor.x) + "px";
+            }
+
+            if (this.y !== this._y)
+            {
+                this.image.style.top = this.y - (this.height * this.anchor.y) + "px";
+            }
+
+            // Render the sprite's children
+            for (let i = 0; i < this.children.length; i++)
+            {
+                let child = this.children[i];
+
+                child._render();
+            }
         }
-
-        // Apply cosmetic CSS rules only when inside camera bounds.
-        else
-        {
-            if (this.width !== 32)
-            {
-                this.style.width = this.width + "px";
-            }
-
-            if (this.height !== 32)
-            {
-                this.style.height = this.height + "px";
-            }
-
-            if (this.alpha < 1)
-            {
-                this.style.opacity = this.alpha;
-            }
-
-            if (this.key !== null)
-            {
-                this.style.backgroundImage = "url(" + this.game.cache.images[this.key].src + ")";
-            }
-        }
-
-        // Apply CSS transform.
-        this.style.transform = this.css.transform;
-        this.style.left = this.x - (this.width * this.anchor.x) + "px";
-        this.style.top  = this.y - (this.height * this.anchor.y) + "px";
     }
 };
 
@@ -1242,7 +1442,7 @@ Carrot.Math.prototype =
      *
      * @method Carrot.Math#degToRad
      * @param {integer} degrees - Angle in degrees.
-     * @return {integer} Angle in radians.
+     * @return {float} Angle in radians.
      */
     degToRad(degrees)
     {
@@ -1380,8 +1580,6 @@ Carrot.SoundManager.prototype =
 
 Carrot.SoundManager.prototype.constructor = Carrot.SoundManager;
 
-// Physics
-
 /**
  * The Physics object offers physics related functions like collision detection.
  *
@@ -1400,6 +1598,34 @@ Carrot.Physics = function(game)
 Carrot.Physics.prototype =
 {
     /**
+    * Enables physics on a sprite by adding a physics body to it.
+    *
+    * @method Carrot.Physics#enable
+    * @param {Carrot.Sprite} entity - The sprite to get its physics enabled.
+    */
+    enable(entity)
+    {
+        if (entity.body === null)
+        {
+            entity.body = new Carrot.Physics.Body(entity);
+        }
+    },
+
+    /**
+    * Disables physics on a sprite by setting its body to null.
+    *
+    * @method Carrot.Physics#disable
+    * @param {Carrot.Sprite} entity - The sprite to get its physics disabled.
+    */
+    disable(entity)
+    {
+        if (entity.body !== null)
+        {
+            entity.body = null;
+        }
+    },
+
+    /**
     * Checks for collision between entities which can be sprites or groups.
     *
     * @method Carrot.Physics#collide
@@ -1416,12 +1642,12 @@ Carrot.Physics.prototype =
         {
             if (entity2.type === Carrot.SPRITE)
             {
-                //this.collideSpriteVsSprite(entity1, entity2, callback);
+                this.collideSpriteVsSprite(entity1, entity2, callback);
             }
 
             else if (entity2.type === Carrot.GROUP)
             {
-                //this.collideSpriteVsGroup(entity1, entity2, callback);
+                this.collideSpriteVsGroup(entity1, entity2, callback);
             }
         }
 
@@ -1456,12 +1682,12 @@ Carrot.Physics.prototype =
         {
             if (entity2.type === Carrot.SPRITE)
             {
-                //this.collideSpriteVsSprite(entity1, entity2, callback, true);
+                this.collideSpriteVsSprite(entity1, entity2, callback, true);
             }
 
             else if (entity2.type === Carrot.GROUP)
             {
-                //this.collideSpriteVsGroup(entity1, entity2, callback, true);
+                this.collideSpriteVsGroup(entity1, entity2, callback, true);
             }
         }
 
@@ -1480,7 +1706,7 @@ Carrot.Physics.prototype =
     },
 
     /**
-    * Checks for collision between groups. Use {Carrot.Physics#collide} or {Carrot.Physics#overlap} instead.
+    * Checks for collision between two groups. Use {Carrot.Physics#collide} or {Carrot.Physics#overlap} instead.
     *
     * @method Carrot.Physics#collideGroupVsGroup
     * @param {Carrot.Group} group1
@@ -1521,6 +1747,23 @@ Carrot.Physics.prototype =
                                 }
                             }
                         }
+
+                        else if (b.body.isCircle === true)
+                        {
+                            if (this.intersectRectangleVsCircle(a, b))
+                            {
+                                // If a callback was passed, call it.
+                                if (callback !== null)
+                                {
+                                    callback(a, b);
+                                }
+
+                                // Apply collision, if desired.
+                                if (overlapOnly === false)
+                                {
+                                }
+                            }
+                        }
                     }
 
                     else if (a.body.isCircle === true)
@@ -1535,6 +1778,210 @@ Carrot.Physics.prototype =
                                     callback(a, b);
                                 }
                             }
+                        }
+
+                        else if (a.body.isRectangle === true)
+                        {
+                            if (this.intersectRectangleVsCircle(b, a))
+                            {
+                                // If a callback was passed, call it.
+                                if (callback !== null)
+                                {
+                                    callback(a, b);
+                                }
+
+                                // Apply collision, if desired.
+                                if (overlapOnly === false)
+                                {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    /**
+    * Checks for collision between a sprite and a group. Use {Carrot.Physics#collide} or {Carrot.Physics#overlap} instead.
+    *
+    * @method Carrot.Physics#collideSpriteVsGroup
+    * @param {Carrot.Sprite} sprite
+    * @param {Carrot.Group} group
+    * @param {function} [callback=null] - The function that shall be executed when the collision or overlap happens.
+    * @param {boolean} [overlapOnly=false] - Defines if the function shall only check for overlap and disable physics.
+    * @return {boolean} If a collision was detected.
+    * @private
+    */
+    collideSpriteVsGroup(sprite, group, callback, overlapOnly)
+    {
+        callback = callback || null;
+        overlapOnly = overlapOnly || false;
+
+        let a = sprite;
+
+        for (let i = 0; i < group.children.length; i++)
+        {
+            let b = group.children[i];
+            if (b !== a)
+            {
+                if (a.body.isRectangle === true)
+                {
+                    if (b.body.isRectangle === true)
+                    {
+                        if (this.intersectRectangleVsRectangle(a, b))
+                        {
+                            // If a callback was passed, call it.
+                            if (callback !== null)
+                            {
+                                callback(a, b);
+                            }
+
+                            // Apply collision, if desired.
+                            if (overlapOnly === false)
+                            {
+                            }
+                        }
+                    }
+
+                    else if (b.body.isCircle === true)
+                    {
+                        if (this.intersectRectangleVsCircle(a, b))
+                        {
+                            // If a callback was passed, call it.
+                            if (callback !== null)
+                            {
+                                callback(a, b);
+                            }
+
+                            // Apply collision, if desired.
+                            if (overlapOnly === false)
+                            {
+                            }
+                        }
+                    }
+                }
+
+                else if (a.body.isCircle === true)
+                {
+                    if (b.body.isCircle === true)
+                    {
+                        if (this.intersectCircleVsCircle(a, b))
+                        {
+                            // If a callback was passed, call it.
+                            if (callback !== null)
+                            {
+                                callback(a, b);
+                            }
+                        }
+                    }
+
+                    else if (a.body.isRectangle === true)
+                    {
+                        if (this.intersectRectangleVsCircle(b, a))
+                        {
+                            // If a callback was passed, call it.
+                            if (callback !== null)
+                            {
+                                callback(a, b);
+                            }
+
+                            // Apply collision, if desired.
+                            if (overlapOnly === false)
+                            {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    /**
+    * Checks for collision between two sprites. Use {Carrot.Physics#collide} or {Carrot.Physics#overlap} instead.
+    *
+    * @method Carrot.Physics#collideSpriteVsSprite
+    * @param {Carrot.Sprite} sprite1
+    * @param {Carrot.Sprite} sprite2
+    * @param {function} [callback=null] - The function that shall be executed when the collision or overlap happens.
+    * @param {boolean} [overlapOnly=false] - Defines if the function shall only check for overlap and disable physics.
+    * @return {boolean} If a collision was detected.
+    * @private
+    */
+    collideSpriteVsSprite(sprite1, sprite2, callback, overlapOnly)
+    {
+        callback = callback || null;
+        overlapOnly = overlapOnly || false;
+
+        let a = sprite1;
+        let b = sprite2;
+
+        if (b !== a)
+        {
+            if (a.body.isRectangle === true)
+            {
+                if (b.body.isRectangle === true)
+                {
+                    if (this.intersectRectangleVsRectangle(a, b))
+                    {
+                        // If a callback was passed, call it.
+                        if (callback !== null)
+                        {
+                            callback(a, b);
+                        }
+
+                        // Apply collision, if desired.
+                        if (overlapOnly === false)
+                        {
+                        }
+                    }
+                }
+
+                else if (b.body.isCircle === true)
+                {
+                    if (this.intersectRectangleVsCircle(a, b))
+                    {
+                        // If a callback was passed, call it.
+                        if (callback !== null)
+                        {
+                            callback(a, b);
+                        }
+
+                        // Apply collision, if desired.
+                        if (overlapOnly === false)
+                        {
+                        }
+                    }
+                }
+            }
+
+            else if (a.body.isCircle === true)
+            {
+                if (b.body.isCircle === true)
+                {
+                    if (this.intersectCircleVsCircle(a, b))
+                    {
+                        // If a callback was passed, call it.
+                        if (callback !== null)
+                        {
+                            callback(a, b);
+                        }
+                    }
+                }
+
+                else if (a.body.isRectangle === true)
+                {
+                    if (this.intersectRectangleVsCircle(b, a))
+                    {
+                        // If a callback was passed, call it.
+                        if (callback !== null)
+                        {
+                            callback(a, b);
+                        }
+
+                        // Apply collision, if desired.
+                        if (overlapOnly === false)
+                        {
                         }
                     }
                 }
@@ -1574,6 +2021,30 @@ Carrot.Physics.prototype =
         let y = a.y - b.y;
         let r = (a.width * 0.5) + (b.width * 0.5);
         return (x * x) + (y * y) < (r * r);
+    },
+
+    /**
+    * Checks for intersection between a rectangle and a circle.
+    *
+    * @method Carrot.Physics#intersectRectangleVsCircle
+    * @param {Carrot.Rectangle} a
+    * @param {Carrot.Circle} b
+    * @return {boolean} If an intersection was detected.
+    * @private
+    */
+    intersectRectangleVsCircle(a, b)
+    {
+        let cr = b.width * 0.5;
+        let cx = b.width - cr;
+        let cy = b.height - cr;
+        let rw = a.width;
+        let rh = a.height;
+        let rx = rw - (rw * 0.5);
+        let ry = rh - (rh * 0.5);
+        let dx = cx - Math.max(rx, Math.min(cx, ry + rw));
+        let dy = cy - Math.max(ry, Math.min(cy, ry + rh));
+
+        return (dx * dx + dy * dy) < (cr * cr);
     }
 };
 
@@ -1703,7 +2174,7 @@ Carrot.Entity.prototype =
      *
      * @method Carrot.Entity#add
      * @param {string} name - The unique name of the class.
-     * @param {object} [style=null] - The style of the class.
+     * @param {Object} [style=null] - The style of the class.
      */
     add(name, style)
     {
@@ -1893,13 +2364,13 @@ Carrot.ObjectFactory.prototype =
      * @param {string} [key=null] - The key (name) of the image. If null, the sprite will be a green rectangle.
      * @param {integer} [frame=0] - The initial frame to show. Only for spritesheets.
      */
-    sprite(x, y, key, frame)
+    sprite(x, y, key, frame, alive)
     {
         x = x || 0;
         y = y || 0;
         key = key || null;
         frame = frame || 0;
-        return new Carrot.Sprite(this.game, x, y, key, frame);
+        return new Carrot.Sprite(this.game, x, y, key, frame, alive);
     },
 
     /**
