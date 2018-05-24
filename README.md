@@ -8,7 +8,9 @@ For now it includes https://github.com/IceCreamYou/MainLoop.js (MIT licensed) fo
 
 ### Introduction
 
-A game can be created and started by a single line of code:
+carrotJS consists of two files: The Javascript file `carrot.js` and the CSS file `carrot.css`. Since carrotJS is using the DOM for rendering it highly depends on CSS and having everything as inline CSS is bad for overall performance. That's why the `carrot.css` should be included, too.
+
+If that is done, a game can be created and started by a single line of code:
 
 `new Carrot.Game();`
 
