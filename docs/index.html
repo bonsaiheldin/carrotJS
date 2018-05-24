@@ -74,7 +74,7 @@
 </tr>
 </tbody>
 </table>
-<h3>Loader</h3><table>
+<h2>Loader</h2><table>
 <thead>
 <tr>
 <th>Class</th>
@@ -122,7 +122,7 @@
 </tbody>
 </table>
 <p><a name="display"></a></p>
-<h3>Game objects</h3><table>
+<h2>Game objects</h2><table>
 <thead>
 <tr>
 <th>Class</th>
@@ -145,28 +145,19 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.Circle.html">Circle</a></td>
+<td><a href="./Carrot.Circle.html">Circle</a></td>
 <td>A Circle object consisting of a position and diameter.</td>
 </tr>
 <tr>
-<td><a href="./Phaser.Ellipse.html">Ellipse</a></td>
-<td>An Ellipse object consisting of a position, width and height.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Line.html">Line</a></td>
-<td>A Line object consisting of two points at the start and end of the Line.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Point.html">Point</a></td>
+<td><a href="./Carrot.Point.html">Point</a></td>
 <td>A Point object consisting of an x and y position.</td>
 </tr>
 <tr>
-<td><a href="./Phaser.Rectangle.html">Rectangle</a></td>
+<td><a href="./Carrot.Rectangle.html">Rectangle</a></td>
 <td>A Rectangle object consisting of an x, y, width and height.</td>
 </tr>
 </tbody>
 </table>
-<p><a name="time"></a></p>
 <h2>Time</h2><table>
 <thead>
 <tr>
@@ -177,54 +168,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.Time.html">Time</a></td>
+<td><a href="./Carrot.Time.html">Time</a></td>
 <td><code>time</code></td>
-<td>The core internal clock on which all Phaser time related operations rely.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Timer.html">Timer</a></td>
-<td><code>time.create</code></td>
-<td>A custom Timer that contains one or more TimerEvents. Can be used either once or be set to repeat.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.TimerEvent.html">TimerEvent</a></td>
-<td><code>time.add</code></td>
-<td>A single time related event object. Belongs to a Phaser.Timer.</td>
+<td>The core internal clock on which all Carrot time related operations rely.</td>
 </tr>
 </tbody>
 </table>
-<p><a name="tilemaps"></a></p>
-<h2>Tilemaps</h2><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.Tilemap.html">Tilemap</a></td>
-<td>A Tilemap consists of one or more TilemapLayers and associated tile data. Contains methods for tile data manipulation and TilemapLayer generation.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.TilemapLayer.html">TilemapLayer</a></td>
-<td>A single layer within a Tilemap. Extends from Phaser.Sprite and is responsible for rendering itself.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Tileset.html">Tileset</a></td>
-<td>An object containing a texture and data used for rendering tiles by a TilemapLayer.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Tile.html">Tile</a></td>
-<td>A single Tile object with related properties. One of these exists for every tile in a map.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.TilemapParser.html">TilemapParser</a></td>
-<td>A Static class used to parse externally loaded map data. Typically called directly by Phaser.Loader.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="math"></a></p>
 <h2>Math</h2><table>
 <thead>
 <tr>
@@ -235,63 +184,9 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.Math.html">Math</a></td>
+<td><a href="./Carrot.Math.html">Math</a></td>
 <td><code>math</code></td>
-<td>Contains lots of math related helper methods including fuzzy logic and interpolation.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.QuadTree.html">QuadTree</a></td>
-<td>-</td>
-<td>A stand-alone QuadTree implementation. Used by Arcade Physics but can also be used directly.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.RandomDataGenerator.html">RandomDataGenerator</a></td>
-<td><code>rnd</code></td>
-<td>A seedable repeatable random data generator.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="network"></a></p>
-<h2>Network</h2><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Via</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.Net.html">Net</a></td>
-<td><code>net</code></td>
-<td>Browser URL and query string related methods.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="particles"></a></p>
-<h2>Particles</h2><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Via</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.Particles.html">Particles</a></td>
-<td><code>particles</code></td>
-<td>The Phaser Particle Manager. Called during the game loop and updates any associated Particle Emitters.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Particles.Arcade.Emitter.html">Emitter</a></td>
-<td><code>add.emitter</code></td>
-<td>An Arcade Physics based Particle Emitter.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Particle.html">Particle</a></td>
-<td>-</td>
-<td>A single Particle object as emitted by the Emitter. Extends Phaser.Sprite.</td>
+<td>Contains lots of math related helper methods.</td>
 </tr>
 </tbody>
 </table>
@@ -306,14 +201,14 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.Physics.html">Physics</a></td>
+<td><a href="./Carrot.Physics.html">Physics</a></td>
 <td><code>physics</code></td>
 <td>The core Physics Manager. Provides access to all of the physics sub-systems.</td>
 </tr>
 </tbody>
 </table>
 <p><a name="arcadephysics"></a></p>
-<h3>Arcade Physics</h3><table>
+<h2>Physics</h2><table>
 <thead>
 <tr>
 <th>Class</th>
@@ -323,133 +218,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.Physics.Arcade.html">Arcade</a></td>
-<td><code>physics.arcade</code></td>
-<td>The Arcade Physics handler. Contains collision, overlap and movement related methods.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.Arcade.Body.html">Body</a></td>
+<td><a href="./Carrot.Physics.Body.html">Body</a></td>
 <td><code>sprite.body</code></td>
-<td>An Arcade Physics Body. Contains velocity, acceleration, drag and other related properties.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Weapon.html">Weapon</a></td>
-<td><code>game.add.weapon</code></td>
-<td>An Arcade Physics powered Weapon plugin, for easy bullet pool management.</td>
+<td>An Physics Body. Contains velocity, acceleration, drag and other related properties.</td>
 </tr>
 </tbody>
 </table>
-<p><a name="ninjaphysics"></a></p>
-<h3>Ninja Physics</h3><p>Ninja Physics is not bundled in Phaser by default. Please see the README custom build details section.</p>
-<table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Via</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.Physics.Ninja.html">Ninja</a></td>
-<td><code>physics.ninja</code></td>
-<td>The Ninja Physics handler. Contains collision, overlap and movement related methods.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.Ninja.Body.html">Body</a></td>
-<td><code>sprite.body</code></td>
-<td>A Ninja Physics Body. Contains velocity, acceleration, drag and other related properties.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.Ninja.AABB.html">AABB</a></td>
-<td>-</td>
-<td>An AABB Ninja Physics Body type.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.Ninja.Circle.html">Circle</a></td>
-<td>-</td>
-<td>A Circle Ninja Physics Body type.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.Ninja.Tile.html">Tile</a></td>
-<td>-</td>
-<td>A Tile Ninja Physics Body type.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="p2physics"></a></p>
-<h3>P2 Physics</h3><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Via</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.Physics.P2.html">P2</a></td>
-<td><code>physics.p2</code></td>
-<td>The P2 Physics World. Contains collision, overlap and movement related methods.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.Body.html">Body</a></td>
-<td><code>sprite.body</code></td>
-<td>A P2 Physics Body. Contains velocity, acceleration, drag and other related properties.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.BodyDebug.html">BodyDebug</a></td>
-<td>-</td>
-<td>A Debug specific version of a P2 Body object. Renders out its shape for visual debugging.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.Material.html">Material</a></td>
-<td>-</td>
-<td>A P2 Material used for world responses, such as friction and restitution.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.ContactMaterial.html">ContactMaterial</a></td>
-<td>-</td>
-<td>A P2 Contact Material used for contact responses.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.CollisionGroup.html">CollisionGroup</a></td>
-<td>-</td>
-<td>A P2 Collision Group.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.FixtureList.html">FixtureList</a></td>
-<td>-</td>
-<td>The P2 Fixture List handler.</td>
-</tr>
-<tr>
-<td><strong>Constraints:</strong></td>
-<td>-</td>
-<td><a href="./Phaser.Physics.P2.DistanceConstraint.html">Distance Constraint</a>, <a href="./Phaser.Physics.P2.GearConstraint.html">GearConstraint</a>, <a href="./Phaser.Physics.P2.LockConstraint.html">LockConstraint</a>, <a href="./Phaser.Physics.P2.PrismaticConstraint.html">PrismaticConstraint</a>, <a href="./Phaser.Physics.P2.RevoluteConstraint.html">RevoluteConstraint</a></td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.PointProxy.html">PointProxy</a></td>
-<td>-</td>
-<td>Responsible for proxying Phaser Game World to P2 Physics values.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.InversePointProxy.html">InversePointProxy</a></td>
-<td>-</td>
-<td>Responsible for proxying Phaser Game World to inversed P2 Physics values.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.Spring.html">Spring</a></td>
-<td>-</td>
-<td>A P2 Spring object.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Physics.P2.RotationalSpring.html">RotationalSpring</a></td>
-<td>-</td>
-<td>A P2 Rotational Spring object.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="input"></a></p>
 <h2>Input</h2><table>
 <thead>
 <tr>
@@ -460,112 +234,17 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.Input.html">Input</a></td>
-<td><code>input</code></td>
-<td>The Input Manager. Responsible for handling all Input sub-systems. Also looks after Input enabled Game Objects.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Pointer.html">Pointer</a></td>
-<td><code>input.pointer</code></td>
-<td>Pointers encapsulate all mouse or touch related input, regardless of how it was generated. On multi-touch systems more than one Pointer can be active at any one time. In Input related events a reference to the corresponding Pointer is passed.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.DeviceButton.html">DeviceButton</a></td>
-<td><code>pointer.leftButton</code>, …</td>
-<td>Represents a button on a mouse or pen/stylus.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Keyboard.html">Keyboard</a></td>
+<td><a href="./Carrot.Keyboard.html">Keyboard</a></td>
 <td><code>input.keyboard</code></td>
 <td>The Keyboard input handler. Listens for device related events. Can also create Key objects.</td>
 </tr>
 <tr>
-<td><a href="./Phaser.Key.html">Key</a></td>
-<td>-</td>
-<td>A Key object is responsible for listening to a specific Key. Created by the Keyboard class.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.KeyCode.html">KeyCode</a></td>
-<td>-</td>
-<td>The KeyCode consts are used when creating new Key objects.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Mouse.html">Mouse</a></td>
+<td><a href="./Carrot.Mouse.html">Mouse</a></td>
 <td><code>input.mouse</code></td>
 <td>A Mouse event handler. Listens for device related events and passes them on to the active Pointer.</td>
 </tr>
-<tr>
-<td><a href="./Phaser.MSPointer.html">MSPointer</a></td>
-<td><code>input.mspointer</code></td>
-<td>An MSPointer event handler. Listens for device related events and passes them on to the active Pointer.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Touch.html">Touch</a></td>
-<td><code>input.touch</code></td>
-<td>A Touch event handler. Listens for device related events and passes them on to the active Pointer.</td>
-</tr>
 </tbody>
 </table>
-<p><a name="gamepads"></a></p>
-<h3>Gamepads</h3><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Via</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.Gamepad.html">Gamepad</a></td>
-<td><code>input.gamepad</code></td>
-<td>The Gamepad Manager looks after all connected Gamepads to the device. Creates SinglePad instances.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.SinglePad.html">SinglePad</a></td>
-<td><code>input.gamepad.pad&lt;1,4&gt;</code></td>
-<td>Represents a single connected gamepad.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.DeviceButton.html">DeviceButton</a></td>
-<td>-</td>
-<td>Represents a button on a SinglePad instance.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="tweens"></a></p>
-<h2>Tweens</h2><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Via</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.TweenManager.html">TweenManager</a></td>
-<td><code>tweens</code></td>
-<td>The Tween Manager creates, updates and destroys all active tweens.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Tween.html">Tween</a></td>
-<td><code>add.tween</code></td>
-<td>A Tween object. Consists of TweenData objects that represent the tween and any child tweens.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.TweenData.html">TweenData</a></td>
-<td>-</td>
-<td>A TweenData object contains all the information related to a tween. Created by and belongs to a Phaser.Tween object.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Easing.html">Easing</a></td>
-<td>-</td>
-<td>A static class containing all of the easing functions available to Tweens.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="sound"></a></p>
 <h2>Sound</h2><table>
 <thead>
 <tr>
@@ -576,55 +255,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.SoundManager.html">SoundManager</a></td>
+<td><a href="./Carrot.SoundManager.html">SoundManager</a></td>
 <td><code>sound</code></td>
 <td>The Sound Manager controls all Sound objects and can play, loop, fade and stop Sounds.</td>
 </tr>
-<tr>
-<td><a href="./Phaser.Sound.html">Sound</a></td>
-<td><code>add.audio</code>, <code>add.sound</code></td>
-<td>A Sound object. Can be played, paused and stopped directly, and have its volume adjusted.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.AudioSprite.html">AudioSprite</a></td>
-<td><code>add.audioSprite</code></td>
-<td>An Audio Sprite is a Sound object with related marker data representing sections of the audio.</td>
-</tr>
 </tbody>
 </table>
-<p><a name="system"></a></p>
-<h2>System</h2><table>
-<thead>
-<tr>
-<th>Class</th>
-<th>Via</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="./Phaser.Canvas.html">Canvas</a></td>
-<td>-</td>
-<td>A static class containing Canvas creation and manipulation methods. Such as adding to the dom, setting touch actions, smoothing and image rendering.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Device.html">Device</a></td>
-<td><code>game.device</code></td>
-<td>The Device class checks system capabilities and settings on boot and stores them for later access.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.DOM.html">DOM</a></td>
-<td>-</td>
-<td>A static class containing DOM specific methods including offset handling, viewport calibration and bounds checks.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.RequestAnimationFrame.html">RequestAnimationFrame</a></td>
-<td><code>game.raf</code></td>
-<td>Abstracts away the use of RAF or setTimeOut for the core game update loop.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="utils"></a></p>
 <h2>Utils</h2><table>
 <thead>
 <tr>
@@ -635,34 +271,9 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="./Phaser.ArraySet.html">ArraySet</a></td>
+<td><a href="./Carrot.Color.html">Color</a></td>
 <td>-</td>
-<td>ArraySet is a Set data structure (items must be unique within the set) that also maintains order.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.ArrayUtils.html">ArrayUtils</a></td>
-<td>-</td>
-<td>Array specific methods such as getRandomItem, shuffle, transposeMatrix, rotate and numberArray.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Color.html">Color</a></td>
-<td>-</td>
-<td>Phaser.Color is a set of static methods that assist in color manipulation and conversion.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Utils.Debug.html">Debug</a></td>
-<td><code>game.debug</code></td>
-<td>A collection of methods for displaying debug information about game objects.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.LinkedList.html">LinkedList</a></td>
-<td>-</td>
-<td>A basic Linked List data structure.</td>
-</tr>
-<tr>
-<td><a href="./Phaser.Utils.html">Utils</a></td>
-<td>-</td>
-<td>Utility methods for Object and String inspection and modification. Including getProperty, pad, isPlainObject, extend and mixin.</td>
+<td>Carrot.Color stores the 140 standard HTML / CSS colors.</td>
 </tr>
 </tbody>
 </table></article>
@@ -682,7 +293,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 24 2018 19:54:14 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 24 2018 20:05:35 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
