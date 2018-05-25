@@ -21,7 +21,7 @@ function preload()
 function create()
 {
     // Create a sprite from the loaded image.
-    game.add.sprite(360, 240, "carrot");
+    game.add.sprite(380, 280, "carrot");
 };
 
 function update()
