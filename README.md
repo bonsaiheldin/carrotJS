@@ -29,7 +29,7 @@ This creates an empty game container. One can also pass that function a few para
 **Note:** Creating the game returns its core object and one should reference it to a variable to be able to use most of the engine's functions. For example:
 `var game = new.Carrot.Game()` and then `game` contains the functions to setup the game.
 
-Want to see more? Check out the very first (and very simple) example: https://github.com/bonsaiheldin/carrotJS/tree/master/examples/basics
+Want to see more? Check out the examples: https://github.com/bonsaiheldin/carrotJS/tree/master/examples/basics
 
 There is a documentation, too:
 
