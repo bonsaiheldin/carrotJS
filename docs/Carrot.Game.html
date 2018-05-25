@@ -29,7 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="Carrot.html">.Carrot</a>.</span>Game<span class="signature">(width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>, parent<span class="signature-attributes">opt</span>, states<span class="signature-attributes">opt</span>, transparent<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="Carrot.html">Carrot</a>.</span>Game<span class="signature">(width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>, container<span class="signature-attributes">opt</span>, scene<span class="signature-attributes">opt</span>, transparent<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Carrot.Game</div>
         
@@ -46,7 +46,7 @@
     
 
     
-    <h4 class="name" id="Game"><span class="type-signature"></span>new Game<span class="signature">(width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>, parent<span class="signature-attributes">opt</span>, states<span class="signature-attributes">opt</span>, transparent<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Game"><span class="type-signature"></span>new Game<span class="signature">(width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>, container<span class="signature-attributes">opt</span>, scene<span class="signature-attributes">opt</span>, transparent<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -172,7 +172,7 @@
 
         <tr>
             
-                <td class="name"><code>parent</code></td>
+                <td class="name"><code>container</code></td>
             
 
             <td class="type">
@@ -211,7 +211,7 @@
 
         <tr>
             
-                <td class="name"><code>states</code></td>
+                <td class="name"><code>scene</code></td>
             
 
             <td class="type">
@@ -243,7 +243,7 @@
                 </td>
             
 
-            <td class="description last">Custom states the game shall use.</td>
+            <td class="description last">Custom scene the game shall use.</td>
         </tr>
 
     
@@ -323,7 +323,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line30">line 30</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line27">line 27</a>
     </li></ul></dd>
     
 
@@ -383,13 +383,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Carrot.html">Carrot</a></li><li><a href="Carrot.AssetLoader.html">AssetLoader</a></li><li><a href="Carrot.Cache.html">Cache</a></li><li><a href="Carrot.Camera.html">Camera</a></li><li><a href="Carrot.Circle.html">Circle</a></li><li><a href="Carrot.Color.html">Color</a></li><li><a href="Carrot.Entity.html">Entity</a></li><li><a href="Carrot.Game.html">Game</a></li><li><a href="Carrot.Group.html">Group</a></li><li><a href="Carrot.Keyboard.html">Keyboard</a></li><li><a href="Carrot.KeyCode.html">KeyCode</a></li><li><a href="Carrot.Math.html">Math</a></li><li><a href="Carrot.Mouse.html">Mouse</a></li><li><a href="Carrot.ObjectFactory.html">ObjectFactory</a></li><li><a href="Carrot.Physics.html">Physics</a></li><li><a href="Carrot.Physics.Body.html">Body</a></li><li><a href="Carrot.Point.html">Point</a></li><li><a href="Carrot.Rectangle.html">Rectangle</a></li><li><a href="Carrot.SoundManager.html">SoundManager</a></li><li><a href="Carrot.Sprite.html">Sprite</a></li><li><a href="Carrot.Time.html">Time</a></li><li><a href="Carrot.World.html">World</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Carrot.AssetLoader.html">AssetLoader</a></li><li><a href="Carrot.Cache.html">Cache</a></li><li><a href="Carrot.Camera.html">Camera</a></li><li><a href="Carrot.Circle.html">Circle</a></li><li><a href="Carrot.Color.html">Color</a></li><li><a href="Carrot.Entity.html">Entity</a></li><li><a href="Carrot.Game.html">Game</a></li><li><a href="Carrot.Group.html">Group</a></li><li><a href="Carrot.Keyboard.html">Keyboard</a></li><li><a href="Carrot.KeyCode.html">KeyCode</a></li><li><a href="Carrot.Math.html">Math</a></li><li><a href="Carrot.Mouse.html">Mouse</a></li><li><a href="Carrot.ObjectFactory.html">ObjectFactory</a></li><li><a href="Carrot.Physics.html">Physics</a></li><li><a href="Carrot.Physics.Body.html">Body</a></li><li><a href="Carrot.Point.html">Point</a></li><li><a href="Carrot.Rectangle.html">Rectangle</a></li><li><a href="Carrot.SoundManager.html">SoundManager</a></li><li><a href="Carrot.Sprite.html">Sprite</a></li><li><a href="Carrot.Time.html">Time</a></li><li><a href="Carrot.Timer.html">Timer</a></li><li><a href="Carrot.World.html">World</a></li></ul><h3>Namespaces</h3><ul><li><a href="Carrot.html">Carrot</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 24 2018 20:07:01 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 25 2018 20:28:25 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -28,6 +28,7 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | [ObjectFactory](./Carrot.ObjectFactory.html) | `add` | A helper class that can create any of the Carrot Game Objects and adds them to the Game World. |
 | [Group](./Carrot.Group.html) | `add.group` | Groups can contain multiple Game objects.
 | [Sprite](./Carrot.Sprite.html) | `add.sprite` | A sprite is a game object containing an image.
+| [Timer](./Carrot.Timer.html) | `add.timer` | A timed function which can be repeated. |
 
 <a name="display"></a>
 
