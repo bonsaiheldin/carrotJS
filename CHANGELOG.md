@@ -2,6 +2,28 @@
 
 ---
 
+## Version 0.0.10 - 25th May 2018
+
+A great new feature was added: Object pools! Object pools enable having inactive sprites with their `active` property set to `false` which means that they are being ignored by the `_update` and `_render` loops. The idea is to pre-create an amount of inactive sprites when the game starts and use them instead of creating brand new ones when needed. Reusing existing inactive sprites is always faster than creating brand new ones all the time. However, if desired, `Group.create` and `Group.createMultiple` can also be used to create new active sprites, too. The default is `false`. An exa
+
+Sprites can now be added as children to other sprites. They are always positioned relative to their parents. To accomplish that, they've got their own `addChild` and `removeChild` functions. Apart from that they are just normal sprites (which could themselves have children). The internal `_update` loops of children are called after the ones of their parents. Note: Sprites can only have sprites as children, not groups or anything else.
+
+I have created the standard folders `dist` for storing the releases (this will contain the carrot.js file now), `lib` for storing dependencies (the mainloop.js) and `src` for future files. **carrotJS** is already larger than 3400 lines, so i will need to split up the files and having them concatenated altogether. The `src` folder will contain thise split up files.
+
+### New Features
+
+* `Group.getInactive(createIfNull, x, y, key, frame)` Iterates the group and returns the first Sprite of the group it finds which has its `active` property set to `false`. The first parameter defines if a new sprite shall be created if no inactive one can be found. The default is `false`. The parameters after `createIfNull` are the new base properties for the sprite for saving a few lines of code.
+
+* `Sprite.kill(destroyNode)` is a "soft" version of `Sprite.destroy()`. Instead of completely removing the sprite from the game world, it only sets its `active` property to `false`, so it will be ignored by the core `_update` and `_render` loops. If `true` is passed, it will also destroy the sprite's HTML element. See below for recreating it.
+
+* `Sprite.revive()` After getting a inactive sprite using `Group.getInactive()` this function can be called once on the sprite to set its `active` property to `true` and if it has no HTML element, it will (re)create one.
+
+* `Sprite.addChild(sprite)` Adds a sprite to another sprite as a child.
+
+* `Sprite.removeChild(sprite)` Removes a child sprite from the sprite.
+
+---
+
 ## Version 0.0.9 - 24th May 2018
 
 Sprites now have physics disabled by default. Enable it using `game.physics.enable(sprite)` on a sprite after creating it.
@@ -13,7 +35,7 @@ Working towards object pooling, the creation of the HTML elements for sprites ha
 
 ### New Features
 
-* `Sprite.createNode()` Creates the HTML element of the sprite. Is being called automatically if the sprite is being created with its `alive` property set to `true`.
+* `Sprite.createNode()` Creates the HTML element of the sprite. Is being called automatically if the sprite is being created with its `active` property set to `true`.
 
 * `Sprite.destroyNode()` Destroys the HTML element of the sprite. Is being called automatically by `Sprite.destroy()` or `Sprite.kill(true)`.
 
@@ -21,9 +43,9 @@ Working towards object pooling, the creation of the HTML elements for sprites ha
 
 * `game.physics.disable(sprite)` Disables physics on the passed sprite by setting its body to `null`.
 
-* `Group.create(x, y, key, frame, alive)` Creates a sprite and adds it to the group. Returns the new sprite. One can also create an alive sprite by passing a `true` as the fifth parameter.
+* `Group.create(x, y, key, frame, active)` Creates a sprite and adds it to the group. Returns the new sprite. One can also create an active sprite by passing a `true` as the fifth parameter.
 
-* `Group.createMultiple(quantity, x, y, key, frame, alive)` Creates multiple new sprites and adds them to the group. Returns them as an array. One can also create multiple alive sprites by passing a `true` as the sixth parameter.
+* `Group.createMultiple(quantity, x, y, key, frame, active)` Creates multiple new sprites and adds them to the group. Returns them as an array. One can also create multiple active sprites by passing a `true` as the sixth parameter.
 
 ---
 
@@ -67,7 +89,7 @@ Sprites can now have thei own custom update loops, too. They are are called righ
 
 ### New Features
 
-* `game.physics.overlap(entity1, entity2, callback)` Checks a group against another group, a sprite against another sprite or a sprite against group for overlaps. In addition, one can give a callback as the third parameter which will be fired when the overlap is detected and which returns the two given entities in the same order they were given. Put that function in a custom `update` loop.
+* `game.physics.overlap(entity1, entity2, callback)` Checks a group against another group, a sprite against another sprite or a sprite against group for overlaps. In addition, one can pass a callback as the third parameter which will be fired when the overlap is detected and which returns the two passed entities in the same order they were passed. Put that function in a custom `update` loop.
 
 * `Sprite.update` By default `null`. Pass a function that is called right **after** the internal `_update` loop of the sprite. Makes code organizing easier and helps performance. One can use it for custom code for sprites, so there's no need to iterate all of them each frame.
 
@@ -85,13 +107,13 @@ Sprites can now have thei own custom update loops, too. They are are called righ
 
 * The follow function of the camera is working again.
 
-* Creating the game container was still not functioning well. If a parent div is passed when creating a game, CarrotJS takes that as its background div, creates a second one inside it and use that for game objects. If no parent div is passed, then CarrotJS creates a background div, adds it to the page's body and does the same: It puts a second div inside it as its main one. Now it should work. Note: If a debug display or else is needed above the game container, it makes more sense to prepare the HTML structure for that and pass a div, instead of letting CarrotJS do its thing.
+* Creating the game container was still not functioning well. If a parent div is passed when creating a game, **carrotJS** takes that as its background div, creates a second one inside it and use that for game objects. If no parent div is passed, then **carrotJS** creates a background div, adds it to the page's body and does the same: It puts a second div inside it as its main one. Now it should work. Note: If a debug display or else is needed above the game container, it makes more sense to prepare the HTML structure for that and pass a div, instead of letting **carrotJS** do its thing.
 
 ---
 
 ## Version 0.0.6 - 21th May 2018
 
-CarrotJS now has a very basic asset loader. Load images and sounds by using `game.load.image(key, path)` and `game.load.sound(key, path)`. They get automatically added to the list of files to download and if all are loaded, the game starts. This introduces a fourth custom state: `preload`. This one can be used to load assets and be added to `Carrot.Game` as an additional state beside `create`, `upload` and `render`. Assets have to be loaded and therefore ready to use before the update and render loops should run. Also, the example i uploaded yesterday got updated accordingly.
+**carrotJS** now has a very basic asset loader. Load images and sounds by using `game.load.image(key, path)` and `game.load.sound(key, path)`. They get automatically added to the list of files to download and if all are loaded, the game starts. This introduces a fourth custom state: `preload`. This one can be used to load assets and be added to `Carrot.Game` as an additional state beside `create`, `upload` and `render`. Assets have to be loaded and therefore ready to use before the update and render loops should run. Also, the example i uploaded yesterday got updated accordingly.
 
 Also, physics can now be disabled on a body by setting its `enabled` property to `false` which disables physics completely or partly by setting `allowBounce`, `allowDrag`, `allowGravity` or `allowAcceleration` to `false`. Note: `Body.velocity` is an exception and cannot be disabled that way because other physics functions depend on it. Use `Body.enabled` for that instead.
 
@@ -117,7 +139,7 @@ The follow function of the camera has been disabled because of a bug.
 
 ### Bug fixes
 
-* When the camera was set to follow a sprite it moved the game's background, too. The solution: CarrotJS now creates a second container as a background and puts the main one inside it. The background one can stay where it is.
+* When the camera was set to follow a sprite it moved the game's background, too. The solution: **carrotJS** now creates a second container as a background and puts the main one inside it. The background one can stay where it is.
 
 * Sprites wouldn't update their position outside of the camera because that only happened when their `inCamera` property was set to `true`. Yes, very funny. Of course, sprites should always update their positions!
 
@@ -145,7 +167,7 @@ Basic physics like bouncing, dragging and gravity have been added. As the proper
 
 ## Version 0.0.4 - 20th May 2018
 
-Good news: I got jsDocs working which means that CarrotJS now has a documentation! It's still very basic and i don't like the default theme at all, but here it is: https://bonsaiheldin.github.io/CarrotJS/
+Good news: I got jsDocs working which means that **carrotJS** now has a documentation! It's still very basic and i don't like the default theme at all, but here it is: https://bonsaiheldin.github.io/**carrotJS**/
 
 Keyboard and mouse controls have been added. They're not perfect yet, but it is a start.
 
@@ -167,7 +189,7 @@ Groups have been added. A group is meant as a container storing sprites and to m
 
 And a camera has been added with a simple follow function. That means that the game world can now be bigger than the game container and if the camera is set to follow a sprite, the game world will move when the sprite moves.
 
-CarrotJS now also has some helper functions for defining simple shapes like points, rectangles and circles. The world container already uses a rectangle for its bounds and the sprites use points for their anchors (see below) and velocity and a rectangle for its bounds.
+**carrotJS** now also has some helper functions for defining simple shapes like points, rectangles and circles. The world container already uses a rectangle for its bounds and the sprites use points for their anchors (see below) and velocity and a rectangle for its bounds.
 
 ### New Features
 
@@ -199,7 +221,7 @@ CarrotJS now also has some helper functions for defining simple shapes like poin
 
 ## Version 0.0.2 - 19th May 2018
 
-CarrotJS now has two internal running core loops: One for updating the game logic and one for rendering. The rendering loop just updates the styles of the HTML elements since they're being drawn automatically by default anyway.
+**carrotJS** now has two internal running core loops: One for updating the game logic and one for rendering. The rendering loop just updates the styles of the HTML elements since they're being drawn automatically by default anyway.
 
 A simple image loader has been made and sprites can now be added, too. Sprites already have some internal update functions running, for e.g. movement. Movement can be activated using `Sprite.velocity.x / y`. If the sprite has `collideWorldBounds` set to `true` it never leaves the game container! If set to `false` but `outOfBoundsKill` set to `true` the sprite will be removed from the game if it leaves the game container.
 
@@ -229,6 +251,6 @@ There is more stuff which i won't address for now. I will need to create a docum
 
 ### New Features
 
-* `new Carrot.Game(width, height, parent, transparent);` Well... The very first feature: A game container. One can create a DIV on the page and assign it to the game when creating. Otherwise if there is none or if the DIV cannot be found, CarrotJS will just create one and use that. All sprites will be added as children to that DIV, so the rest of the page won't get polluted. That way a game made with CarrotJS could safely be included into a website. One can also decide if the DIV should be transparent, with the fourth parameter. If `false` or left empty, it will be colored black. Standard dimensions are 960x540 for now.
+* `new Carrot.Game(width, height, parent, transparent);` Well... The very first feature: A game container. One can create a DIV on the page and assign it to the game when creating. Otherwise if there is none or if the DIV cannot be found, **carrotJS** will just create one and use that. All sprites will be added as children to that DIV, so the rest of the page won't get polluted. That way a game made with **carrotJS** could safely be included into a website. One can also decide if the DIV should be transparent, with the fourth parameter. If `false` or left empty, it will be colored black. Standard dimensions are 960x540 for now.
 
 There are no working update and render loops yet. Just a container and nothing more. Enough for a 0.0.1!
