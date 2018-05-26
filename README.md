@@ -6,7 +6,7 @@
 
 ---
 
-### Introduction
+## Introduction
 
 A game can be created and started by a single line of code:
 
@@ -20,7 +20,7 @@ This creates an empty game container and returns the core object which one shoul
 * `scene` An object which contains the custom states for the game as the properties `preload`, `create`, `update` and `render`. One can also leave that parameter empty or only pass one, two or three of the functions. The default is `null`.
 * `transparent` Defines if the container div shall be have a transparent background. If `false` or parameter not passed, the container will have a black background. The default is `false`.
 
-### About scene states
+## About scene states
 
 A game is made of scenes. For example a loading scene, a credits scene, the actual game scene, ... **carrotJS** uses states to define such a scene.
 
