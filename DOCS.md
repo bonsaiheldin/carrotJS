@@ -14,12 +14,16 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | [World](./Carrot.World.html) | `world` | The Game World in which all Game Objects live. |
 | [Camera](./Carrot.Camera.html) | `camera` | The Camera is your view into the Game World. |
 
+---
+
 ## Loader
 
 | Class | Via | Description |
 | --- | --- | --- |
 | [Cache](./Carrot.Cache.html) | `cache` | The Cache is where all loaded assets are stored and retrieved from. |
 | [AssetLoader](./Carrot.AssetLoader.html) | `load` | Loads all external asset types (images, audio) and adds them to the Cache. Automatically invoked by a States `preload` method. |
+
+---
 
 ## Game Object creation
 
@@ -30,13 +34,15 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | [Sprite](./Carrot.Sprite.html) | `add.sprite` | A sprite is a game object containing an image.
 | [Timer](./Carrot.Timer.html) | `add.timer` | A timed function which can be repeated. |
 
-<a name="display"></a>
+---
 
 ## Game objects
 
 | Class | Description |
 | --- | --- |
 | [Sprite](./Carrot.Sprite.html) | A Game object with an image, capable of running animation and physics. |
+
+---
 
 ## Geometry
 
@@ -46,11 +52,15 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | [Point](./Carrot.Point.html) | A Point object consisting of an x and y position. |
 | [Rectangle](./Carrot.Rectangle.html) | A Rectangle object consisting of an x, y, width and height. |
 
+---
+
 ## Time
 
 | Class | Via | Description |
 | --- | --- | --- |
 | [Time](./Carrot.Time.html) | `time` | The core internal clock on which all Carrot time related operations rely. |
+
+---
 
 ## Math
 
@@ -58,7 +68,7 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | --- | --- | --- |
 | [Math](./Carrot.Math.html) | `math` | Contains lots of math related helper methods. |
 
-<a name="physics"></a>
+---
 
 ## Physics
 
@@ -67,6 +77,8 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | [Physics](./Carrot.Physics.html) | `physics` | The core Physics Manager. Provides access to all of the physics sub-systems. |
 | [Body](./Carrot.Physics.Body.html) | `sprite.body` | An Physics Body. Contains velocity, acceleration, drag and other related properties. |
 
+---
+
 ## Input
 
 | Class | Via | Description |
@@ -74,11 +86,15 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | [Keyboard](./Carrot.Keyboard.html) | `input.keyboard` | The Keyboard input handler. Listens for device related events. Can also create Key objects. |
 | [Mouse](./Carrot.Mouse.html) | `input.mouse` | A Mouse event handler. Listens for device related events and passes them on to the active Pointer. |
 
+---
+
 ## Sound
 
 | Class | Via | Description |
 | --- | --- | --- |
 | [SoundManager](./Carrot.SoundManager.html) | `sound` | The Sound Manager controls all Sound objects and can play, loop, fade and stop Sounds. |
+
+---
 
 ## Utils
 

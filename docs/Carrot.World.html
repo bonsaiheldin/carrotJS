@@ -147,7 +147,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line199">line 199</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line258">line 258</a>
     </li></ul></dd>
     
 
@@ -305,7 +305,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line216">line 216</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line275">line 275</a>
     </li></ul></dd>
     
 
@@ -616,7 +616,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line246">line 246</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line305">line 305</a>
     </li></ul></dd>
     
 
@@ -668,7 +668,7 @@
     
 
     
-    <h4 class="name" id="createMultiple"><span class="type-signature"></span>createMultiple<span class="signature">(quantity<span class="signature-attributes">opt</span>, x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, key<span class="signature-attributes">opt</span>, frame<span class="signature-attributes">opt</span>, active<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="createMultiple"><span class="type-signature"></span>createMultiple<span class="signature">(quantity<span class="signature-attributes">opt</span>, x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, key<span class="signature-attributes">opt</span>, frame<span class="signature-attributes">opt</span>, active<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {array}</span></h4>
     
 
     
@@ -984,7 +984,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line273">line 273</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line332">line 332</a>
     </li></ul></dd>
     
 
@@ -1018,7 +1018,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
+<span class="param-type">array</span>
 
 
     </dd>
@@ -1140,7 +1140,473 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line235">line 235</a>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line294">line 294</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setSize"><span class="type-signature"></span>setSize<span class="signature">(x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the size (bounds) of the game world.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The left bound of the world.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The top bound of the world.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    800
+                
+                </td>
+            
+
+            <td class="description last">The right bound of the world.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    600
+                
+                </td>
+            
+
+            <td class="description last">The bottom bound of the world.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line368">line 368</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setSize"><span class="type-signature"></span>setSize<span class="signature">(width<span class="signature-attributes">opt</span>, height<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the size (bounds) of the camera.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    800
+                
+                </td>
+            
+
+            <td class="description last">The width of the camera.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    600
+                
+                </td>
+            
+
+            <td class="description last">The height of the camera.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="carrot.js.html">carrot.js</a>, <a href="carrot.js.html#line468">line 468</a>
     </li></ul></dd>
     
 
@@ -1184,13 +1650,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Carrot.AssetLoader.html">AssetLoader</a></li><li><a href="Carrot.Cache.html">Cache</a></li><li><a href="Carrot.Camera.html">Camera</a></li><li><a href="Carrot.Circle.html">Circle</a></li><li><a href="Carrot.Color.html">Color</a></li><li><a href="Carrot.Entity.html">Entity</a></li><li><a href="Carrot.Game.html">Game</a></li><li><a href="Carrot.Group.html">Group</a></li><li><a href="Carrot.Keyboard.html">Keyboard</a></li><li><a href="Carrot.KeyCode.html">KeyCode</a></li><li><a href="Carrot.Math.html">Math</a></li><li><a href="Carrot.Mouse.html">Mouse</a></li><li><a href="Carrot.ObjectFactory.html">ObjectFactory</a></li><li><a href="Carrot.Physics.html">Physics</a></li><li><a href="Carrot.Physics.Body.html">Body</a></li><li><a href="Carrot.Point.html">Point</a></li><li><a href="Carrot.Rectangle.html">Rectangle</a></li><li><a href="Carrot.SoundManager.html">SoundManager</a></li><li><a href="Carrot.Sprite.html">Sprite</a></li><li><a href="Carrot.Time.html">Time</a></li><li><a href="Carrot.Timer.html">Timer</a></li><li><a href="Carrot.World.html">World</a></li></ul><h3>Namespaces</h3><ul><li><a href="Carrot.html">Carrot</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Carrot.AssetLoader.html">AssetLoader</a></li><li><a href="Carrot.Cache.html">Cache</a></li><li><a href="Carrot.Camera.html">Camera</a></li><li><a href="Carrot.Circle.html">Circle</a></li><li><a href="Carrot.Color.html">Color</a></li><li><a href="Carrot.Debug.html">Debug</a></li><li><a href="Carrot.Entity.html">Entity</a></li><li><a href="Carrot.Game.html">Game</a></li><li><a href="Carrot.Group.html">Group</a></li><li><a href="Carrot.Keyboard.html">Keyboard</a></li><li><a href="Carrot.KeyCode.html">KeyCode</a></li><li><a href="Carrot.Math.html">Math</a></li><li><a href="Carrot.Mouse.html">Mouse</a></li><li><a href="Carrot.ObjectFactory.html">ObjectFactory</a></li><li><a href="Carrot.Physics.html">Physics</a></li><li><a href="Carrot.Physics.Body.html">Body</a></li><li><a href="Carrot.Point.html">Point</a></li><li><a href="Carrot.Rectangle.html">Rectangle</a></li><li><a href="Carrot.SoundManager.html">SoundManager</a></li><li><a href="Carrot.Sprite.html">Sprite</a></li><li><a href="Carrot.Time.html">Time</a></li><li><a href="Carrot.Timer.html">Timer</a></li><li><a href="Carrot.World.html">World</a></li></ul><h3>Namespaces</h3><ul><li><a href="Carrot.html">Carrot</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 25 2018 20:28:25 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat May 26 2018 15:26:15 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
