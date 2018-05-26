@@ -16,20 +16,20 @@ This creates an empty game container and returns the core object which one shoul
 
 * `width` Defines the width of the game container. Optional. The default is `800`.
 * `height` Defines the height of the game container. Optional. The default is `600`.
-* `container` If one already has a div on the page ready to be taken by carrotJS, pass its id. If the div cannot be found or if none is passed (for example, because none exists), **carrotJS** will create one itself. The default is `''`.
+* `container` If one already has a div on the page ready to be taken by carrotJS, pass its id. If the div cannot be found or if none is passed (for example, because none exists), **carrotJS** will create one itself. The default is `null`.
 * `scene` An object which contains the custom states for the game as the properties `preload`, `create`, `update` and `render`. One can also leave that parameter empty or only pass one, two or three of the functions. The default is `null`.
 * `transparent` Defines if the container div shall be have a transparent background. If `false` or parameter not passed, the container will have a black background. The default is `false`.
 
 ## About scene states
 
-A game is made of scenes. For example a loading scene, a credits scene, the actual game scene, ... **carrotJS** uses states to define such a scene.
+A game is made of scenes. For example a loading scene, a game over scene, the actual game scene, ... **carrotJS** uses states to define such a scene.
 
-* `preload` is immediately called when the game is created and is used for loading assets (images, sounds, JSON, ...).
-* `create` is being called once all assets are successfully loaded and the game starts.
+* `preload` is called once the game is created and can be used for loading assets (images, sounds, JSON, ...).
+* `create` is being called once all assets are successfully loaded and the game actually starts.
 * `update` is then being called each logic frame (60 per second, most of the time) **after** the internal `_update` core loop.
-* `render` is being called as fast as possble with a maximum of 60 per second **after** the internal `_render` core loop. `render` could be used to display debug info.
+* `render` is being called as fast as possble with a maximum of 60 per second **after** the internal `_render` core loop. This state could be used to display debug info.
 
-Example on what the passed scene object could look like: `{ preload: function(){}, create: function(){}, update: function(){}, render: function(){} }`.
+A passed scene object could look like this: `{ preload: function(){}, create: function(){}, update: function(){}, render: function(){} }`.
 
 ---
 
