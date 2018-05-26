@@ -10,7 +10,7 @@
  */
 var Carrot =
 {
-    "Version": "0.0.9"
+    "Version": "0.0.11"
 };
 
 /**
@@ -18,10 +18,10 @@ var Carrot =
  *
  * @class Carrot.Game
  * @constructor
- * @param {integer} [width=800] - The width of the container.
- * @param {integer} [height=600] - The height of the container.
- * @param {string} [container=null] - The parent div of the container.
- * @param {Object} [scene=null] - Custom scene the game shall use.
+ * @param {integer} [width=800]         - The width of the container.
+ * @param {integer} [height=600]        - The height of the container.
+ * @param {string}  [container=null]    - The parent div of the container.
+ * @param {object}  [scene=null]        - Custom scene the game shall use.
  * @param {boolean} [transparent=false] - Defines if the container shall be transparent.
  */
 Carrot.Game = function(width, height, container, scene, transparent)
@@ -29,13 +29,21 @@ Carrot.Game = function(width, height, container, scene, transparent)
     let that = this;
     let start = function()
     {
-        console.log("%ccarrotJS v" + Carrot.Version + " | HTML5 DOM game engine | https://github.com/bonsaiheldin/carrotJS", "font-weight: bold;");
-
         that.width       = width || 800;
         that.height      = height || 600;
         that.parent      = document.getElementById(container) || null;
         that.scene       = scene || null;
         that.transparent = transparent || false;
+
+        // Config object
+        that.config =
+        {
+            width: that.width,
+            height: that.height,
+            parent: that.parent,
+            scene: that.scene,
+            transparent: that.transparent
+        };
 
         // If no container was passed, create one
         if (that.parent === null)
@@ -79,6 +87,7 @@ Carrot.Game = function(width, height, container, scene, transparent)
         that.background.style.height     = that.height + 'px';
         that.background.style.overflow   = "hidden";
         that.background.style.fontFamily = "sans-serif";
+        that.background.style.boxSizing  = "border-box";
 
         that.parent.style.position = "relative";
         that.parent.style.width    = that.width + 'px';
@@ -86,6 +95,7 @@ Carrot.Game = function(width, height, container, scene, transparent)
 
         // Init modules
         that.time     = new Carrot.Time(that);
+        that.debug    = new Carrot.Debug(that);
         that.physics  = new Carrot.Physics(that);
         that.math     = new Carrot.Math(that);
         that.world    = new Carrot.World(that);
@@ -97,7 +107,7 @@ Carrot.Game = function(width, height, container, scene, transparent)
         that.keyboard = new Carrot.Keyboard(that);
         that.mouse    = new Carrot.Mouse(that);
 
-        // Default values
+        // Default config
         that.roundPixels = false;
 
         // Run the given preload state, if available.
@@ -105,9 +115,58 @@ Carrot.Game = function(width, height, container, scene, transparent)
         {
             if (that.scene.preload)
             {
+                that.background.style.background = "#111111";
+
+                // Create div for the progress bar.
+                let progress = document.createElement('div');
+                progress.style.userSelect = "none";
+                progress.style.pointerEvents = "none";
+                progress.style.position = "absolute";
+                progress.style.left = "50%";
+                progress.style.top = "50%";
+                progress.style.transform = "translate(-50%, -50%)";
+                progress.style.textAlign = "center";
+                progress.style.color = "#eeeeee";
+                progress.style.fontSize = "24px";
+                progress.style.lineHeight = "24px";
+                progress.innerHTML = "Made with "
+                + "<img src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><linearGradient id=\"a\"><stop offset=\"0\" stop-color=\"%23ffdbc2\"/><stop offset=\"1\" stop-color=\"%23fff\"/></linearGradient><linearGradient id=\"b\"><stop offset=\"0\" stop-color=\"%23fff\"/><stop offset=\"1\" stop-color=\"%23ffaa6e\"/></linearGradient><linearGradient id=\"c\"><stop offset=\"0\" stop-color=\"%23ff2929\"/><stop offset=\".5\" stop-color=\"%23f00000\"/><stop offset=\"1\" stop-color=\"%23820000\"/></linearGradient><linearGradient id=\"d\"><stop offset=\"0\" stop-color=\"%23fff\" stop-opacity=\".771\"/><stop offset=\"1\" stop-color=\"%23fff\" stop-opacity=\".157\"/></linearGradient></defs><path d=\"M44.268 12.869S46.504 2.734 47.236 1.27c.732-1.463 2.066-1.664 2.212-.859.146.806-1.943 9-2.437 9.714-.494.714.638 1.922 1.224 1.483.584-.439 3.55-8.377 4.574-9.145 1.024-.768 2.486-.035 2.486-.035s.822 1.555.054 2.36c-.769.805-3.477 6.95-5.123 7.498-1.645.548.657 1.794.657 1.794s4.72-5.596 6.657-6.363c1.938-.767 4.094-.327 3.308.606-.787.933.473 2.16-.623 2.525-1.097.365-6.29 4.716-6.967 4.88-.676.164-.11 1.683.657 1.794.768.11 6.363-5.23 7.515-5.064 1.151.166 2.576.24 2.448 1.137-.13.896-.696 2.122-2.232 2.816-1.535.694-7.385 2.337-8.518 2.958-1.134.622-9.153-5.366-8.86-6.5z\" fill=\"%234cd600\"/><path d=\"M367.137 604.92s-1.55-.1-2.102.864c-.55.963-3.403 5.89-3.224 7.009.18 1.119 1.543-.002 1.543-.002s4.886-5.271 5.13-6.213c.244-.943-.712-1.392-1.347-1.657z\" fill=\"%23ffa000\" stroke=\"%23e9621f\" stroke-width=\".406\" transform=\"matrix(6.50417 1.39252 -1.39097 6.51142 -1499.653 -4435.396)\"/><path d=\"M365.16 606.471s1.639-.893 2.41.772M364.578 607.708s1.476-.582 2.14.718M363.942 608.886s1.164-.556 1.841.555M363.373 610.104s1.124-.541 1.476.501M362.676 611.247s.866-.393 1.259.406\" fill=\"none\" stroke=\"%23f66000\" stroke-width=\".283\" transform=\"matrix(6.50417 1.39252 -1.39097 6.51142 -1499.653 -4435.396)\"/></svg>' style='width: 32px; height: 32px; vertical-align: bottom;'>"
+                + "carrotJS";
+
+                // Add actual progress bar
+                progress.innerHTML += ""
+                + "<div><div></div></div>"
+
+                // Add "loading ..." below.
+                progress.innerHTML += "<font style='font-size: 16px;'>Loading ...</font>"
+
+                // Create the progress bar itself.
+                let progressBarBackground = progress.getElementsByTagName('div')[0];
+                progressBarBackground.style.width = "320px";
+                progressBarBackground.style.height = "24px";
+                progressBarBackground.style.backgroundColor = "#222222";
+                progressBarBackground.style.borderRadius = "12px";
+                progressBarBackground.style.marginTop = "8px";
+                progressBarBackground.style.overflow = "hidden";
+
+                let progressBar = progress.getElementsByTagName('div')[1];
+                progressBar.style.width = "0%";
+                progressBar.style.height = "100%";
+                progressBar.style.backgroundColor = "#333333";
+                progressBar.style.transition = "width 0.5s linear";
+
+                // Add everything to the game!
+                that.background.appendChild(progress);
+
+                // Store progress bar for manipulation through loader.
+                that.load.progressBar = progressBar;
+
+                // Start preload state
                 that.scene.preload();
             }
         }
+
+        console.log("%c🥕 carrotJS v" + Carrot.Version + " | HTML5 game engine utilizing the DOM | https://github.com/bonsaiheldin/carrotJS", "font-weight: bold;");
 
         return that;
     };
@@ -123,7 +182,7 @@ Carrot.Game.prototype =
      * @param {integer} delta - The time the last frame took in miliseconds. It is managed by the `_update` loop of {Carrot.Time}.
      * @private
      */
-    _update(delta)
+    _update(delta, b, c)
     {
         this.time._update(delta);
         this.world._update();
@@ -144,7 +203,7 @@ Carrot.Game.prototype =
      * @method Carrot.Game#_render
      * @private
      */
-    _render()
+    _render(a, b, c)
     {
         this.world._render();
         this.camera._render();
@@ -280,7 +339,7 @@ Carrot.World.prototype =
      * @param {string}  [key=null] - This is the image for the sprite. If left empty, the sprite will be just a green rectangle.
      * @param {integer} [frame=0] - Only for spritesheets: The starting frame of the image. If not passed, it will be 0, the first frame.
      * @param {boolean} [active=false] - The default active property of the sprites.
-     * @return {Array}
+     * @return {array}
      */
     createMultiple(quantity, x, y, key, frame, active)
     {
@@ -304,6 +363,28 @@ Carrot.World.prototype =
         }
 
         return sprites;
+    },
+
+    /**
+     * Sets the size (bounds) of the game world.
+     *
+     * @method Carrot.World#setSize
+     * @param {integer} [x=0]        - The left bound of the world.
+     * @param {integer} [y=0]        - The top bound of the world.
+     * @param {integer} [width=800]  - The right bound of the world.
+     * @param {integer} [height=600] - The bottom bound of the world.
+     */
+    setSize(x, y, width, height)
+    {
+        this.x      = 0;
+        this.y      = 0;
+        this.width  = width;
+        this.height = height;
+
+        if (x      === undefined) this.x = 0;
+        if (y      === undefined) this.y = 0;
+        if (width  === undefined) this.width = 800;
+        if (height === undefined) this.height = 600;
     },
 
     /**
@@ -385,6 +466,22 @@ Carrot.Camera = function(game)
 Carrot.Camera.prototype =
 {
     /**
+     * Sets the size (bounds) of the camera.
+     *
+     * @method Carrot.World#setSize
+     * @param {integer} [width=800]  - The width of the camera.
+     * @param {integer} [height=600] - The height of the camera.
+     */
+    setSize(width, height)
+    {
+        this.width  = width;
+        this.height = height;
+
+        if (width  === undefined) this.width = 800;
+        if (height === undefined) this.height = 600;
+    },
+
+    /**
      * Let the camera follow a sprite.
      *
      * @method Carrot.Camera#follow
@@ -418,6 +515,9 @@ Carrot.Camera.prototype =
     {
         if (this.target !== null)
         {
+            this._x = this.x;
+            this._y = this.y;
+
             let targetX = this.target.x;
             let targetY = this.target.y;
             let worldWidthHalf = this.width * 0.5;
@@ -427,14 +527,14 @@ Carrot.Camera.prototype =
             if (targetX > worldWidthHalf
              && targetX <= this.world.width - worldWidthHalf)
             {
-                this._x = targetX - (this.width * 0.5);
+                this.x = targetX - (this.width * 0.5);
             }
 
             // Top / bottom
             if (targetY > worldHeightHalf
              && targetY <= this.world.height - worldHeightHalf)
             {
-                this._y = targetY - worldHeightHalf;
+                this.y = targetY - worldHeightHalf;
             }
         }
 
@@ -457,9 +557,6 @@ Carrot.Camera.prototype =
         // But only if the position has changed.
         if (this.x !== this._x || this.y !== this._y)
         {
-            this.x = this._x;
-            this.y = this._y;
-
             this.game.parent.style.transform = "translate(" + -this.x + "px, " + -this.y + "px)";
         }
     }
@@ -606,12 +703,6 @@ Carrot.Group.prototype =
      */
     create(x, y, key, frame, active)
     {
-        x = x;
-        y = y;
-        key = key;
-        frame = frame;
-        active = active;
-
         if (x      === undefined) x     = 0;
         if (y      === undefined) y     = 0;
         if (key    === undefined) key   = null;
@@ -645,13 +736,6 @@ Carrot.Group.prototype =
      */
     createMultiple(quantity, x, y, key, frame, active)
     {
-        quantity = quantity || 0;
-        x = x;
-        y = y;
-        key = key;
-        frame = frame;
-        active = active;
-
         if (quantity === undefined) quantity = 0;
         if (x        === undefined) x        = 0;
         if (y        === undefined) y        = 0;
@@ -692,12 +776,6 @@ Carrot.Group.prototype =
      */
     getInactive(createIfNull, x, y, key, frame)
     {
-        createIfNull = createIfNull || false;
-        x = x || 0;
-        y = y || 0;
-        key = key || null;
-        frame = frame || 0;
-
         if (createIfNull === undefined) createIfNull = false;;
         if (x            === undefined) x            = 0;
         if (y            === undefined) y            = 0;
@@ -931,7 +1009,7 @@ Carrot.Sprite.prototype =
      * Creates the HTML element for this sprite. Called by {Carrot.Sprite} or revive().
      *
      * @method Carrot.Sprite#createNode
-     * @return {Object}
+     * @return {object}
      */
     createNode()
     {
@@ -1231,8 +1309,8 @@ Carrot.Sprite.prototype =
                 // Gravity
                 if (this.body.allowGravity)
                 {
-                    this.body.velocity.x += this.body.gravity.x;
-                    this.body.velocity.y += this.body.gravity.y;
+                    this.body.velocity.x += this.body.gravity.x * this.time.delta;
+                    this.body.velocity.y += this.body.gravity.y * this.time.delta;
                 }
 
                 // Drag: Deceleration
@@ -1256,19 +1334,20 @@ Carrot.Sprite.prototype =
                 this.y += this.body.velocity.y * this.time.delta;
 
                 // Rounding pixels if desired.
-                if (this.game.roundPixels === true)
+                if (this.game.roundPixels
+                 || this.roundPixels)
                 {
-                    this.x = Math.round(this.x * 100) / 100;
-                    this.y = Math.round(this.y * 100) / 100;
+                    this.x = Math.round(this.x);
+                    this.y = Math.round(this.y);
                 }
 
                 // Let the sprite collide with the world bounds
                 if (this.body.collideWorldBounds)
                 {
                     // Left, right, top, bottom
-                    if (this.x < 0)
+                    if (this.x <= this.width)
                     {
-                        this.x = 0;
+                        this.x = this.width;
 
                         this.body.touching.none = false;
                         this.body.touching.left = true;
@@ -1280,7 +1359,7 @@ Carrot.Sprite.prototype =
                         }
                     }
 
-                    else if (this.x > worldWidth - this.width)
+                    else if (this.x + this.width >= worldWidth)
                     {
                         this.x = worldWidth - this.width;
 
@@ -1294,9 +1373,9 @@ Carrot.Sprite.prototype =
                         }
                     }
 
-                    if (this.y < 0)
+                    if (this.y <= this.height)
                     {
-                        this.y = 0;
+                        this.y = this.height;
 
                         this.body.touching.none = false;
                         this.body.touching.top = true;
@@ -1308,7 +1387,7 @@ Carrot.Sprite.prototype =
                         }
                     }
 
-                    else if (this.y > worldHeight - this.height)
+                    else if (this.y + this.height >= worldHeight)
                     {
                         this.y = worldHeight - this.height;
 
@@ -1334,15 +1413,15 @@ Carrot.Sprite.prototype =
              || this.top    < 0
              || this.bottom > worldHeight)
             {
-                this.kill(true); // Remove HTML element, too.
+                this.kill(true); // Remove its HTML element, too.
             }
         }
 
         // Update some internal stuff
         this.left   = Math.round(this.x);
-        this.right  = Math.round(this.left + this.width);
+        this.right  = Math.round(this.x + this.width);
         this.top    = Math.round(this.y);
-        this.bottom = Math.round(this.top + this.height);
+        this.bottom = Math.round(this.y + this.height);
 
         // Collect all transforms and apply them in the render function
         this.css.transform = "";
@@ -1465,9 +1544,9 @@ Carrot.Time = function(game)
 {
     this.game = game;
 
-    this.started = Date.now();
-    this.sinceStart = 0;
-    this.now = Date.now();
+    this.now = performance.now();
+    this.lastFrame = this.now;
+    this.delta = 1000 / 60;
 
     this.timers = [];
 
@@ -1483,15 +1562,17 @@ Carrot.Time.prototype =
      */
     _update(delta)
     {
-        this.sinceStart = Date.now() - this.started;
-        this.now = Date.now();
+        this.lastFrame = this.now;
+        this.now = performance.now();
+        this.lastFrame = this.now - this.lastFrame;
         this.delta = delta / 1000;
 
+        // Update timers
         for (let i = 0; i < this.timers.length; i++)
         {
             let timer = this.timers[i];
 
-            timer._update();
+            timer._update(this.lastFrame);
         }
     }
 };
@@ -1499,28 +1580,39 @@ Carrot.Time.prototype =
 Carrot.Time.prototype.constructor = Carrot.Time;
 
 /**
- * Handler for timed events
+ * Handler for timed events.
  *
  * @class Carrot.Timer
  * @constructor
  * @param {Carrot.Game} game - The core game object.
+ * @param {delay} delay - The amount of time when the timer shall fire.
+ * @param {function} callback - The method to be called when the timer fires.
+ * @param {integer} timesToRepeat - Times the timer shall be repeat. 0 is a one time event.
  */
-Carrot.Timer = function(game, interval, callback, timesToRepeat)
+Carrot.Timer = function(game, delay, callback, timesToRepeat, startNow)
 {
     this.game = game;
     this.time = this.game.time;
 
-    this.interval      = interval;
+    this.delay         = delay;
     this.callback      = callback;
     this.timesToRepeat = timesToRepeat;
+    this.startNow      = startNow;
 
-    if (this.interval      === undefined) { this.interval = 0; }
+    if (this.delay         === undefined) { this.delay = 0; }
     if (this.callback      === undefined) { this.callback = function(){}; }
     if (this.timesToRepeat === undefined) { this.timesToRepeat = 0; }
+    if (this.startNow      === undefined) { this.startNow = true; }
 
     this.startTime = this.time.now;
-    this.endTime   = this.startTime + this.interval;
+    this.endTime   = this.startTime + this.delay;
     this.timesExecuted = 0;
+
+    this.isRunning = true;
+    if (this.startNow === false)
+    {
+        this.isRunning = false
+    }
 
     // Add it to {@link Carrot.Time} for managing.
     this.time.timers.push(this);
@@ -1530,6 +1622,33 @@ Carrot.Timer = function(game, interval, callback, timesToRepeat)
 
 Carrot.Timer.prototype =
 {
+    /**
+     * Starts the timer
+     * @method Carrot.Timer#start
+     */
+    start()
+    {
+        this.isRunning = true;
+    },
+
+    /**
+     * Pauses the timer.
+     * @method Carrot.Timer#pause
+     */
+    stop()
+    {
+        this.isRunning = false;
+    },
+
+    /**
+     * Resumes the timer.
+     * @method Carrot.Timer#pause
+     */
+    resume()
+    {
+        this.isRunning = true;
+    },
+
     /**
      * Destroys the timer and removes it from {@link @Carrot.Time}.
      * @method Carrot.Timer#destroy
@@ -1546,24 +1665,28 @@ Carrot.Timer.prototype =
      */
     _update()
     {
-        if (this.time.now >= this.endTime)
+        if (this.isRunning)
         {
-            this.callback();
-
-            console.log("time passed since start: ", this.time.now - this.startTime)
-
-            this.timesExecuted += 1;
-
-            // If desired repeats are reached, stop the timer.
-            if (this.timesExecuted >= this.timesToRepeat)
+            if (this.time.now >= this.endTime)
             {
-                this.destroy();
-            }
+                this.callback();
 
-            // If not, repeat again.
-            else
-            {
-                this.endTime = this.time.now + this.interval;
+                //console.log("time passed since start: ", this.time.now - this.startTime)
+
+                this.timesExecuted += 1;
+
+                // If desired repeats are reached, stop the timer.
+                if (this.timesToRepeat !== -1
+                 && this.timesExecuted > this.timesToRepeat)
+                {
+                    this.destroy();
+                }
+
+                // If not, repeat.
+                else
+                {
+                    this.endTime = this.time.now + this.delay;
+                }
             }
         }
     }
@@ -2318,8 +2441,9 @@ Carrot.Cache = function(game)
 {
     this.game = game;
 
-    this.images = {};
-    this.sounds = {};
+    this.images  = {};
+    this.sounds  = {};
+    this.json    = {};
     this.classes = {};
 };
 
@@ -2354,7 +2478,7 @@ Carrot.Entity.prototype =
      *
      * @method Carrot.Entity#add
      * @param {string} name - The unique name of the class.
-     * @param {Object} [style=null] - The style of the class.
+     * @param {object} [style=null] - The style of the class.
      */
     add(name, style)
     {
@@ -2554,12 +2678,6 @@ Carrot.ObjectFactory.prototype =
      */
     sprite(x, y, key, frame, active)
     {
-        x      = x;
-        y      = y;
-        key    = key;
-        frame  = frame;
-        active = active;
-
         if (x      === undefined) x     = 0;
         if (y      === undefined) y     = 0;
         if (key    === undefined) key   = null;
@@ -2584,9 +2702,9 @@ Carrot.ObjectFactory.prototype =
      *
      * @method Carrot.ObjectFactory#timer
      */
-    timer(interval, callback, timesToRepeat)
+    timer(delay, callback, timesToRepeat, startNow)
     {
-        return new Carrot.Timer(this.game, interval, callback, timesToRepeat);
+        return new Carrot.Timer(this.game, delay, callback, timesToRepeat, startNow);
     }
 };
 
@@ -2625,14 +2743,16 @@ Carrot.AssetLoader.prototype =
         img.src = path;
         img.onload = function(event)
         {
-            that.filesLoaded += 1;
+            img.onload = null;
+            img.onerror = null;
 
-            that.checkFilesLoaded();
+            that.fileLoaded(key);
         };
         img.onerror = function(event)
         {
             delete that.game.cache.images[key];
         };
+
         this.game.cache.images[key] = img;
 
         this.filesToLoad += 1;
@@ -2681,9 +2801,10 @@ Carrot.AssetLoader.prototype =
 
             that.game.cache.images[key].frames = frames;
 
-            that.filesLoaded += 1;
+            img.onload = null;
+            img.onerror = null;
 
-            that.checkFilesLoaded();
+            that.fileLoaded(key);
         };
         img.onerror = function(event)
         {
@@ -2712,18 +2833,68 @@ Carrot.AssetLoader.prototype =
         sound.src = path;
         sound.oncanplaythrough = function(event)
         {
-            that.filesLoaded += 1;
+            sound.oncanplaythrough = null;
+            sound.onerror = null;
 
-            that.checkFilesLoaded();
+            that.fileLoaded(key);
         };
         sound.onerror = function(event)
         {
             delete that.game.cache.sounds[key];
         };
+
         this.game.cache.sounds[key] = sound;
 
         this.filesToLoad += 1;
     },
+
+    /**
+     * Loads a JSON file.
+     *
+     * @method Carrot.AssetLoader#json
+     * @param {string} key - The key (name) for the JSON file.
+     * @param {string} path - The path (url) to the JSON file.
+     */
+    json(key, path)
+    {
+        let that = this;
+        let xhr = new XMLHttpRequest();
+        xhr.onload = function(event)
+        {
+            that.game.cache.json[key] = JSON.parse(this.responseText);
+
+            that.fileLoaded(key);
+        }
+        xhr.onerror = function(event)
+        {
+            delete this.game.cache.json[key];
+        }
+        xhr.open('GET', window.location.href + "/" + path, true);
+        xhr.send();
+
+        this.game.cache.json[key] = {};
+
+        this.filesToLoad += 1;
+    },
+
+    /**
+     * Is called when a file was successfully loaded.
+     *
+     * @method Carrot.AssetLoader#fileLoaded
+     * @param {string} key - The key of the image that was loaded.
+     * @private
+     */
+     fileLoaded(key)
+     {
+         this.filesLoaded += 1;
+
+         if (this.progressBar !== null)
+         {
+             this.progressBar.style.width = ((this.filesLoaded / this.filesToLoad) * 100) + "%";
+         }
+
+         this.checkFilesLoaded();
+     },
 
     /**
      * Checks if all files are loaded. If yes, it starts the game. Is automatically managed by {Carrot.AssetLoader};
@@ -2735,7 +2906,25 @@ Carrot.AssetLoader.prototype =
      {
          if (this.filesToLoad === this.filesLoaded)
          {
-             this.game.start(this.game);
+             if (this.progressBar !== null)
+             {
+                // Remove progress bar
+                this.progressBar.parentNode.parentNode.remove();
+                delete this.progressBar;
+
+                // Reset background color set by progress bar
+                if (this.game.transparent === false)
+                {
+                    this.game.background.style.backgroundColor = '#000000';
+                }
+
+                else
+                {
+                    this.game.background.style.background = "";
+                }
+
+                this.game.start(this.game);
+            }
          }
      }
 };
@@ -3410,6 +3599,109 @@ Carrot.Mouse.prototype =
 };
 
 Carrot.Mouse.prototype.constructor = Carrot.Mouse;
+
+
+/**
+ * This class offers methods to debug the game.
+ *
+ * @class Carrot.Debug
+ * @constructor
+ * @param {Carrot.Game} game - The core game object.
+ */
+Carrot.Debug = function(game)
+{
+    this.game = game;
+
+    return this;
+};
+
+Carrot.Debug.prototype =
+{
+    /**
+     * Shows a debug rectangle of the same size as the sprite.
+     *
+     * @method Carrot.Debug#sprite
+     * @param {Carrot.Sprite} sprite - The sprite to debug.
+     * @param {string}        [color=rgba(0, 255, 0, 0.25)] - The color to tint the sprite width.
+     * @param {boolean}       [border=false] - Defined if the debug div should only consist of a border.
+     */
+    sprite(sprite, color, border)
+    {
+        if (sprite === undefined) return;
+        if (color  === undefined) color = "rgba(0, 255, 0, 0.33)";
+        if (border === undefined) border = false;
+
+        if (sprite.image)
+        {
+            let debugDiv = sprite.image.getElementsByClassName('debugSprite')[0];
+
+            // If the sprite has no debug div, create one.
+            if (debugDiv === undefined)
+            {
+                debugDiv = document.createElement('div');
+                sprite.image.insertBefore(debugDiv, sprite.image.firstChild);
+                debugDiv.className = "debugSprite";
+                debugDiv.style.height = "100%";
+
+                if (border)
+                {
+                    debugDiv.style.border = "1px solid " + color;
+                }
+
+                else
+                {
+                    debugDiv.style.backgroundColor = color;
+                }
+            }
+        }
+    },
+
+    /**
+     * Shows detailed debug info about a sprite.
+     *
+     * @method Carrot.Debug#sprite
+     * @param {Carrot.Sprite} sprite - The sprite to debug.
+     * @param {integer}       [x=0] - The x position on screen.
+     * @param {integer}       [y=0] - The y position on screen.
+     */
+    spriteInfo(sprite, x, y)
+    {
+        if (sprite === undefined) return;
+        if (x      === undefined) x = 0;
+        if (y      === undefined) y = 0;
+
+        let debugDiv = this.game.background.getElementsByClassName('debugSpriteInfo')[0];
+
+        if (debugDiv !== undefined)
+        {
+            debugDiv.innerHTML = ""
+            + "<strong>SpriteInfo</strong>"
+            + "<br>x: " + sprite.x + " y: " + sprite.y + " width: " + sprite.width + " height: " + sprite.height
+            + "<br>angle: " + sprite.angle + " anchor: " + sprite.anchor.x + " x " + sprite.anchor.y
+            + "<br>active: " + sprite.active + " inCamera: " + sprite.inCamera
+            + "<br>bounds: { left: " + sprite.left + ", top: " + sprite.top + ", right: " + sprite.right + ", bottom: " + sprite.bottom + " }"
+            + "<br>key: \"" + sprite.key + "\" frame: " + sprite.frame
+        }
+
+        // If there's no debug div, create one.
+        else
+        {
+            debugDiv = document.createElement('div');
+            this.game.background.appendChild(debugDiv);
+            debugDiv.className = "debugSpriteInfo";
+            debugDiv.style.position = "absolute";
+            debugDiv.style.left = x + "px";
+            debugDiv.style.top = y + "px";
+            debugDiv.style.color = "#ffffff";
+            debugDiv.style.fontSize = "16px";
+            debugDiv.style.lineHeight = "20px";
+            debugDiv.style.userSelect = "none";
+            debugDiv.style.pointerEvents = "none";
+        }
+    }
+};
+
+Carrot.Debug.prototype.constructor = Carrot.Debug;
 
 // Type IDs
 

@@ -2,6 +2,38 @@
 
 ---
 
+## Version 0.0.11 - 26th May 2018
+
+The game world's and the camera's bounds can now both be set using a single command: `World.setSize(x, y, width, height)` and `Camera.setSize(width, height)`.
+
+A simple timer handler was implemented. It's not accurate yet as it still gets a bunch of miliseconds off, but it's a start.
+
+Besides images and sounds, **carrotJS** can now also load JSON files.
+
+A native progress bar for loading assets has been implemented. It displays the **carrotJS** logo and is enabled by default. Later it will be configurable.
+
+Two debug methods for sprites were implemented. Put them in `render` or in a repeating timer.
+
+### New Features
+
+* `World.setSize(width, height)` Sets the game world's size (bounds). Defaults are `800, 600`.
+
+* `Camera.setSize(width, height)` Sets the camera's size (bounds). Defaults are `800, 600`.
+
+* `game.add.timer(delay, callback, timesToRepeat)` Creates a timer firing a passed callback function with the passed delay. The last parameter defines how often the timed event should repeat. -1 means infinite repetition, 1 would mean that it fires two times and the default is `0` which means that it fires just once.
+
+* `game.load.json(key, path)` Loads a JSON file. Has to be put into a `preload` function.
+
+* `game.debug.sprite(sprite, color, border)` Draws a rectangle on the debugged sprite with the passed color. If the last parameter is `true`, the rectangle will be just a border.
+
+* `game.debug.spriteInfo(sprite, x, y)` Shows debug info about a sprite on the desired position. Info includes `x`, `y`, `angle` and more.
+
+### Bug fixes
+
+* `Sprite.body.gravity` was not divided by delta time.
+
+---
+
 ## Version 0.0.10 - 25th May 2018
 
 A great new feature was added: Object pools! Object pools enable having inactive sprites with their `active` property set to `false` which means that they are being ignored by the `_update` and `_render` loops. The idea is to pre-create an amount of inactive sprites when the game starts and use them instead of creating brand new ones when needed. Reusing existing inactive sprites is always faster than creating brand new ones all the time. However, if desired, `Group.create` and `Group.createMultiple` can also be used to create new active sprites, too. The default is `false`. An exa
@@ -195,7 +227,7 @@ And a camera has been added with a simple follow function. That means that the g
 
 * `Carrot.Sprite` now has a fifth parameter: `group`. If a group is passed, the sprite will be added to that group instead of directly to the world.
 
-* `Sprite.anchor.x / y` Ranges from 0 to 1 and defines the center of the Sprite. Its image is being drawn according to the sprite's anchor. For example, if one sets it to `0.5`, the image is being drawn exactly in the middle of the Sprite. If set to `0` the image is drawn at the x/y coordinates of the sprite, to the right bottom.
+* `Sprite.anchor.x / y` Ranges from 0 to 1 and defines the center of the Sprite. Its image is being drawn according to the sprite's anchor. For example, if one sets it to `0.5`, the image is being drawn exactly in the middle of the Sprite. If set to `0` the image is drawn at the left top corner of the sprite, spanning to the right bottom corner.
 
 * `Sprite.inCamera` Stores if the sprite is inside the camera bounds, so visible to the player, `true` / `false`.
 
