@@ -115,7 +115,7 @@ Carrot.Game = function(width, height, container, scene, transparent)
         {
             if (that.scene.preload)
             {
-                that.background.style.background = "#111111";
+                that.background.style.background = "#0e1011 ";
 
                 // Create div for the progress bar.
                 let progress = document.createElement('div');
@@ -144,7 +144,7 @@ Carrot.Game = function(width, height, container, scene, transparent)
                 let progressBarBackground = progress.getElementsByTagName('div')[0];
                 progressBarBackground.style.width = "320px";
                 progressBarBackground.style.height = "24px";
-                progressBarBackground.style.backgroundColor = "#222222";
+                progressBarBackground.style.backgroundColor = "#1d2124";
                 progressBarBackground.style.borderRadius = "12px";
                 progressBarBackground.style.marginTop = "8px";
                 progressBarBackground.style.overflow = "hidden";
@@ -152,7 +152,7 @@ Carrot.Game = function(width, height, container, scene, transparent)
                 let progressBar = progress.getElementsByTagName('div')[1];
                 progressBar.style.width = "0%";
                 progressBar.style.height = "100%";
-                progressBar.style.backgroundColor = "#333333";
+                progressBar.style.backgroundColor = "#2c3135";
                 progressBar.style.transition = "width 0.5s linear";
 
                 // Add everything to the game!
