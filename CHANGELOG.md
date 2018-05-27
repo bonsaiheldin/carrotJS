@@ -2,6 +2,44 @@
 
 ---
 
+## Version 0.1 - 27th May 2018
+
+**carrot** uses a different versioning scheme now. Instead of 0.0.12 it now starts at 0.1.
+
+A minified .js file is now offered in the `dist` folder, too.
+
+Besides images, sounds and JSON files, **carrotJS** can now also load CSV files. It processes them horizontally while the first line defines the attributes and each row is an object. The CSV file is stored as a JSON object.
+
+All game object's coordinates can now be automatically rounded which is useful (and needed) for pixel games.
+
+Two new debug methods have been added: One shows detailed information about the camera, the other just some custom text.
+
+The rendering of **carrotJS** got significantly faster by using `display: none` on sprites which would'nt be visible to the player anyway. It already did that before, but instead of setting it every single frame, even though its value hasn't changed, it now checks the state of the new `Sprite.visible` property, which acts as a flag. The DOM is heavyyy!
+
+A cursor for the game can now be set using `game.setCursor()`. See below.
+
+### New features
+
+* `game.load.csv(key, path)` Loads a CSV file, processing it horizontally (each line is a new entry) and turning it into a JSON object. Has to be put into a `preload` function.
+
+* `Camera.roundPixels` If set to `true` only the camera will round its position. Default is: `false`.
+
+* `Sprite.roundPixels` If set to `true` only sprites will round their own and their body's position. Default is: `false`.
+
+* `Game.roundPixels` If set to `true` both the camera and all sprites will round their position. It overrides `Camera.roundPixels` and `Sprite.roundPixels`. Use this for pixel games. Default is: `false`.
+
+* `game.debug.cameraInfo(x, y)` Shows detailed information about the game camera.
+
+* `game.debug.text(text, x, y)` Shows some custom text on screen.
+
+* `Sprite.visible` Stores if the sprite is visible on screen. Read-only (for now).
+
+* `game.setCursor(key, x, y)` Sets the cursor shown when the mouse is hovering the game container. `false` resets it to the default one of the browser. `x` and `y` defiine the cursor's hotspot (where it clicks). This is usually `0,0` which is also the default. It depends on the used image. `key` can be a previously loaded game asset and if that key cannot be found in the cache, it will use the string for the standard cursors. That way one can use the browser's set of default cursors, too.
+
+* `Carrot.Line(x1, y1, x2, y2)` Creates a line shape with a start and an end point.
+
+---
+
 ## Version 0.0.11 - 26th May 2018
 
 The game world's and the camera's bounds can now both be set using a single command: `World.setSize(x, y, width, height)` and `Camera.setSize(width, height)`.
