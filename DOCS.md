@@ -59,6 +59,7 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | Class | Via | Description |
 | --- | --- | --- |
 | [Time](./Carrot.Time.html) | `time` | The core internal clock on which all Carrot time related operations rely. |
+| [Timer](./Carrot.Timer.html) | `time` | A timed event handler. |
 
 ---
 
@@ -83,8 +84,8 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 
 | Class | Via | Description |
 | --- | --- | --- |
-| [Keyboard](./Carrot.Keyboard.html) | `input.keyboard` | The Keyboard input handler. Listens for device related events. Can also create Key objects. |
-| [Mouse](./Carrot.Mouse.html) | `input.mouse` | A Mouse event handler. Listens for device related events and passes them on to the active Pointer. |
+| [Keyboard](./Carrot.Keyboard.html) | `keyboard` | The Keyboard input handler. Listens for device related events. Can also create Key objects. |
+| [Mouse](./Carrot.Mouse.html) | `mouse` | A Mouse event handler. Listens for device related events and passes them on to the active Pointer. |
 
 ---
 
@@ -101,3 +102,11 @@ carrotJS is a 2D game framework for making HTML5 games which follows a different
 | Class | Via | Description |
 | --- | --- | --- |
 | [Color](./Carrot.Color.html) | - | Carrot.Color stores the 140 standard HTML / CSS colors. |
+
+---
+
+## Debug
+
+| Class | Via | Description |
+| --- | --- | --- |
+| [Debug](./Carrot.Debug.html) | `debug` | Contains methods to debug game objects. |
