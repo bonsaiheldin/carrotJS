@@ -207,11 +207,11 @@ Carrot.Game.prototype =
     /**
      * Sets the size of the game container.
      *
-     * @method Carrot.Game#setSize
+     * @method Carrot.Game#setBounds
      * @param {integer} [width=800]  - The right bound of the game container.
      * @param {integer} [height=600] - The bottom bound of the game container.
      */
-    setSize(width, height)
+    setBounds(width, height)
     {
         this.width  = width;
         this.height = height;
@@ -226,9 +226,9 @@ Carrot.Game.prototype =
     /**
      * Sets the size of the game container to the size of the camera.
      *
-     * @method Carrot.Game#setSizeToCamera
+     * @method Carrot.Game#setBoundsToCamera
      */
-    setSizeToCamera()
+    setBoundsToCamera()
     {
         this.width = this.camera.width;
         this.height = this.camera.height;
@@ -240,9 +240,9 @@ Carrot.Game.prototype =
     /**
      * Sets the size of the game container to the size of the game world.
      *
-     * @method Carrot.Game#setSizeToWorld
+     * @method Carrot.Game#setBoundsToWorld
      */
-    setSizeToWorld()
+    setBoundsToWorld()
     {
         this.width = this.world.width;
         this.height = this.world.height;
@@ -447,13 +447,13 @@ Carrot.World.prototype =
     /**
      * Sets the size (bounds) of the game world.
      *
-     * @method Carrot.World#setSize
+     * @method Carrot.World#setBounds
      * @param {integer} [x=0]        - The left bound of the world.
      * @param {integer} [y=0]        - The top bound of the world.
      * @param {integer} [width=800]  - The right bound of the world.
      * @param {integer} [height=600] - The bottom bound of the world.
      */
-    setSize(x, y, width, height)
+    setBounds(x, y, width, height)
     {
         this.x      = 0;
         this.y      = 0;
@@ -469,9 +469,9 @@ Carrot.World.prototype =
     /**
      * Sets the size (bounds) of the game world to size of the game container.
      *
-     * @method Carrot.World#setSizeToGame
+     * @method Carrot.World#setBoundsToGame
      */
-    setSizeToGame()
+    setBoundsToGame()
     {
         this.width  = this.game.width;
         this.height = this.game.height;
@@ -480,9 +480,9 @@ Carrot.World.prototype =
     /**
      * Sets the size (bounds) of the game world to the size of the camera.
      *
-     * @method Carrot.World#setSizeToCamera
+     * @method Carrot.World#setBoundsToCamera
      */
-    setSizeToCamera()
+    setBoundsToCamera()
     {
         this.width = this.camera.width;
         this.height = this.camera.height;
@@ -569,11 +569,11 @@ Carrot.Camera.prototype =
     /**
      * Sets the size (bounds) of the camera.
      *
-     * @method Carrot.World#setSize
+     * @method Carrot.World#setBounds
      * @param {integer} [width=800]  - The width of the camera.
      * @param {integer} [height=600] - The height of the camera.
      */
-    setSize(width, height)
+    setBounds(width, height)
     {
         this.width  = width;
         this.height = height;
@@ -585,9 +585,9 @@ Carrot.Camera.prototype =
     /**
      * Sets the size (bounds) of the camera to the size of the game container.
      *
-     * @method Carrot.Camera#setSizeToGame
+     * @method Carrot.Camera#setBoundsToGame
      */
-    setSizeToGame()
+    setBoundsToGame()
     {
         this.width  = this.game.width;
         this.height = this.game.height;
@@ -596,9 +596,9 @@ Carrot.Camera.prototype =
     /**
      * Sets the size (bounds) of the camera to size of the game world.
      *
-     * @method Carrot.Camera#setSizeToWorld
+     * @method Carrot.Camera#setBoundsToWorld
      */
-    setSizeToWorld()
+    setBoundsToWorld()
     {
         this.width  = this.world.width;
         this.height = this.world.height;
