@@ -2,9 +2,39 @@
 
 ---
 
+## Version 0.1.1 - 28th May 2018
+
+Sprites got a new property called `checkCollision` which itself has five sub properties called `none`, `left`, `right`, `top` and `bottom`. It can be used to control which direction of collision should be checked for. `none = true` basically means that no collision is happening at all while `bottom = true` and having the other three directions on `false` would mean that collision to the bottom happens, but not to the other directions. This also works on conjunction with `Body.touching[]` as, for example, `touching.bottom` can't be `true` when `checkCollision.bottom` is `false` because **carrotJS** doesn't let that side collide.
+
+The game container's size can now be set using a single command, too. Just like the camera and the game world. Also, there are some new methods to make resizing easier in general.
+
+### New features
+
+* `Sprite.checkCollision[none, left, right, top, bottom]` A set of properties to control the directions of collisions to be checked for. Note: This only works for rectangle shaped bodies as circles don't have "sides" per se.
+
+* `Game.setBounds(width, height)` Sets the size of the game container.
+
+* `Game.setBoundsToCamera()` Sets the size of the came container to the size of the camera.
+
+* `Game.setBoundsToWorld()` Sets the size of the came container to the size of the camera.
+
+* `Camera.setBoundsToGame()` Sets the size of the camera to the size of the game container.
+
+* `Camera.setBoundsToWorld()` Sets the size of the camera to the size of the game world.
+
+* `World.setBoundsToGame()` Sets the size (bounds) of the game world to the size of the game container.
+
+* `World.setBoundsToCamera()` Sets the size (bounds) of the game world to the size of the camera.
+
+### Bug fixes
+
+* Sprites initially got rendered at the wrong position. Awful.
+
+---
+
 ## Version 0.1 - 27th May 2018
 
-**carrot** uses a different versioning scheme now. Instead of 0.0.12 it now starts at 0.1.
+**carrotJS** uses a different versioning scheme now. Instead of becoming the 0.0.12 it now starts at 0.1 with the next being the 0.1.1.
 
 A minified .js file is now offered in the `dist` folder, too.
 
@@ -20,7 +50,7 @@ A cursor for the game can now be set using `game.setCursor()`. See below.
 
 ### New features
 
-* `game.load.csv(key, path)` Loads a CSV file, processing it horizontally (each line is a new entry) and turning it into a JSON object. Has to be put into a `preload` function.
+* `game.load.csv(key, path)` Loads a CSV file, processing it horizontally (each line is a new entry) while the first line defines the properties. The CSV file is turning it into a JSON object. Has to be put into a `preload` function.
 
 * `Camera.roundPixels` If set to `true` only the camera will round its position. Default is: `false`.
 
@@ -36,13 +66,13 @@ A cursor for the game can now be set using `game.setCursor()`. See below.
 
 * `game.setCursor(key, x, y)` Sets the cursor shown when the mouse is hovering the game container. `false` resets it to the default one of the browser. `x` and `y` defiine the cursor's hotspot (where it clicks). This is usually `0,0` which is also the default. It depends on the used image. `key` can be a previously loaded game asset and if that key cannot be found in the cache, it will use the string for the standard cursors. That way one can use the browser's set of default cursors, too.
 
-* `Carrot.Line(x1, y1, x2, y2)` Creates a line shape with a start and an end point.
+* `Carrot.Line(x1, y1, x2, y2)` Creates a line shape with a start and an end point (using `Carrot.Point`).
 
 ---
 
 ## Version 0.0.11 - 26th May 2018
 
-The game world's and the camera's bounds can now both be set using a single command: `World.setSize(x, y, width, height)` and `Camera.setSize(width, height)`.
+The game world's and the camera's bounds can now both be set using a single command: `World.setBounds(x, y, width, height)` and `Camera.setBounds(width, height)`.
 
 A simple timer handler was implemented. It's not accurate yet as it still gets a bunch of miliseconds off, but it's a start.
 
@@ -54,9 +84,9 @@ Two debug methods for sprites were implemented. Put them in `render` or in a rep
 
 ### New Features
 
-* `World.setSize(width, height)` Sets the game world's size (bounds). Defaults are `800, 600`.
+* `World.setBounds(width, height)` Sets the game world's size (bounds). Defaults are `800, 600`.
 
-* `Camera.setSize(width, height)` Sets the camera's size (bounds). Defaults are `800, 600`.
+* `Camera.setBounds(width, height)` Sets the camera's size (bounds). Defaults are `800, 600`.
 
 * `game.add.timer(delay, callback, timesToRepeat)` Creates a timer firing a passed callback function with the passed delay. The last parameter defines how often the timed event should repeat. -1 means infinite repetition, 1 would mean that it fires two times and the default is `0` which means that it fires just once.
 

@@ -10,7 +10,7 @@
  */
 var Carrot =
 {
-    "Version": "0.1"
+    "Version": "0.1.1"
 };
 
 /**
@@ -96,6 +96,7 @@ Carrot.Game = function(width, height, container, scene, transparent)
         // Init modules
         that.time     = new Carrot.Time(that);
         that.debug    = new Carrot.Debug(that);
+        that.utils    = new Carrot.Utilities(that);
         that.physics  = new Carrot.Physics(that);
         that.math     = new Carrot.Math(that);
         that.world    = new Carrot.World(that);
@@ -204,11 +205,58 @@ Carrot.Game.prototype =
     },
 
     /**
+     * Sets the size of the game container.
+     *
+     * @method Carrot.Game#setSize
+     * @param {integer} [width=800]  - The right bound of the game container.
+     * @param {integer} [height=600] - The bottom bound of the game container.
+     */
+    setSize(width, height)
+    {
+        this.width  = width;
+        this.height = height;
+
+        if (width  === undefined) this.width = 800;
+        if (height === undefined) this.height = 600;
+
+        this.background.style.width  = this.width + "px";
+        this.background.style.height = this.height + "px";
+    },
+
+    /**
+     * Sets the size of the game container to the size of the camera.
+     *
+     * @method Carrot.Game#setSizeToCamera
+     */
+    setSizeToCamera()
+    {
+        this.width = this.camera.width;
+        this.height = this.camera.height;
+
+        this.background.style.width  = this.width + "px";
+        this.background.style.height = this.height + "px";
+    },
+
+    /**
+     * Sets the size of the game container to the size of the game world.
+     *
+     * @method Carrot.Game#setSizeToWorld
+     */
+    setSizeToWorld()
+    {
+        this.width = this.world.width;
+        this.height = this.world.height;
+
+        this.background.style.width  = this.width + "px";
+        this.background.style.height = this.height + "px";
+    },
+
+    /**
      * Sets the cursor image shown when the mouse is hovering the game container.
      * @method Carrot.Game#setCursor
-     * @param {key}     key - The key (name) of the image to be used. If the image is not a previously loaded game asset, it will use the browser's set of default cursors.
-     * @param {integer} x   - The key (name) of the image to be used.
-     * @param {integer} y   - The key (name) of the image to be used.
+     * @param {key}     key   - The key (name) of the image to be used. If the image is not a previously loaded game asset, it will use the browser's set of default cursors.
+     * @param {integer} [x=0] - The x coordinate of the cursor's hotspot.
+     * @param {integer} [y=0] - The y coordinate of the cursor's hotspot.
      */
     setCursor(key, x, y)
     {
@@ -419,6 +467,28 @@ Carrot.World.prototype =
     },
 
     /**
+     * Sets the size (bounds) of the game world to size of the game container.
+     *
+     * @method Carrot.World#setSizeToGame
+     */
+    setSizeToGame()
+    {
+        this.width  = this.game.width;
+        this.height = this.game.height;
+    },
+
+    /**
+     * Sets the size (bounds) of the game world to the size of the camera.
+     *
+     * @method Carrot.World#setSizeToCamera
+     */
+    setSizeToCamera()
+    {
+        this.width = this.camera.width;
+        this.height = this.camera.height;
+    },
+
+    /**
      * The internal update loop of the world container. Happens automatically.
      *
      * @method Carrot.World#_update
@@ -510,6 +580,28 @@ Carrot.Camera.prototype =
 
         if (width  === undefined) this.width = 800;
         if (height === undefined) this.height = 600;
+    },
+
+    /**
+     * Sets the size (bounds) of the camera to the size of the game container.
+     *
+     * @method Carrot.Camera#setSizeToGame
+     */
+    setSizeToGame()
+    {
+        this.width  = this.game.width;
+        this.height = this.game.height;
+    },
+
+    /**
+     * Sets the size (bounds) of the camera to size of the game world.
+     *
+     * @method Carrot.Camera#setSizeToWorld
+     */
+    setSizeToWorld()
+    {
+        this.width  = this.world.width;
+        this.height = this.world.height;
     },
 
     /**
@@ -986,6 +1078,9 @@ Carrot.Sprite = function(game, x, y, key, frame, active)
     this.frame  = frame;
     this.active = active;
 
+    this.health = 0;
+    this.damage = 0;
+
     if (x      === undefined) this.x     = 0;
     if (y      === undefined) this.y     = 0;
     if (key    === undefined) this.key   = null;
@@ -1011,8 +1106,7 @@ Carrot.Sprite = function(game, x, y, key, frame, active)
     this.bottom = this.top + this.height;
     this.outOfBoundsKill = false;
     this.inCamera = false;
-    this.css = {}; // This object stores all data relevant to CSS rendering.
-    this.css.transform = ''; // String to collect CSS transforms for this sprite.
+    this.transform = ''; // String to collect CSS transforms for this sprite.
     this.angle = 0; // Default image angle
     this.roundPixels = false;
 
@@ -1030,6 +1124,9 @@ Carrot.Sprite = function(game, x, y, key, frame, active)
     this.style = null;
 
     this.visible = true;
+
+    // Add event listeners
+    this.events = new Carrot.Events(this);
 
     if (this.active)
     {
@@ -1089,8 +1186,8 @@ Carrot.Sprite.prototype =
             }
 
             // Render it once
-            this.image.style.left = this.x - (this.width  * 0.5) + "px";
-            this.image.style.top  = this.y - (this.height * 0.5) + "px";
+            this.image.style.left = this.x - (this.width  * this.anchor.x) + "px";
+            this.image.style.top  = this.y - (this.height * this.anchor.y) + "px";
 
             // Add the HTML div to the page.
             this.game.parent.appendChild(this.image);
@@ -1167,6 +1264,9 @@ Carrot.Sprite.prototype =
      */
     kill(destroyNode)
     {
+        // Fire onKilled event
+        this.events.onKilled();
+
         // Remove from actives array.
         this.parent.removeChild(this);
 
@@ -1190,6 +1290,9 @@ Carrot.Sprite.prototype =
      */
     revive()
     {
+        // Fire onRevived event
+        this.events.onRevived();
+
         // Remove from inactives array.
         this.parent.removeChild(this);
 
@@ -1212,6 +1315,9 @@ Carrot.Sprite.prototype =
      */
     destroy(destroyChildren)
     {
+        // Fire onRevived event
+        this.events.onDestroyed();
+
         destroyChildren = destroyChildren || false;
 
         for (let i = 0; i < this.children.length; i++)
@@ -1285,7 +1391,7 @@ Carrot.Sprite.prototype =
      /**
       * The custom update loop of the sprite. It is managed automatically by {@link Carrot.World} or {@link Carrot.Group}, depending on whhich it was added to.
       *
-      * @method Carrot.Sprite#_update
+      * @method Carrot.Sprite#update
       * @private
       */
      update: function(){},
@@ -1299,10 +1405,11 @@ Carrot.Sprite.prototype =
     _update()
     {
         // Save values of this frame
-        this._x     = this.x;
-        this._y     = this.y;
-        this._angle = this.angle;
-        this._alpha = this.alpha;
+        this._x         = this.x;
+        this._y         = this.y;
+        this._angle     = this.angle;
+        this._alpha     = this.alpha;
+        this._transform = this.transform;
 
         // Store some variables for faster accessing
         let worldWidth   = this.world.width;
@@ -1392,60 +1499,74 @@ Carrot.Sprite.prototype =
                 // Let the sprite collide with the world bounds
                 if (this.body.collideWorldBounds)
                 {
-                    // Left, right, top, bottom
-                    if (this.x <= this.width)
+                    if (this.body.checkCollision.none === false)
                     {
-                        this.x = this.width;
-
-                        this.body.touching.none = false;
-                        this.body.touching.left = true;
-
-                        // Bouncing
-                        if (this.body.allowBounce)
+                        if (this.body.checkCollision.left)
                         {
-                            this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                            if (this.x <= this.width)
+                            {
+                                this.x = this.width;
+
+                                this.body.touching.none = false;
+                                this.body.touching.left = true;
+
+                                // Bouncing
+                                if (this.body.allowBounce)
+                                {
+                                    this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                                }
+                            }
                         }
-                    }
 
-                    else if (this.x + this.width >= worldWidth)
-                    {
-                        this.x = worldWidth - this.width;
-
-                        this.body.touching.none = false;
-                        this.body.touching.right = true;
-
-                        // Bouncing
-                        if (this.body.allowBounce)
+                        if (this.body.checkCollision.right)
                         {
-                            this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                            if (this.x + this.width >= worldWidth)
+                            {
+                                this.x = worldWidth - this.width;
+
+                                this.body.touching.none = false;
+                                this.body.touching.right = true;
+
+                                // Bouncing
+                                if (this.body.allowBounce)
+                                {
+                                    this.body.velocity.x = -(this.body.velocity.x * this.body.bounce.x);
+                                }
+                            }
                         }
-                    }
 
-                    if (this.y <= this.height)
-                    {
-                        this.y = this.height;
-
-                        this.body.touching.none = false;
-                        this.body.touching.top = true;
-
-                        // Bouncing
-                        if (this.body.allowBounce)
+                        if (this.body.checkCollision.top)
                         {
-                            this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                            if (this.y <= this.height)
+                            {
+                                this.y = this.height;
+
+                                this.body.touching.none = false;
+                                this.body.touching.top = true;
+
+                                // Bouncing
+                                if (this.body.allowBounce)
+                                {
+                                    this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                                }
+                            }
                         }
-                    }
 
-                    else if (this.y + this.height >= worldHeight)
-                    {
-                        this.y = worldHeight - this.height;
-
-                        this.body.touching.none = false;
-                        this.body.touching.bottom = true;
-
-                        // Bouncing
-                        if (this.body.allowBounce)
+                        if (this.body.checkCollision.bottom)
                         {
-                            this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                            if (this.y + this.height >= worldHeight)
+                            {
+                                this.y = worldHeight - this.height;
+
+                                this.body.touching.none = false;
+                                this.body.touching.bottom = true;
+
+                                // Bouncing
+                                if (this.body.allowBounce)
+                                {
+                                    this.body.velocity.y = -(this.body.velocity.y * this.body.bounce.y);
+                                }
+                            }
                         }
                     }
                 }
@@ -1472,11 +1593,11 @@ Carrot.Sprite.prototype =
         this.bottom = this.y + this.height;
 
         // Collect all transforms and apply them in the render function
-        this.css.transform = "";
+        this.transform = "";
 
         if (this.angle !== 0)
         {
-            this.css.transform += " rotate(" + this.angle + "deg) ";
+            this.transform += " rotate(" + this.angle + "deg) ";
         }
 
         // Update the sprite's children
@@ -1520,6 +1641,7 @@ Carrot.Sprite.prototype =
             // Apply cosmetic CSS rules only when inside camera bounds.
             else
             {
+                // Update only if the current values don't match the ones from the last frame
                 if (this.visible === false)
                 {
                     this.visible = true;
@@ -1534,7 +1656,6 @@ Carrot.Sprite.prototype =
                     }
                 }
 
-                // Update only if the current values don't match the ones from the last frame
                 if (this.x !== this._x)
                 {
                     this.image.style.left = this.x - (this.width * this.anchor.x) + "px";
@@ -1546,7 +1667,10 @@ Carrot.Sprite.prototype =
                 }
 
                 // Apply CSS transform.
-                this.style.transform = this.css.transform;
+                if (this.transform !== this._transform)
+                {
+                    this.style.transform = this.transform;
+                }
             }
 
             // Render the sprite's children
@@ -1878,32 +2002,118 @@ Carrot.SoundManager = function(game)
 Carrot.SoundManager.prototype =
 {
     /**
-     * Plays an audio file that has been loaded before by {Carrot.AssetLoader}. If the sound is already playing, restart it.
+     * Plays a sound. If the sound is already playing, restart it.
      *
      * @method Carrot.SoundManager#play
-     * @private
      */
-    play(file, loop)
+    play(key, volume, loop)
     {
-        var file = this.game.cache.sounds[file];
-        if (! file.paused)
-        {
-            file.pause();
-            file.currentTime = 0;
-            file.play();
-        }
+        let file = this.game.cache.sounds[key];
 
-        else
+        if (file)
         {
-            file.play();
-        }
+            // Music?
+            if (loop !== undefined)
+            {
+                file.loop = loop;
+            }
+            file.volume = volume;
+            if (! file.paused)
+            {
+                file.pause();
+                file.currentTime = 0;
+                file.play();
+            }
 
-        // Music?
-        if (loop !== undefined)
-        {
-            file.loop = loop;
+            else
+            {
+                file.play();
+            }
         }
-    }
+    },
+
+    /**
+     * Stops a sound.
+     *
+     * @method Carrot.SoundManager#stop
+     */
+    stop(key)
+    {
+        let file = this.game.cache.sounds[key];
+
+        if (file)
+        {
+            if (! file.paused)
+            {
+                file.loop = false;
+                file.currentTime = 0;
+                file.stop();
+            }
+        }
+    },
+
+    /**
+     * Resumes a sound.
+     *
+     * @method Carrot.SoundManager#resume
+     */
+    resume(key)
+    {
+        let file = this.game.cache.sounds[key];
+
+        if (file)
+        {
+            if (file.paused)
+            {
+                file.loop = false;
+                file.currentTime = 0;
+                file.stop();
+            }
+        }
+    },
+
+    /**
+     * Pauses a sound.
+     *
+     * @method Carrot.SoundManager#resume
+     */
+    pause(key)
+    {
+        let file = this.game.cache.sounds[key];
+
+        if (file)
+        {
+            if (! file.paused)
+            {
+                file.pause();
+            }
+        }
+    },
+
+    /**
+     * Plays a sound and repeats it forever.
+     *
+     * @method Carrot.SoundManager#loop
+     */
+    loop(key, volume)
+    {
+        this.play(key, volume, true);
+    },
+
+    /**
+     * Changes the volume of a sound.
+     *
+     * @method Carrot.SoundManager#volume
+     */
+    volume(key, volume)
+    {
+        let file = this.game.cache.sounds[key];
+
+        if (file)
+        {
+            file.volume = volume;
+        }
+    },
 };
 
 Carrot.SoundManager.prototype.constructor = Carrot.SoundManager;
@@ -2428,6 +2638,15 @@ Carrot.Physics.Body = function(parent, x, y)
         bottom: false
     };
 
+    this.checkCollision =
+    {
+        none:   false,
+        left:   true,
+        right:  true,
+        top:    true,
+        bottom: true
+    };
+
     this.collideWorldBounds = false;
 
     this.isRectangle = true;
@@ -2802,6 +3021,7 @@ Carrot.ObjectFactory.prototype.constructor = Carrot.ObjectFactory;
 Carrot.AssetLoader = function(game)
 {
     this.game = game;
+    this.utils = this.game.utils;
 
     this.filesLoaded = 0;
     this.filesToLoad = 0;
@@ -2972,50 +3192,8 @@ Carrot.AssetLoader.prototype =
         let xhr = new XMLHttpRequest();
         xhr.onload = function(event)
         {
-            // This CSV parser has to be turned into an own method.
-
-            let csv = {};
-
-            // Split up at line breaks
-            let rows = this.responseText.split(/\n|\r/);
-
-            // Save properties defined in the first line of the CSV file.
-            let properties = rows[0].replace(/['"]+/g, ''); // Remove "s if existing.
-            properties     = properties.replace(/\s/g,''); // Remove all white spaces
-            properties     = properties.split(",");
-
-            // Get the values of the lines after the first one.
-            for (let i = 1; i < rows.length; i++)
-            {
-                let columns = rows[i].split(",");
-                let object = columns[0];
-                object = object.trim(); // Remove spaces at begin and end.
-
-                // Check for empty line (the last one mostly)
-                if (object !== "")
-                {
-                    // Create property in object.
-                    csv[object] = {};
-
-                    for (let j = 1; j < properties.length; j++)
-                    {
-                        let property = properties[j];
-                        let value = parseInt(columns[j]);
-
-                        // If value is a string
-                        if (isNaN(value))
-                        {
-                            // Remove its "s
-                            value = columns[j].replace(/['"]+/g, '');
-                        }
-
-                        // Store value
-                        csv[object][property] = value;
-                    }
-                }
-            }
-
-            that.game.cache.csv[key] = csv;
+            // Convert CSV to JSON.
+            that.game.cache.csv[key] = that.utils.csvToJson(this.responseText);
 
             that.fileLoaded(key);
         }
@@ -3363,7 +3541,7 @@ Carrot.KeyCode =
 };
 
 // Duplicate Carrot.KeyCode values in Carrot.Keyboard for compatibility
-for (var key in Carrot.KeyCode)
+for (let key in Carrot.KeyCode)
 {
     if (Carrot.KeyCode.hasOwnProperty(key) && !key.match(/[a-z]/))
     {
@@ -3755,6 +3933,134 @@ Carrot.Mouse.prototype =
 
 Carrot.Mouse.prototype.constructor = Carrot.Mouse;
 
+/**
+ * This class handles various event listeners for game objects.
+ *
+ * @class Carrot.Events
+ * @constructor
+ * @param {Carrot.Sprite | object} entity - The entity the event listeners shall be attached to.
+ */
+Carrot.Events = function(entity)
+{
+    this.parent = entity;
+
+    // Internal values
+    this.game = entity.game;
+
+    return this;
+};
+
+// The stuff below is not working yet
+Carrot.Events.prototype =
+{
+    /**
+     * Is fired if the parent object is killed.
+     *
+     * @method Carrot.Events#onKilled
+     * @private
+     */
+    onKilled()
+    {
+
+    },
+
+    /**
+     * Is fired if the parent object is destroyed.
+     *
+     * @method Carrot.Events#onKilled
+     * @private
+     */
+    onDestroyed()
+    {
+
+    },
+
+    /**
+     * Is fired if the parent object is revived.
+     *
+     * @method Carrot.Events#onKilled
+     * @private
+     */
+    onRevived()
+    {
+
+    }
+};
+
+Carrot.Events.prototype.constructor = Carrot.Events;
+
+/**
+ * This class offers various utilities, such as a CSV to JSON converter.
+ *
+ * @class Carrot.Utilities
+ * @constructor
+ * @param {Carrot.Game} game - The core game object.
+ */
+Carrot.Utilities = function(game)
+{
+    this.game = game;
+
+    return this;
+};
+
+// The stuff below is not working yet
+Carrot.Utilities.prototype =
+{
+    /**
+     * Converts CSV into JSON. The CSV file / string is being processed vertically, having the first line defining the properties and every following line defining a new entry.
+     *
+     * @method Carrot.Debug#sprite
+     * @param {string} file - The CSV file to convert. Must be a string.
+     * @return {object}
+     */
+    csvToJson(file)
+    {
+        let csv = {};
+
+        // Split up at line breaks
+        let rows = file.split(/\n|\r/);
+
+        // Save properties defined in the first line of the CSV file.
+        let properties = rows[0].replace(/['"]+/g, ''); // Remove "s if existing.
+        properties     = properties.replace(/\s/g,''); // Remove all white spaces
+        properties     = properties.split(",");
+
+        // Get the values of the lines after the first one.
+        for (let i = 1; i < rows.length; i++)
+        {
+            let columns = rows[i].split(",");
+            let object = columns[0];
+            object = object.trim(); // Remove spaces at begin and end.
+
+            // Check for empty line (the last one mostly)
+            if (object !== "")
+            {
+                // Create property in object.
+                csv[object] = {};
+
+                for (let j = 1; j < properties.length; j++)
+                {
+                    let property = properties[j];
+                    let value = parseInt(columns[j]);
+
+                    // If value is a string
+                    if (isNaN(value))
+                    {
+                        // Remove its "s
+                        value = columns[j].replace(/['"]+/g, '');
+                    }
+
+                    // Store value
+                    csv[object][property] = value;
+                }
+            }
+        }
+
+        return csv;
+    }
+};
+
+Carrot.Utilities.prototype.constructor = Carrot.Utilities;
 
 /**
  * This class offers methods to debug the game.
@@ -3939,17 +4245,40 @@ Carrot.Debug.prototype =
             debugDiv.style.userSelect    = "none";
             debugDiv.style.pointerEvents = "none";
         }
+    },
+
+    test()
+    {
+        let div = document.createElement('div');
+        this.game.background.appendChild(div);
+        div.style.position      = "absolute";
+        div.style.left          = "100px";
+        div.style.top           = "100px";
+        div.style.width         = "100px";
+        div.style.height        = "100px";
+
+        let canvas = document.createElement('canvas');
+        let ctx = canvas.getContext('2d');
+        ctx.strokeStyle = "#ff0000";
+        ctx.moveTo(0,0);
+        ctx.lineTo(100, 100);
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        div.style.backgroundImage = "url(" + canvas.toDataURL() + ")";
     }
 };
 
 Carrot.Debug.prototype.constructor = Carrot.Debug;
 
-// Type IDs
+// Object tpe IDs
 
 /** @static */
 Carrot.SPRITE = 0;
 /** @static */
-Carrot.GROUP = 1;
+Carrot.TILESPRITE = 1;
+/** @static */
+Carrot.GROUP = 2;
 
 /******************************************************************************/
 /****************************** carrotJS END **********************************/
